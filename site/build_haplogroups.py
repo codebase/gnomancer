@@ -21,8 +21,9 @@ CODE = re.compile(r"^[A-Z][0-9a-z']*$")
 
 CSS = open(ROOT / "site" / "install" / "index.html").read().split("<style>")[1].split("</style>")[0]
 HEAD = ('<header><div class="wrap"><a class="brand" href="/"><img src="/assets/mark-64.png" alt="" width="30" height="30">gnomancer</a>'
-        '<nav><a href="/haplogroups/">Haplogroups</a><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a>'
+        '<button id="menu" class="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button><nav id="nav"><a href="/haplogroups/">Haplogroups</a><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a>'
         f'<a href="{INV}">Community</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header>')
+JS = "<script>(function(){var h=document.querySelector('header'),b=document.getElementById('menu');if(b){b.onclick=function(){var o=h.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');};}})();</script>"
 FOOT = (f'<footer><div class="wrap">gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · '
         f'<a href="{INV}">Discord</a> · no cookies, no analytics, no uploads.</div></footer>')
 EXTRA_CSS = (".crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14px;color:var(--ink-2);margin:0 0 18px}"
@@ -89,7 +90,7 @@ def page(g, all_groups):
 <h2>Compare notes</h2>
 <p class="lead">People with this lineage talk in the <a href="{INV}">gnomancer Discord</a>, channel #haplogroups. Share your haplogroup, not your raw file.</p>
 <p class="caption" style="color:var(--ink-3)">References: {refs}. Population statements are approximate summaries of published frequencies; corrections welcome in <a href="https://github.com/codebase/gnomancer/blob/main/gnomancer/data/haplogroup_context.tsv">the source table</a>.</p>
-</main>{FOOT}</body></html>'''
+</main>{FOOT}{JS}</body></html>'''
 
 
 def index(all_groups):
@@ -109,7 +110,7 @@ def index(all_groups):
 {section("Y", "Y chromosome · paternal line")}
 {section("MT", "Mitochondrial DNA · maternal line")}
 <p class="caption" style="margin-top:36px;color:var(--ink-3)">Population statements are approximate summaries of published frequencies. Corrections welcome in <a href="https://github.com/codebase/gnomancer/blob/main/gnomancer/data/haplogroup_context.tsv">the source table</a>.</p>
-</main>{FOOT}<script>{js}</script></body></html>'''
+</main>{FOOT}{JS}<script>{js}</script></body></html>'''
 
 
 def main():
