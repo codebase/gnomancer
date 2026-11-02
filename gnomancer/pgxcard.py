@@ -13,29 +13,11 @@ from pathlib import Path
 import pandas as pd
 
 from . import __version__
-from .summary import PGX_DRUGS
+from .summary import PGX_DRUGS, tidy_pheno as _tidy_pheno, tidy_result as _tidy_result
 
 FOOTER = ("Derived from a consumer genotyping array, not a clinical test. PharmCAT assumed the reference allele at positions "
           "the chip did not type, so rare alleles can be missed and every call is provisional. Confirm with a clinical "
           "pharmacogenomic panel before changing any prescription. Guidelines: cpicpgx.org and pharmgkb.org.")
-
-
-def _tidy_result(d: str, limit: int = 3) -> str:
-    """'*1/*5 OR *1/*15 OR *1/*40 OR ...' -> first few alternatives plus a count."""
-    alts = [a.strip() for a in str(d).split(" OR ")]
-    if len(alts) <= limit:
-        return " or ".join(alts)
-    return " or ".join(alts[:limit]) + f" (+{len(alts) - limit} more possible)"
-
-
-def _tidy_pheno(p: str) -> str:
-    """'Decreased Function / Decreased Function / Poor Function' -> 'Decreased Function or Poor Function'."""
-    seen, out = set(), []
-    for x in [x.strip() for x in str(p).split("/")]:
-        if x and x not in seen:
-            seen.add(x)
-            out.append(x)
-    return " or ".join(out) if out else "—"
 
 
 def _rows(pc: dict, panel: pd.DataFrame) -> list[dict]:

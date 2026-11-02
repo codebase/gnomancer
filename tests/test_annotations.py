@@ -106,11 +106,12 @@ def test_pgx_card(tmp_path):
 
 
 def test_pgx_card_tidies_alternatives():
-    from gnomancer.pgxcard import _tidy_result, _tidy_pheno
+    from gnomancer.summary import tidy_result as _tidy_result, tidy_pheno as _tidy_pheno
     assert _tidy_result("*1/*5 OR *1/*15 OR *1/*40 OR *1/*45 OR *5/*45") == "*1/*5 or *1/*15 or *1/*40 (+2 more possible)"
     assert _tidy_result("*1/*1") == "*1/*1"
     assert _tidy_pheno("Decreased Function / Decreased Function / Poor Function / Poor Function") == "Decreased Function or Poor Function"
     assert _tidy_pheno("Normal Metabolizer /") == "Normal Metabolizer" and _tidy_pheno("") == "—"
+    assert _tidy_pheno("Indeterminate / Poor Metabolizer / Poor Metabolizer") == "Poor Metabolizer"
 
 
 def test_setup_verify_checksums(tmp_path):

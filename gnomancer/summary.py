@@ -47,6 +47,27 @@ def _clean_pheno(p: str) -> str:
     return p
 
 
+def tidy_result(d: str, limit: int = 3) -> str:
+    """'*1/*5 OR *1/*15 OR *1/*40 OR ...' -> first few alternatives plus a count."""
+    alts = [a.strip() for a in str(d).split(" OR ")]
+    if len(alts) <= limit:
+        return " or ".join(alts)
+    return " or ".join(alts[:limit]) + f" (+{len(alts) - limit} more possible)"
+
+
+def tidy_pheno(p: str) -> str:
+    """'Decreased Function / Decreased Function / Poor Function' -> 'Decreased Function or Poor Function'.
+    'Indeterminate' is dropped when a definite phenotype is also possible."""
+    seen, out = set(), []
+    for x in [x.strip() for x in str(p).split("/")]:
+        if x and x not in seen:
+            seen.add(x)
+            out.append(x)
+    if len(out) > 1:
+        out = [x for x in out if x.lower() != "indeterminate"]
+    return " or ".join(out) if out else "—"
+
+
 def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.DataFrame, clinvar: dict, pharmcat: dict) -> dict:
     """Return {'who': [...], 'notable': [...], 'reassuring': [...], 'next': [...]} of short plain-language bullets."""
     who, notable, reassuring, nxt = [], [], [], []
@@ -108,7 +129,9 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
                and "reference" not in str(r.diplotype).lower() and "non-responsive" not in str(r.phenotype).lower()]
         for r in odd:
             note = " (the common European genotype; standard dosing)" if r.gene == "CYP3A5" and "*3/*3" in str(r.diplotype) else ""
-            notable.append(f"{r.gene} {r.diplotype}: {_clean_pheno(r.phenotype)}{note}" + (f"; affects {PGX_DRUGS[r.gene]}" if r.gene in PGX_DRUGS else "") + ".")
+            n_alt = len(str(r.diplotype).split(" OR "))
+            result = tidy_result(r.diplotype, limit=2) if n_alt <= 2 else "several possible diplotypes (the chip cannot separate them)"
+            notable.append(f"{r.gene} {result}: {tidy_pheno(r.phenotype)}{note}" + (f"; affects {PGX_DRUGS[r.gene]}" if r.gene in PGX_DRUGS else "") + ".")
         odd_genes = {r.gene for r in odd}
         normal = [r.gene for _, r in calls.iterrows() if r.gene not in odd_genes and _clean_pheno(r.phenotype).lower() in NORMAL_PHENOS]
         if normal:

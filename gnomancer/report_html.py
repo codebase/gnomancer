@@ -74,7 +74,7 @@ details.sensitive>summary{cursor:pointer;padding:10px 0;font-weight:600}details.
 .axis{stroke:var(--line)}.lbl{fill:var(--ink-2);font-size:11px;font-family:var(--sans)}
 .caption{font-size:13px;color:var(--ink-3);margin:6px 2px 0}
 .limits li{margin:4px 0}
-.glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.glance .card ul{margin:6px 0 0;padding-left:18px}.glance .card li{margin:5px 0;font-size:14.5px}
+.glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.glance .wide{grid-column:1/-1}.glance .card ul{margin:6px 0 0;padding-left:18px}.glance .card li{margin:5px 0;font-size:14.5px}
 .narrative .prose p{margin:0 0 10px;font-size:15.5px;line-height:1.6;max-width:72ch}
 footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:13.5px}
 .disclaimer{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--ink-2);margin:0 0 20px}
@@ -190,7 +190,7 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
         H.append('<section id="glance"><h2>At a glance</h2><div class="glance">')
         for title, key in (("Who the data says you are", "who"), ("Worth knowing", "notable"), ("Reassuring", "reassuring"), ("Sensible next steps", "next")):
             if g.get(key):
-                H.append(f'<div class="card"><h3>{title}</h3><ul>' + "".join(f"<li>{e(b)}</li>" for b in g[key]) + "</ul></div>")
+                H.append(f'<div class="card{" wide" if key == "next" else ""}"><h3>{title}</h3><ul>' + "".join(f"<li>{e(b)}</li>" for b in g[key]) + "</ul></div>")
         H.append("</div></section>")
     H.append('<nav class="toc"><a href="#glance">At a glance</a><a href="#overview">Overview</a><a href="#quality">Quality</a><a href="#roh">Homozygosity</a><a href="#lineage">Lineages</a>'
              '<a href="#readings">Readings</a><a href="#panel">Marker panel</a><a href="#clinvar">ClinVar</a><a href="#pharmcat">PharmCAT</a><a href="#limits">Limits</a></nav>')
