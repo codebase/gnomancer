@@ -1,3 +1,4 @@
+import pytest
 import gzip
 from pathlib import Path
 
@@ -110,3 +111,15 @@ def test_pgx_card_tidies_alternatives():
     assert _tidy_result("*1/*1") == "*1/*1"
     assert _tidy_pheno("Decreased Function / Decreased Function / Poor Function / Poor Function") == "Decreased Function or Poor Function"
     assert _tidy_pheno("Normal Metabolizer /") == "Normal Metabolizer" and _tidy_pheno("") == "—"
+
+
+def test_setup_verify_checksums(tmp_path):
+    import hashlib
+    from gnomancer.setup_cmd import verify
+    f = tmp_path / "x.bin"
+    f.write_bytes(b"gnomancer")
+    verify(f, sha256=hashlib.sha256(b"gnomancer").hexdigest())
+    assert f.exists()
+    with pytest.raises(RuntimeError):
+        verify(f, sha256="0" * 64)
+    assert not f.exists()

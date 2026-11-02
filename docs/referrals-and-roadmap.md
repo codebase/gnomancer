@@ -74,11 +74,11 @@ Status key: ☐ not started · ◐ in progress · ☑ done
 ### Reach more people
 6. ☐ **Run in the browser** (Pyodide/WebAssembly). "Analyze without installing" on gnomancer.com, file never leaves the tab. Biggest adoption unlock and the only honest base for a paid tier. One to two weeks; Java tools need a reduced browser mode.
 7. ☐ **Native Windows / desktop app** (Tauri wrapper, bundled JRE). A week.
-8. ☐ **Homebrew tap** (`brew install codebase/tap/gnomancer`) that pulls python and openjdk. An hour.
+8. ☑ **Homebrew tap** (`brew install codebase/tap/gnomancer`; formula in github.com/codebase/homebrew-tap, bump url/sha256 per release) (`brew install codebase/tap/gnomancer`) that pulls python and openjdk. An hour.
 10. ☐ **Haplogroup story pages** on the site, one per major lineage, with a map. SEO plus the natural home for community. A day.
 
 ### Polish and trust
-11. ☐ **Checksum verification** for downloaded tools (SECURITY.md currently admits we don't). An hour.
+11. ☑ **Checksum verification** for downloaded tools (SECURITY.md currently admits we don't). An hour.
 12. ☐ **Light-mode and print-to-PDF pass** on the report. An hour.
 13. ☐ **Walkthrough video** for the site and YouTube. Needs the maintainer on mic, or a script.
 

@@ -27,7 +27,7 @@ gnomancer setup             # fetches the open-source tools and reference files 
 gnomancer ~/Downloads/AncestryDNA.zip
 ```
 
-Open `AncestryDNA_analysis/REPORT.html`. No Python? `curl -fsSL https://gnomancer.com/install.sh | bash` does it all. Windows: [via WSL](https://gnomancer.com/install/).
+Open `AncestryDNA_analysis/REPORT.html`. macOS: `brew install codebase/tap/gnomancer` pulls Python and Java for you. No Python at all? `curl -fsSL https://gnomancer.com/install.sh | bash`. Windows: [via WSL](https://gnomancer.com/install/).
 
 ![demo report](docs/demo-report.png)
 

@@ -26,10 +26,11 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 48px;colo
 <div class="card">
 <ol>
 <li>Open <strong>Terminal</strong> (press <code>⌘ Space</code>, type Terminal, press Enter).</li>
-<li>If you have never used Homebrew, install it from <a href="https://brew.sh">brew.sh</a> (one command on that page), then install the two prerequisites:
-<pre><code>brew install python@3.12 openjdk</code></pre></li>
-<li>Install gnomancer:
-<pre><code>curl -fsSL https://gnomancer.com/install.sh | bash</code></pre>
+<li>If you have never used Homebrew, install it from <a href="https://brew.sh">brew.sh</a> (one command on that page).</li>
+<li>Install gnomancer, which brings Python and Java with it, then fetch the tools once:
+<pre><code>brew install codebase/tap/gnomancer
+gnomancer setup</code></pre>
+Prefer not to use Homebrew for gnomancer itself? <code>curl -fsSL https://gnomancer.com/install.sh | bash</code> works too, after <code>brew install python@3.12 openjdk</code>.
 This installs the <a href="https://pypi.org/project/gnomancer/">gnomancer package from PyPI</a> into a private folder (<code>~/.gnomancer</code>) and downloads the open-source tools and reference files it uses (about 250 MB, once). You can <a href="/install.sh">read the script</a> before running it. Already comfortable with Python? <code>pipx install gnomancer && gnomancer setup</code> is the same thing.</li>
 </ol></div>
 

@@ -107,7 +107,7 @@ def run(argv=None) -> int:
             print(f"new ClinVar release ({lm}); downloading ...", file=sys.stderr)
             if vcf.exists():
                 vcf.unlink()
-            _dl(CLINVAR_URL, vcf, "clinvar")
+            _dl(CLINVAR_URL, vcf, "clinvar", md5_url=CLINVAR_URL + ".md5")
         elif snap and not a.force:
             print(f"ClinVar unchanged since {snap.get('taken')} (release {snap.get('release')}); nothing to do. Use --force to rescan anyway.")
             return 0

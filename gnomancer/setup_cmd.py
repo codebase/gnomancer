@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 import shutil
 import subprocess
@@ -19,8 +20,39 @@ YHAPLO_SRC = "git+https://github.com/23andMe/yhaplo"
 EZANCESTRY_SRC = "git+https://github.com/arvkevi/ezancestry"
 YLEAF_SRC = "git+https://github.com/genid/Yleaf"
 
+# SHA-256 of the pinned downloads. Bump these together with the version constants.
+SHA256 = {
+    f"haplogrep3-{HAPLOGREP_VERSION}-linux.tar.gz": "957165143ddd7d6ad9f34cc3af56b784fc236081e031c99bea4a574d6ad70959",
+    f"pharmcat-{PHARMCAT_VERSION}-all.jar": "9317ef632bf6c9786ff0d9d455d4c9f6d2882ebd66ad7256b4ae958ddf454741",
+    f"pharmcat_positions_{PHARMCAT_VERSION}.vcf": "63f49b9004b6a5ca921deebe8ec59f8e45f6990543e07b7890c0d6201f5e69fc",
+}
 
-def _dl(url: str, dest: Path, label: str) -> None:
+
+def _digest(path: Path, algo: str = "sha256") -> str:
+    h = hashlib.new(algo)
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def verify(path: Path, sha256: str | None = None, md5_url: str | None = None) -> None:
+    """Raise if the file's digest does not match the pinned SHA-256 or the publisher's MD5 sidecar."""
+    if sha256:
+        got = _digest(path, "sha256")
+        if got != sha256:
+            path.unlink(missing_ok=True)
+            raise RuntimeError(f"checksum mismatch for {path.name}: expected {sha256[:12]}…, got {got[:12]}…; file deleted")
+    if md5_url:
+        with urllib.request.urlopen(md5_url, timeout=30) as r:  # noqa: S310
+            expected = r.read().decode().split()[0].strip()
+        got = _digest(path, "md5")
+        if got != expected:
+            path.unlink(missing_ok=True)
+            raise RuntimeError(f"MD5 mismatch for {path.name} against {md5_url}; file deleted")
+
+
+def _dl(url: str, dest: Path, label: str, sha256: str | None = None, md5_url: str | None = None) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if dest.exists() and dest.stat().st_size > 0:
         print(f"  {label}: already present")
@@ -30,6 +62,8 @@ def _dl(url: str, dest: Path, label: str) -> None:
     with urllib.request.urlopen(url) as r, open(tmp, "wb") as f:  # noqa: S310
         shutil.copyfileobj(r, f)
     tmp.rename(dest)
+    verify(dest, sha256=sha256 or SHA256.get(url.rsplit("/", 1)[-1]), md5_url=md5_url)
+    print(f"  {label}: checksum ok")
 
 
 def _java_ok() -> str | None:
@@ -76,7 +110,7 @@ def run(argv=None) -> int:
 
     if not a.no_clinvar:
         print("ClinVar (GRCh37, ~200 MB)")
-        _dl(CLINVAR_URL, tools / "clinvar" / "clinvar_GRCh37.vcf.gz", "clinvar")
+        _dl(CLINVAR_URL, tools / "clinvar" / "clinvar_GRCh37.vcf.gz", "clinvar", md5_url=CLINVAR_URL + ".md5")
 
     java = _java_ok()
     print(f"Java: {java or 'NOT FOUND (Haplogrep3 and PharmCAT will be skipped; install Java 11+, e.g. brew install openjdk)'}")

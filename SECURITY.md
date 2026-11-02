@@ -9,7 +9,7 @@ within 72 hours.
 
 **Scope of interest:** path traversal or code execution via crafted raw-data files, the installer script, the MCP
 tools (e.g. `analyze` or `lookup` reading files outside the user's intent), and the downloaded third-party tools'
-verification (we pin versions but do not yet verify checksums; see roadmap).
+verification (versions are pinned and SHA-256-checked in `gnomancer/setup_cmd.py`; ClinVar is checked against NCBI's MD5 sidecar).
 
 **Out of scope:** the biology (interpretation accuracy is a correctness issue, filed as a normal issue), and the
 third-party tools themselves (report those upstream: yhaplo, Haplogrep3, PharmCAT, Yleaf, snps).
