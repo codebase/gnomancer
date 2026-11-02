@@ -1,0 +1,115 @@
+# Curated marker panel. Alleles are on the GRCh37 forward strand (what all major vendors report).
+# category: ancestry | trait | health | carrier | pgx.  effect = the allele being counted.
+# interp0/1/2 = text for 0/1/2 copies of the effect allele (optional).
+rsid	category	gene	label	ref	effect	interp0	interp1	interp2	note
+rs1426654	ancestry	SLC24A5	Skin pigmentation A111T	G	A	ancestral allele on both copies (typical of Sub-Saharan African and East Asian ancestry)	one light-skin allele	light-skin allele on both copies (near-fixed in Europe, West and South Asia)	
+rs16891982	ancestry	SLC45A2	Skin/hair pigmentation L374F	C	G	ancestral on both copies	one European light-pigmentation allele	European light-pigmentation allele on both copies	
+rs3827760	ancestry	EDAR	V370A hair thickness / shovel incisors	A	G	ancestral; no East Asian/Native American hair-thickness allele	one copy of the East Asian/Native American allele	homozygous for the East Asian/Native American allele	
+rs2814778	ancestry	ACKR1 (DARC)	Duffy null (FY*O)	T	C	Duffy-positive	one Duffy-null allele (common in West/Central African ancestry)	Duffy-null: resistant to P. vivax malaria; benign lower neutrophil counts	
+rs4988235	ancestry	LCT	Lactase persistence -13910	G	A	non-persistent at this site	persistent (dominant)	persistent	the European persistence allele; other populations use different alleles
+rs182549	ancestry	LCT	Lactase persistence -22018	C	T	non-persistent at this site	persistent (linked to -13910)	persistent	
+rs671	ancestry	ALDH2	ALDH2*2 alcohol flush	G	A	no flush allele	flush reaction, reduced acetaldehyde clearance (common in East Asia)	strong flush; alcohol poorly tolerated	
+rs1229984	ancestry	ADH1B	ADH1B*2 (His48)	C	T	*1/*1 typical of Europe and Africa	one fast-metabolizing *2 allele	*2/*2 fast alcohol metabolism (common in East Asia)	
+rs12913832	trait	HERC2	Eye color (main determinant)	A	G	brown eyes likely	brown or hazel likely, green possible	blue or grey eyes likely	
+rs1800407	trait	OCA2	Eye color modifier R419Q	C	T	no modifier	green/hazel modifier present	homozygous modifier	
+rs12896399	trait	SLC24A4	Eye/hair color	G	T	darker-associated	intermediate	lighter-associated	
+rs1042602	trait	TYR	S192Y pigmentation / freckling	C	A	no lighter allele	one lighter/freckling allele	lighter skin, freckling more likely	
+rs1393350	trait	TYR	Eye/hair color	G	A	darker-associated	intermediate	lighter-associated	
+rs12203592	trait	IRF4	Freckles, lighter hair, sun sensitivity	C	T	no freckle allele	one freckle / lighter-hair allele	freckles and sun sensitivity likely	
+rs1805007	trait	MC1R	R151C red hair	C	T	no variant	red-hair carrier (R allele)	red hair likely	
+rs1805008	trait	MC1R	R160W red hair	C	T	no variant	red-hair carrier (R allele)	red hair likely	
+rs1805009	trait	MC1R	D294H red hair	G	C	no variant	red-hair carrier (R allele)	red hair likely	
+rs1805006	trait	MC1R	D84E red hair	C	A	no variant	red-hair carrier (R allele)	red hair likely	
+rs11547464	trait	MC1R	R142H red hair	G	A	no variant	red-hair carrier (R allele)	red hair likely	
+rs1110400	trait	MC1R	I155T red hair	T	C	no variant	red-hair carrier (R allele)	red hair likely	
+rs885479	trait	MC1R	R163Q (weak variant)	G	A	no variant	one weak r allele	homozygous weak variant (common in East Asia)	
+rs11803731	trait	TCHH	Hair curl (European)	T	A	curlier-associated	intermediate	straight-associated	
+rs17822931	trait	ABCC11	Earwax type / underarm odor	C	T	wet earwax, typical body odor	wet earwax (C is dominant)	dry earwax, little underarm odor	
+rs4481887	trait	OR2M7 region	Asparagus metabolite smell	G	A	less likely to smell it	intermediate	likely smells asparagus metabolites	
+rs10427255	trait	ZEB2 region	Photic sneeze reflex	T	C	less likely	intermediate	more likely to sneeze in bright light	
+rs1815739	trait	ACTN3	R577X sprint/power muscle	C	T	RR: two working copies, power-leaning	RX: mixed	XX: no alpha-actinin-3, endurance-leaning (~18% of Europeans)	
+rs762551	trait	CYP1A2	Caffeine metabolism *1F	A	C	AA: fast caffeine metabolizer	intermediate	slow caffeine metabolizer	
+rs2472297	trait	CYP1A1/2 region	Caffeine intake tendency	C	T	lower-intake alleles	intermediate	higher-intake alleles	
+rs4410790	trait	AHR	Caffeine intake tendency	T	C	lower-intake alleles	intermediate	higher-intake alleles	
+rs713598	trait	TAS2R38	Bitter taste PTC (A49P)	C	G	non-taster allele on both copies	taster	taster	see combined TAS2R38 reading
+rs1726866	trait	TAS2R38	Bitter taste (V262A)	A	G				see combined TAS2R38 reading
+rs10246939	trait	TAS2R38	Bitter taste (I296V)	T	C				see combined TAS2R38 reading
+rs72921001	trait	OR6A2	Cilantro soapy taste	A	C	no soapy-taste allele	one soapy-taste allele	cilantro likely tastes soapy	
+rs9939609	trait	FTO	BMI/obesity risk	T	A	no risk allele	one risk allele (~+1.2 kg on average)	two risk alleles (~+3 kg on average)	
+rs17782313	trait	MC4R	BMI	T	C	no risk allele	one risk allele	two risk alleles	
+rs16969968	trait	CHRNA5	Nicotine dependence D398N	G	A	no risk allele	one risk allele: heavier smoking if a smoker	two risk alleles	
+rs4680	trait	COMT	Val158Met	G	A	Val/Val: higher COMT activity	Val/Met	Met/Met: lower COMT activity	popular but weak-effect marker
+rs6265	trait	BDNF	Val66Met	C	T	Val/Val	Val/Met	Met/Met	weak-effect marker
+rs1799971	trait	OPRM1	A118G	A	G	reference	one G allele	two G alleles	weak-effect marker
+rs601338	trait	FUT2	Secretor status W154X	G	A	secretor	secretor (one non-secretor allele)	non-secretor: resistant to common norovirus strains; altered gut flora	
+rs2180439	trait	PAX1 region	Male pattern hair loss	T	C	no risk allele	one risk allele	two risk alleles	
+rs53576	trait	OXTR	Oxytocin receptor	G	A	GG	GA	AA	weak-effect marker
+rs1800497	trait	ANKK1/DRD2	TaqIA	G	A	A2/A2	A1/A2	A1/A1	weak-effect marker
+rs8176719	trait	ABO	O allele (261delG)	I	D	no O allele	one O allele	blood group O	see combined ABO reading
+rs8176746	trait	ABO	B allele	G	T	no B allele	one B allele	B/B	see combined ABO reading
+rs1050828	health	G6PD	G6PD A- (V68M)	C	T	no deficiency allele	carrier / affected if male	deficient	X-linked; hemizygous in males
+rs429358	health	APOE	e4-defining site (C112R)	T	C				see combined APOE reading
+rs7412	health	APOE	e2-defining site (R158C)	C	T				see combined APOE reading
+rs6025	health	F5	Factor V Leiden R506Q	C	T	negative	heterozygous: ~5x venous thrombosis risk; relevant for surgery, estrogen, long flights	homozygous: substantially elevated clotting risk	
+rs1799963	health	F2	Prothrombin G20210A	G	A	negative	heterozygous: ~2-3x venous thrombosis risk	homozygous	
+rs1800562	health	HFE	Hemochromatosis C282Y	G	A	negative	carrier; iron overload uncommon unless compound heterozygous with H63D	C282Y homozygous: high risk of iron overload, check ferritin/transferrin saturation	
+rs1799945	health	HFE	Hemochromatosis H63D	C	G	negative	carrier; little risk alone	H63D homozygous: mild iron overload possible	
+rs1800730	health	HFE	S65C	A	T	negative	carrier	homozygous	
+rs1801133	health	MTHFR	C677T (A222V)	G	A	normal activity	one T allele, ~65% activity, usually no consequence	TT: ~30% activity; mildly higher homocysteine if folate is low	widely over-interpreted online
+rs1801131	health	MTHFR	A1298C	T	G	normal	heterozygous, benign	homozygous, little effect alone	
+rs2187668	health	HLA-DQA1	DQ2.5 tag (celiac)	C	T	no DQ2.5	DQ2.5 present (most celiac patients carry it; most carriers never develop it)	DQ2.5 homozygous	
+rs7454108	health	HLA-DQB1	DQ8 tag (celiac)	T	C	no DQ8	DQ8 present	DQ8 homozygous	
+rs3135388	health	HLA-DRB1	DRB1*15:01 tag (multiple sclerosis)	G	A	non-carrier	carrier (~3x MS odds, still low absolute risk)	homozygous	
+rs2476601	health	PTPN22	R620W autoimmunity	G	A	negative	one risk allele (RA, T1D, thyroid autoimmunity)	two risk alleles	
+rs2066844	health	NOD2	R702W (Crohn's)	C	T	negative	carrier	homozygous	
+rs2066845	health	NOD2	G908R (Crohn's)	G	C	negative	carrier	homozygous	
+rs7903146	health	TCF7L2	Type 2 diabetes	C	T	no risk allele	one risk allele (~1.4x odds)	two risk alleles (~2x odds; ~10% of Europeans)	strongest common T2D variant
+rs1061170	health	CFH	Y402H macular degeneration	T	C	no risk allele	one risk allele (~2.5x AMD odds)	two risk alleles (~6x AMD odds)	smoking interacts strongly
+rs10490924	health	ARMS2	A69S macular degeneration	G	T	no risk allele	one risk allele	two risk alleles	
+rs1333049	health	CDKN2B-AS1 (9p21)	Coronary artery disease	G	C	no risk haplotype	one copy (~1.25x)	two copies (~1.5x)	
+rs10455872	health	LPA	High Lp(a) tag	A	G	no high-Lp(a) allele	elevated Lp(a) likely (~2x CAD odds); a direct Lp(a) blood test is cheap	homozygous	
+rs3798220	health	LPA	I4399M high Lp(a)	T	C	no high-Lp(a) allele	elevated Lp(a) likely	homozygous	
+rs11136000	health	CLU	Alzheimer's (protective T)	C	T	no protective allele	one protective allele (small effect)	two protective alleles	
+rs75932628	health	TREM2	R47H Alzheimer's	C	T	negative	carrier (~3x AD odds)	homozygous	
+rs76763715	health	GBA	N370S (Gaucher / Parkinson's)	T	C	negative	carrier: ~5x Parkinson's odds; Gaucher carrier	Gaucher type 1 likely	
+rs34637584	health	LRRK2	G2019S Parkinson's	G	A	negative	carrier: elevated Parkinson's risk (penetrance ~30% by 80)	homozygous	
+rs2802292	health	FOXO3	Longevity-associated	T	G	no longevity allele	one copy	two copies (modest association with reaching 90+)	
+rs1800629	health	TNF	-308 promoter	G	A	GG	GA	AA	weak-effect marker
+rs113993960	carrier	CFTR	deltaF508 cystic fibrosis	I	D	negative	CF carrier (most common CF allele)	affected	arrays type 1-3 CFTR sites of 2000+
+rs333	carrier	CCR5	delta32	I	D	negative	one delta32 copy	homozygous: resistant to R5-tropic HIV-1	
+rs80357906	carrier	BRCA1	185delAG (Ashkenazi founder)	I	D	negative at this site	pathogenic variant present: confirm clinically	homozygous	
+rs80359550	carrier	BRCA2	6174delT (Ashkenazi founder)	I	D	negative at this site	pathogenic variant present: confirm clinically	homozygous	
+rs11571833	carrier	BRCA2	K3326X	A	T	negative	modest cancer risk increase (not a classic BRCA2 pathogenic allele)	homozygous	
+rs334	carrier	HBB	Sickle cell HbS	T	A	negative	sickle cell trait	sickle cell disease	
+rs33930165	carrier	HBB	HbC	C	T	negative	HbC trait	HbC disease	
+rs33950507	carrier	HBB	HbE	C	T	negative	HbE trait	HbE	
+rs1799853	pgx	CYP2C9	*2 (R144C)	C	T	no *2	one *2: reduced warfarin/NSAID/phenytoin metabolism	*2/*2	
+rs1057910	pgx	CYP2C9	*3 (I359L)	A	C	no *3	one *3: markedly reduced metabolism	*3/*3 poor metabolizer	
+rs28371686	pgx	CYP2C9	*5	C	G	no *5	one *5 (African ancestry)	*5/*5	
+rs9332131	pgx	CYP2C9	*6	I	D	no *6	one *6	*6/*6	
+rs28371685	pgx	CYP2C9	*11	C	T	no *11	one *11	*11/*11	
+rs4244285	pgx	CYP2C19	*2 (loss of function)	G	A	no *2	one *2: intermediate metabolizer (clopidogrel less effective)	*2/*2 poor metabolizer	
+rs4986893	pgx	CYP2C19	*3 (loss of function)	G	A	no *3	one *3	*3/*3	mostly East Asian
+rs12248560	pgx	CYP2C19	*17 (increased function)	C	T	no *17	one *17: rapid metabolizer	*17/*17 ultrarapid	
+rs9923231	pgx	VKORC1	-1639G>A warfarin sensitivity	C	T	normal warfarin dose requirement	intermediate: lower warfarin dose	high sensitivity: low warfarin dose	
+rs9934438	pgx	VKORC1	1173C>T (proxy for -1639)	G	A	normal	intermediate	sensitive	in near-perfect LD with rs9923231
+rs2108622	pgx	CYP4F2	V433M	C	T	normal	slightly higher warfarin dose	higher warfarin dose	
+rs3892097	pgx	CYP2D6	*4 (null)	C	T	no *4	one *4 allele	*4/*4 poor metabolizer	CNV not detectable on arrays
+rs1065852	pgx	CYP2D6	*10 (reduced) / also on *4	G	A	no *10	one reduced-function allele	two reduced-function alleles	
+rs28371725	pgx	CYP2D6	*41 (reduced)	C	T	no *41	one *41	*41/*41	
+rs776746	pgx	CYP3A5	*3 vs *1 (expressor)	C	T	*3/*3 non-expressor (most Europeans; standard tacrolimus dosing)	*1/*3 expressor: higher tacrolimus dose	*1/*1 expressor	
+rs3745274	pgx	CYP2B6	*6 (516G>T)	G	T	*1/*1	one *6: slower efavirenz/bupropion clearance	*6/*6 poor metabolizer	
+rs4149056	pgx	SLCO1B1	*5 (V174A) statin myopathy	T	C	normal statin transport	one C: ~4x simvastatin myopathy risk	two C: ~17x; avoid high-dose simvastatin	
+rs2231142	pgx	ABCG2	Q141K	G	T	normal	reduced transport: higher rosuvastatin/allopurinol exposure	homozygous reduced	
+rs3918290	pgx	DPYD	*2A (IVS14+1G>A)	C	T	normal	DPD deficiency carrier: fluoropyrimidine (5-FU, capecitabine) toxicity risk, dose reduction needed	DPD deficient: avoid fluoropyrimidines	
+rs67376798	pgx	DPYD	D949V	T	A	normal	reduced DPD activity	homozygous	
+rs887829	pgx	UGT1A1	*28 proxy (Gilbert)	C	T	no *28	one *28	*28/*28 Gilbert syndrome: irinotecan toxicity, benign high bilirubin	
+rs4148323	pgx	UGT1A1	*6 (G71R)	G	A	no *6	one *6	*6/*6	mostly East Asian
+rs1801280	pgx	NAT2	*5 (I114T)	T	C	no *5	one slow allele	slow	combine with *6/*7
+rs1799930	pgx	NAT2	*6 (R197Q)	G	A	no *6	one slow allele	slow	
+rs1799931	pgx	NAT2	*7 (G286E)	G	A	no *7	one slow allele	slow	
+rs1495741	pgx	NAT2	acetylator tag	A	G	slow acetylator (tag)	intermediate	rapid acetylator (tag)	
+rs1800460	pgx	TPMT	*3B	C	T	no *3B	one *3B (thiopurine dose reduction)	*3B/*3B	
+rs1142345	pgx	TPMT	*3C	T	C	no *3C	one *3C (thiopurine dose reduction)	*3C/*3C	
+rs2395029	pgx	HCP5	HLA-B*57:01 tag	T	G	negative	HLA-B*57:01 carrier: abacavir hypersensitivity, avoid	homozygous	
+rs1800566	pgx	NQO1	P187S (*2)	G	A	normal	one null allele	NQO1 null	

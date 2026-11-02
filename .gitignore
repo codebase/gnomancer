@@ -1,0 +1,12 @@
+.venv/
+tools/
+__pycache__/
+*.egg-info/
+# never commit raw DNA or outputs
+*.zip
+*AncestryDNA*.txt
+*23andMe*.txt
+*genome_*.txt
+*_analysis/
+resources/
+pharmcat.log

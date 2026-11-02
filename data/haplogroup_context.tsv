@@ -1,0 +1,72 @@
+# Population-level context for haplogroups. Matched by prefix against the caller's labels
+# (Y: ISOGG 2016 long form as emitted by yhaplo, and the short SNP form; MT: PhyloTree 17 name).
+# Keep entries short, hedged, and about populations, never individuals.
+type	prefix	depth	name	text
+Y	A	1	Haplogroup A	The deepest branches of the human Y tree, found mainly in Southern and Eastern Africa (Khoisan, Ethiopian and Sudanese groups).
+Y	B	1	Haplogroup B	An old African lineage, most common among Central African hunter-gatherer groups and in East Africa.
+Y	C	1	Haplogroup C	Spread across Asia, Oceania and the Americas: C-M217 is common in Mongolia, Siberia and East Asia; C-M38 in New Guinea and Melanesia; C-M130 branches reach Australia.
+Y	D	1	Haplogroup D	Found mainly in Japan (D-M55, including Ainu), Tibet and the Andaman Islands.
+Y	E	1	Haplogroup E	The dominant African paternal lineage, with branches that also spread into the Near East and around the Mediterranean.
+Y	E1b1a	2	E-M2	The lineage carried by the Bantu expansion: the majority Y lineage across West, Central and Southern Africa and in the African diaspora.
+Y	E1b1b	2	E-M215 / E-M35	Originated in East Africa and spread to North Africa, the Near East and Southern Europe; a major lineage in Ethiopia, Somalia, the Maghreb, Greece and the Balkans.
+Y	E1b1b1a	3	E-M78	Common from Egypt and Sudan through the Balkans and Southern Europe; E-V13 is a signature Balkan branch.
+Y	E1b1b1b1	3	E-M81	The characteristic Berber lineage of the Maghreb, also present in Iberia.
+Y	E1b1b1b2	3	E-M123 / E-M34	A Near-Eastern and East-Mediterranean branch: frequent in Ethiopia, the Levant, Anatolia and Arabia, a well-known component (around a tenth) of Ashkenazi, Sephardic and Mizrahi Jewish paternal lineages, and present at low frequency in Italy, Iberia and the Balkans.
+Y	E1b1b1b2a1a1	4	E-M84	The main sub-branch of E-M34 (YFull: E-M84). Frequent in Ethiopia and Eritrea, the Levant, Arabia and Anatolia; one of the characteristic lineages of Jewish communities from all three main diasporas; sporadic in Southern Europe.
+Y	E-M84	4	E-M84	The main sub-branch of E-M34. Frequent in Ethiopia and Eritrea, the Levant, Arabia and Anatolia; one of the characteristic lineages of Jewish communities from all three main diasporas; sporadic in Southern Europe.
+Y	E-L795	5	E-L795	A branch within E-M84 (FamilyTreeDNA naming), found in the Levant, Arabia and among Jewish lineages.
+Y	G	1	Haplogroup G	Peaks in the Caucasus and Anatolia; carried by early Neolithic farmers into Europe (the Tyrolean Iceman was G2a), today scattered at low frequency across Europe and the Near East.
+Y	H	1	Haplogroup H	Mostly South Asian; H1a1 is the main lineage of the Roma, reflecting their Indian origin.
+Y	I	1	Haplogroup I	A European lineage present since the Palaeolithic, with little presence outside Europe.
+Y	I1	2	I-M253	Concentrated in Scandinavia and Germanic-speaking regions; strongly associated with Norse and Anglo-Saxon migrations.
+Y	I2	2	I-M438	I2a1 peaks in the Balkans and Sardinia; I2a2 is found across Northwest Europe including Germany, Britain and Ireland.
+Y	J	1	Haplogroup J	Originated in the Near East and spread with Neolithic farming and later movements across the Mediterranean, Caucasus and South Asia.
+Y	J1	2	J-M267	Most frequent in Arabia, the Levant and the Caucasus (Dagestan); the J-P58 branch is associated with Semitic-speaking populations.
+Y	J2	2	J-M172	Peaks in the Fertile Crescent, Anatolia, the Caucasus and Iran; common around the Mediterranean (Italy, Greece, Balkans) and in South Asia.
+Y	L	1	Haplogroup L	Mainly South Asian, especially Pakistan and western India, with pockets in the Near East.
+Y	N	1	Haplogroup N	Spread from Siberia westward with Uralic speakers; the main lineage in Finland, the Baltic states and northern Russia.
+Y	O	1	Haplogroup O	The dominant lineage of East and Southeast Asia: O-M122 (Han Chinese and neighbours), O-M119 (coastal China, Taiwan, Austronesians), O-M95 (Southeast Asia).
+Y	Q	1	Haplogroup Q	Siberian in origin; Q-M3 is the principal Native American paternal lineage, and other branches are found in Siberia and Central Asia.
+Y	R	1	Haplogroup R	A widespread Eurasian lineage whose main branches dominate Europe, Central Asia and South Asia.
+Y	R1a	2	R-M420	Most common in Eastern Europe (Poland, Russia, Ukraine), Central Asia and northern India; associated with Bronze Age steppe migrations.
+Y	R1b	2	R-M343	The most common paternal lineage in Western Europe (peaking in Ireland, Wales, the Basque Country); the R-V88 branch is found in Central Africa.
+Y	R1b1a2	3	R-M269	The main Western European branch, carried by Bronze Age migrations; R-U106 is typical of Germanic regions, R-P312 and R-L21 of Atlantic Europe, R-U152 of the Alpine region and Italy.
+Y	R2	2	R-M479	Mainly South Asian.
+Y	T	1	Haplogroup T	A scattered lineage with pockets in the Near East, East Africa (Somalia), Sardinia and parts of Iberia.
+MT	L0	2	Haplogroup L0	Among the oldest maternal lineages, concentrated in Southern Africa (Khoisan) and East Africa.
+MT	L1	2	Haplogroup L1	A deep African lineage found mainly in Central and West Africa.
+MT	L2	2	Haplogroup L2	Widespread across Sub-Saharan Africa and the most common maternal lineage among African Americans.
+MT	L3	2	Haplogroup L3	East African in origin and the ancestor of every non-African maternal lineage; also common across Africa.
+MT	M	1	Haplogroup M	One of the two founding non-African lineages, now concentrated in South Asia, East Asia and among Native Americans (via branches C and D).
+MT	D	1	Haplogroup D	An East Asian and Siberian lineage; D1 and D4h3 are Native American founder lineages.
+MT	C	1	Haplogroup C	Found across Siberia, Central Asia and East Asia, and a Native American founder lineage (C1).
+MT	N	1	Haplogroup N	The other founding non-African lineage; its branches cover Europe, the Near East, Asia and the Americas.
+MT	A	1	Haplogroup A	East Asian and Siberian, and one of the main Native American founder lineages (A2).
+MT	B	1	Haplogroup B	East and Southeast Asian; B4 spread with Austronesians to Polynesia and B2 is a Native American founder lineage.
+MT	I	1	Haplogroup I	A minor European and Near Eastern lineage at a few percent frequency.
+MT	W	1	Haplogroup W	A minor lineage of Europe, the Near East and South Asia.
+MT	X	1	Haplogroup X	A rare lineage in Europe and the Near East; the X2a branch is a Native American founder lineage.
+MT	R	1	Haplogroup R	A large branch of N whose descendants include most European lineages.
+MT	F	1	Haplogroup F	Common in Southeast Asia and southern China.
+MT	U	1	Haplogroup U	An old West Eurasian lineage with branches in Europe, the Near East, North Africa and South Asia.
+MT	U5	2	Haplogroup U5	The characteristic lineage of European hunter-gatherers; today most frequent in Finland and the Saami.
+MT	U6	2	Haplogroup U6	Mainly North African (Berber populations) and Iberian.
+MT	K	1	Haplogroup K	A branch of U8 common across Europe and the Near East; three K sub-lineages account for about a third of Ashkenazi maternal lines.
+MT	HV	1	Haplogroup HV	The parent of H and V, found across Europe, the Near East and the Caucasus.
+MT	H	1	Haplogroup H	The most common maternal lineage in Europe (around 40%), also frequent in the Near East and North Africa; it spread widely after the last Ice Age.
+MT	H1	2	Haplogroup H1	The largest H branch and the most common maternal lineage in Western Europe; it peaks in Iberia and the Basque Country and is also found in North Africa and the Near East.
+MT	H2	2	Haplogroup H2	Found across Europe and the Caucasus; H2a is more frequent in Eastern Europe.
+MT	H3	2	Haplogroup H3	A Western European branch with a peak in Iberia and Western France.
+MT	H5	2	Haplogroup H5	Found across Europe with higher frequency in the Balkans and Central Europe.
+MT	H13	2	Haplogroup H13	Most frequent in the Caucasus and Near East, with a presence in Sardinia.
+MT	V	1	Haplogroup V	A sister of H found across Europe, with high frequency among the Saami, in Iberia and the Basque Country.
+MT	J	1	Haplogroup J	Spread from the Near East into Europe with Neolithic farmers; around a tenth of Europeans, higher in the Near East.
+MT	J1	2	Haplogroup J1	The main European J branch (J1c is the most common form in Europe).
+MT	J2	2	Haplogroup J2	Found around the Mediterranean and the Near East.
+MT	T	1	Haplogroup T	A Near Eastern and European lineage at about a tenth of the population in parts of Europe; associated with early farming and pastoralism.
+MT	T2	2	Haplogroup T2	The more common T branch in Europe, especially Northern and Central Europe.
+MT	N1	2	Haplogroup N1	Includes N1b, common among Ashkenazi Jews, and N1a, carried by early Neolithic farmers into Europe.
+MT	G	1	Haplogroup G	Mainly East Asian and Siberian, including Japan and Kamchatka.
+MT	Z	1	Haplogroup Z	Found in Siberia, Central Asia and among the Saami.
+MT	Q	1	Haplogroup Q	Found in New Guinea and Melanesia.
+MT	P	1	Haplogroup P	Found in Australia and New Guinea.
