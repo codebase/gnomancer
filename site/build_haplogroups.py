@@ -76,7 +76,7 @@ def page(g, all_groups):
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)} · {kind.split(' (')[0]} · gnomancer</title>
 <meta name="description" content="{e(desc)}"><link rel="canonical" href="https://gnomancer.com{url}"><link rel="icon" href="/assets/mark-64.png" type="image/png">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://gnomancer.com/assets/logo-512.png">
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://gnomancer.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://gnomancer.com/assets/og.jpg">
 <style>{CSS}{EXTRA_CSS}</style></head><body>{HEAD}<main class="wrap">
 <p class="kicker" style="margin-top:44px">{e(kind)}</p>
 <h1 style="margin-top:6px">{e(title)}</h1>

@@ -1,9 +1,6 @@
-<h1 align="center">
-  <img src="docs/logo.png" width="160" alt=""><br>
-  gnomancer
-</h1>
+<p align="center"><img src="docs/og.jpg" width="100%" alt="gnomancer: your DNA, decoded on your own machine"></p>
 
-<p align="center"><strong>Your DNA, decoded on your own machine.</strong><br>
+<p align="center">
 <a href="https://gnomancer.com">gnomancer.com</a> ·
 <a href="https://gnomancer.com/get-your-data/">get your raw data</a> ·
 <a href="https://gnomancer.com/install/">install</a> ·
