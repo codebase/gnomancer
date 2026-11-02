@@ -22,3 +22,25 @@ Yleaf's hg19 reference, ~900 MB).
 python examples/make_demo.py demo      # synthetic AncestryDNA / 23andMe / MyHeritage files (from a repo checkout)
 gnomancer demo/demo_AncestryDNA.txt
 ```
+
+## `gnomancer watch REPORT_DIR`: ClinVar reclassification check
+
+ClinVar reclassifies variants every month. `watch` keeps a snapshot of every ClinVar-classified allele you carry
+(any significance) next to your report (`clinvar-snapshot.json`, written on every normal run), checks whether NCBI
+has published a newer ClinVar release, downloads it if so, rescans the same raw file, and prints only what changed:
+
+- newly pathogenic / likely pathogenic at a site you carry (new record or reclassification)
+- downgraded (no longer pathogenic)
+- review-status changes on pathogenic sites
+
+The result is also saved as `clinvar-watch.md` in the report folder. Flags: `--force` (rescan even if ClinVar is
+unchanged), `--no-download` (use the ClinVar file already on disk). The raw file must still be at the path recorded
+in `summary.json`.
+
+Run it monthly. macOS/Linux cron, 9:00 on the 2nd of each month (ClinVar releases on the 1st):
+
+```
+0 9 2 * * ~/.gnomancer/venv/bin/gnomancer watch ~/Downloads/AncestryDNA_analysis >> ~/.gnomancer/watch.log 2>&1
+```
+
+From an AI assistant with the MCP server connected: ask it to run `clinvar_watch`.

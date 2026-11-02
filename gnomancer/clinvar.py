@@ -45,7 +45,8 @@ def _info(s: str) -> dict:
 
 def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
     """df: normalized SNP table (chrom, pos, genotype). Returns dict with hits table and coverage stats."""
-    res = dict(available=vcf.exists(), vcf=str(vcf), sites_in_clinvar=0, pathogenic_sites_typed=0, hits=pd.DataFrame(), note="")
+    res = dict(available=vcf.exists(), vcf=str(vcf), sites_in_clinvar=0, pathogenic_sites_typed=0, hits=pd.DataFrame(), note="",
+               carried={}, release=None)
     if not vcf.exists():
         res["note"] = "ClinVar VCF not found; run `gnomancer setup` (downloads ~200 MB from NCBI)."
         return res
@@ -54,10 +55,13 @@ def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
     for chrom, pos, gt in zip(called.chrom, called.pos, called.genotype):
         key[(chrom, int(pos))] = gt
     hits = []
+    carried_sites = {}
     n_in = n_path = 0
     with gzip.open(vcf, "rt") as f:
         for line in f:
             if line[0] == "#":
+                if line.startswith("##fileDate="):
+                    res["release"] = line.strip().split("=", 1)[1]
                 continue
             p = line.rstrip("\n").split("\t", 8)
             chrom = p[0]
@@ -70,6 +74,10 @@ def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
             n_in += 1
             info = _info(p[7])
             sig = info.get("CLNSIG", "")
+            ref_, alts_ = p[3], p[4].split(",")
+            if len(ref_) == 1 and all(len(a) == 1 for a in alts_) and any(a in alts_ for a in gt) and all(a in alts_ or a == ref_ for a in gt):
+                carried_sites[f"{chrom}:{p[1]}:{p[4]}"] = dict(rsid=("rs" + info["RS"]) if info.get("RS") else p[2], gene=info.get("GENEINFO", "").split(":")[0],
+                                                       sig=sig, rev=info.get("CLNREVSTAT", ""), gt=gt)
             if not any(s in sig for s in PATHOGENIC) or sig.startswith("Benign") or sig.startswith("Likely_benign"):
                 continue
             n_path += 1
@@ -109,6 +117,7 @@ def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
                              condition=_conditions(info.get("CLNDN", "")),
                              variant=info.get("CLNHGVS", ""), alt_af=af, confidence=confidence, flags="; ".join(flags)))
     res["sites_in_clinvar"], res["pathogenic_sites_typed"] = n_in, n_path
+    res["carried"] = carried_sites
     out = pd.DataFrame(hits)
     if not out.empty:
         out["conf_rank"] = out.confidence.map({"high": 0, "medium": 1, "low": 2})

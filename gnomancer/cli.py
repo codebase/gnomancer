@@ -48,7 +48,10 @@ def main(argv=None):
     if argv[:1] == ["setup"]:
         from .setup_cmd import run as setup
         return setup(argv[1:])
-    ap = argparse.ArgumentParser(prog="gnomancer", description="Analyze a consumer raw DNA file locally. Subcommands: `gnomancer setup` (download tools), `gnomancer serve` (MCP server).")
+    if argv[:1] == ["watch"]:
+        from .watch import run as watch
+        return watch(argv[1:])
+    ap = argparse.ArgumentParser(prog="gnomancer", description="Analyze a consumer raw DNA file locally. Subcommands: `gnomancer setup` (download tools), `gnomancer serve` (MCP server), `gnomancer watch REPORT_DIR` (ClinVar reclassification check).")
     ap.add_argument("input", help="raw data file (.txt/.csv/.tsv/.vcf, optionally .zip/.gz)")
     ap.add_argument("--out", default=None, help="output directory (default: <input>_analysis)")
     ap.add_argument("--markers", default=str(DATA / "markers.tsv"), help="marker panel TSV")
@@ -108,6 +111,9 @@ def main(argv=None):
         cv = clinvar_mod.scan(df)
         if cv["available"] and cv["hits"] is not None and not cv["hits"].empty:
             cv["hits"].to_csv(out / "clinvar-hits.tsv", sep="\t", index=False)
+        if cv["available"]:
+            from .watch import write_snapshot
+            write_snapshot(out, cv, str(inp.resolve()))
     cv_text = clinvar_mod.interpret(cv) if not a.no_clinvar else cv["note"]
     pc = dict(available=False, calls=None, error="skipped (--no-pharmcat)", stats={})
     if not a.no_pharmcat:

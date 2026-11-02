@@ -37,6 +37,7 @@ Open `AncestryDNA_analysis/REPORT.html`. No Python? `curl -fsSL https://gnomance
 - **Lineages.** Y haplogroup (yhaplo, plus Yleaf on current YFull/FTDNA/ISOGG trees) and mtDNA haplogroup (Haplogrep3), each with population context.
 - **Traits and ancestry markers.** About 110 well-replicated sites: pigmentation, lactose, caffeine, bitter taste, blood group and more.
 - **Health, carefully.** Carrier sites, common risk variants, a ClinVar scan of every typed site with plausibility scoring, and PharmCAT pharmacogenomics. All collapsed by default so nobody sees a result they didn't ask for.
+- **Stays current.** `gnomancer watch` re-checks ClinVar each month and tells you only what was reclassified at sites you carry.
 - **Honest limits.** Every section says what the chip can and cannot tell you.
 
 ## Use it from your AI assistant

@@ -69,3 +69,24 @@ def test_yleaf_plink_and_parse(tmp_path):
                   "s\tR-L21*\tL21\t900\t1.0\tR1b1a2a1a2c\tL21\t850\t0.9\n")
     t = yleaf.parse_combined(hg)
     assert t["yfull"]["haplogroup"] == "R-L21*" and t["isogg"]["qc"] == "0.9" and "ftdna" not in t
+
+
+def test_watch_diff_and_render():
+    from gnomancer import watch
+    old = {"1:100:T": dict(rsid="rs1", gene="A", sig="Uncertain_significance", rev="criteria_provided,_single_submitter", gt="CT"),
+           "1:200:G": dict(rsid="rs2", gene="B", sig="Pathogenic", rev="criteria_provided,_single_submitter", gt="AG"),
+           "1:300:A": dict(rsid="rs3", gene="C", sig="Likely_pathogenic", rev="no_assertion_criteria_provided", gt="GA"),
+           "1:400:C": dict(rsid="rs4", gene="D", sig="Benign", rev="x", gt="TC")}
+    new = {"1:100:T": dict(rsid="rs1", gene="A", sig="Likely_pathogenic", rev="criteria_provided,_single_submitter", gt="CT"),
+           "1:200:G": dict(rsid="rs2", gene="B", sig="Benign", rev="reviewed_by_expert_panel", gt="AG"),
+           "1:300:A": dict(rsid="rs3", gene="C", sig="Likely_pathogenic", rev="reviewed_by_expert_panel", gt="GA"),
+           "1:500:T": dict(rsid="rs5", gene="E", sig="Pathogenic", rev="criteria_provided,_single_submitter", gt="AT")}
+    d = watch.diff(old, new)
+    assert [x["rsid"] for x in d["new_pathogenic"]] == ["rs1", "rs5"]
+    assert [x["rsid"] for x in d["no_longer_pathogenic"]] == ["rs2"]
+    assert [x["rsid"] for x in d["review_changed"]] == ["rs3"]
+    assert d["new_records"] == 1 and d["removed_records"] == 1
+    text = watch.render(d, "2026-10-01", "2026-11-01")
+    assert "Newly pathogenic" in text and "Downgraded" in text and "rs5" in text and "confirm clinically" in text
+    assert "No change" not in text
+    assert "No change" in watch.render(watch.diff(new, new), "a", "a")

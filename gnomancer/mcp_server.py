@@ -151,6 +151,19 @@ def pharmacogenomics(report_dir: str | None = None) -> dict:
 
 
 @server.tool()
+def clinvar_watch(report_dir: str | None = None, force: bool = False) -> str:
+    """Re-check ClinVar for this report: downloads a new ClinVar release if NCBI published one, rescans the user's
+    sites and reports only classification changes (newly pathogenic, downgraded, review-status changes). The first
+    run writes a baseline. Health-sensitive: run when the user asks."""
+    d = _report_dir(report_dir)
+    args = ["watch", str(d)] + (["--force"] if force else [])
+    p = _cli(args)
+    if p.returncode != 0:
+        raise RuntimeError((p.stderr or p.stdout)[-1200:])
+    return (p.stdout or "").strip() or (p.stderr or "").strip()
+
+
+@server.tool()
 def narrative_prompt(report_dir: str | None = None) -> str:
     """The prompt for writing the plain-language narrative that goes at the top of the report. Follow it exactly,
     then pass your text to set_narrative."""
