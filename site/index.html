@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>gnomancer · your DNA, decoded on your own machine</title>
+<meta name="description" content="gnomancer turns an AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA, LivingDNA or VCF export into a readable report: quality, haplogroups, traits, ClinVar, pharmacogenomics. Open source, runs locally, nothing uploaded.">
+<meta property="og:title" content="gnomancer · your DNA, decoded on your own machine">
+<meta property="og:description" content="Open-source raw DNA analysis that runs on your computer. One command, one readable report, nothing uploaded.">
+<meta property="og:image" content="https://gnomancer.com/assets/demo-report.png">
+<meta property="og:url" content="https://gnomancer.com/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#2a78d6;--accent-2:#1c5cab;--accent-soft:#e3eefb;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#3f8de8;--accent-2:#9ec5f4;--accent-soft:#0f2f55}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:5}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}.brand svg{width:26px;height:26px;color:var(--accent)}
+nav a{margin-left:22px;font-size:14.5px;color:var(--ink-2)}nav a:hover{color:var(--ink);text-decoration:none}
+.btn{display:inline-block;padding:10px 16px;border-radius:10px;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn:hover{text-decoration:none;border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.hero{padding:84px 0 44px}.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.06;letter-spacing:-.025em;margin:0 0 18px;max-width:17ch}
+.hero p.lead{font-size:19px;color:var(--ink-2);max-width:56ch;margin:0 0 28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;overflow-x:auto;font:14px/1.6 var(--mono);margin:0}
+pre .c{color:var(--ink-3)}pre .p{color:var(--accent-2)}
+.shot{margin:44px 0 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)}.shot img{display:block;width:100%;height:auto}
+.caption{font-size:13.5px;color:var(--ink-3);margin:10px 2px 0}
+section{padding:56px 0;scroll-margin-top:70px}section h2{font-size:30px;letter-spacing:-.02em;margin:0 0 8px}section p.sub{color:var(--ink-2);font-size:17px;margin:0 0 26px;max-width:62ch}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 20px 18px}.card h3{margin:0 0 6px;font-size:16.5px}.card p{margin:0;color:var(--ink-2);font-size:14.5px}
+.card .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent-2);font-weight:700;font-size:14px;margin-bottom:10px}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:13.5px;color:var(--ink-2);margin:0 6px 8px 0;background:var(--surface)}
+.privacy{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:var(--r);padding:22px 24px}
+.privacy h2{font-size:24px}.privacy ul{margin:10px 0 0;padding-left:20px;color:var(--ink-2)}.privacy li{margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}th,td{text-align:left;padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}th{border-top:0;color:var(--ink-2);font-weight:600;font-size:13.5px}
+.tablewrap{overflow-x:auto;border-radius:var(--r)}
+.disclaimer{font-size:14px;color:var(--ink-2);border:1px dashed var(--line);border-radius:var(--r);padding:16px 18px}
+footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);font-size:14px}footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
+@media (max-width:640px){nav a{margin-left:14px}nav a.hide{display:none}.hero{padding:56px 0 32px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="brand" href="/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10c14 8 14 36 28 44M46 10C32 18 32 46 18 54"/><path d="M22 20h20M19 32h26M22 44h20" opacity=".55"/></svg>gnomancer</a>
+  <nav><a href="#what">What you get</a><a href="#how" class="hide">How it works</a><a href="#privacy">Privacy</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav>
+</div></header>
+
+<main class="wrap">
+<section class="hero">
+  <h1>Your DNA, decoded on your own machine.</h1>
+  <p class="lead">gnomancer turns the raw file you already downloaded from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA into one readable report: lineages, traits, carrier status, drug metabolism, and a plain-language summary. Open source. Runs locally. Nothing is uploaded.</p>
+  <div class="cta"><a class="btn primary" href="https://github.com/codebase/gnomancer">Get it on GitHub</a><a class="btn" href="#how">See how it works</a></div>
+<pre><span class="c"># macOS / Linux, Python 3.10+, Java 11+ for the haplogroup tools</span>
+<span class="p">$</span> git clone https://github.com/codebase/gnomancer && cd gnomancer
+<span class="p">$</span> ./setup.sh
+<span class="p">$</span> .venv/bin/gnomancer ~/Downloads/AncestryDNA.zip
+<span class="p">$</span> open AncestryDNA_analysis/REPORT.html</pre>
+  <div class="shot"><img src="/assets/demo-report.png" alt="A gnomancer report: overview tiles for vendor, sites, sex, Y haplogroup, mtDNA haplogroup and blood group, with quality checks" width="1440" height="769"></div>
+  <p class="caption">The report, generated from a synthetic demo file. Real reports open with an at-a-glance digest and an optional narrative written by your own AI assistant.</p>
+</section>
+
+<section id="what">
+  <h2>What you get</h2>
+  <p class="sub">One self-contained HTML report (plus Markdown, TSV and JSON), built from the tools researchers actually use.</p>
+  <div class="grid">
+    <div class="card"><h3>Lineages</h3><p>Y haplogroup from yhaplo with a second opinion from Yleaf on current YFull, FTDNA and ISOGG trees; mitochondrial haplogroup from Haplogrep3. Each comes with population context.</p></div>
+    <div class="card"><h3>Traits and ancestry markers</h3><p>A curated panel of about 110 well-replicated sites: eye and hair pigmentation, lactase persistence, caffeine and alcohol metabolism, bitter taste, blood group, and more.</p></div>
+    <div class="card"><h3>Health and carrier sites</h3><p>APOE, Factor V Leiden, hemochromatosis, celiac HLA tags, macular degeneration, type 2 diabetes and the rare pathogenic sites that happen to be on consumer chips. Collapsed by default, for people who would rather not look.</p></div>
+    <div class="card"><h3>ClinVar scan</h3><p>Every typed site checked against ClinVar. Each hit is scored for plausibility, because arrays are unreliable at rare sites and a homozygous rare "pathogenic" call is usually an artifact.</p></div>
+    <div class="card"><h3>Pharmacogenomics</h3><p>PharmCAT star-allele diplotypes and CPIC phenotypes for 18 genes, with the drugs each one matters for and an honest per-gene coverage figure.</p></div>
+    <div class="card"><h3>Plain language</h3><p>An automatic at-a-glance digest, and a prompt you can hand to any AI assistant to write a narrative summary. Or let Claude write it with one flag.</p></div>
+  </div>
+</section>
+
+<section id="how">
+  <h2>How it works</h2>
+  <p class="sub">Three steps, all on your computer.</p>
+  <div class="grid">
+    <div class="card"><span class="n">1</span><h3>Download your raw data</h3><p>Every major vendor lets you export it from your account settings. gnomancer reads the zip or the text file directly and detects the vendor and genome build.</p></div>
+    <div class="card"><span class="n">2</span><h3>Run one command</h3><p><code>setup.sh</code> installs the open-source tools and public reference files once. Then <code>gnomancer yourfile.zip</code> does everything else in about a minute.</p></div>
+    <div class="card"><span class="n">3</span><h3>Read the report</h3><p>Open <code>REPORT.html</code>. Light and dark, printable, searchable, with the technical detail one scroll below the summary.</p></div>
+  </div>
+  <p class="sub" style="margin-top:26px">Reads <span class="pill">AncestryDNA</span><span class="pill">23andMe</span><span class="pill">MyHeritage</span><span class="pill">FamilyTreeDNA</span><span class="pill">LivingDNA</span><span class="pill">Genes for Good</span><span class="pill">tellmeGen</span><span class="pill">VCF</span> and remaps older builds to GRCh37.</p>
+</section>
+
+<section id="privacy">
+  <div class="privacy">
+    <h2>Privacy, stated plainly</h2>
+    <p class="sub" style="margin-bottom:0">Your genotype file never leaves your computer. There is no account, no upload, no telemetry.</p>
+    <ul>
+      <li>The only network traffic is the one-time download of public tools and reference data (yhaplo, Haplogrep3, PharmCAT, ClinVar, the rCRS mitochondrial sequence).</li>
+      <li>The optional <code>--ai</code> summary sends the structured result tables, never the raw file, to the Anthropic API, and only when you ask for it.</li>
+      <li>This website is static. It sets no cookies and runs no analytics.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="tools">
+  <h2>Under the hood</h2>
+  <p class="sub">gnomancer is glue around tools that have been validated by the people who built them. Every one is open source.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Tool</th><th>Contributes</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>snps</td><td>vendor detection, normalization, build remapping</td><td><a href="https://github.com/apriha/snps">apriha/snps</a></td></tr>
+      <tr><td>yhaplo</td><td>Y haplogroup</td><td><a href="https://github.com/23andMe/yhaplo">23andMe/yhaplo</a></td></tr>
+      <tr><td>Yleaf</td><td>Y haplogroup on current trees</td><td><a href="https://github.com/genid/Yleaf">genid/Yleaf</a></td></tr>
+      <tr><td>Haplogrep3 + PhyloTree</td><td>mitochondrial haplogroup</td><td><a href="https://github.com/genepi/haplogrep3">genepi/haplogrep3</a></td></tr>
+      <tr><td>ClinVar</td><td>clinically classified variants</td><td><a href="https://www.ncbi.nlm.nih.gov/clinvar/">NCBI</a></td></tr>
+      <tr><td>PharmCAT</td><td>CPIC / PharmGKB star-allele calling</td><td><a href="https://github.com/PharmGKB/PharmCAT">PharmGKB/PharmCAT</a></td></tr>
+      <tr><td>ezancestry</td><td>1000 Genomes population estimate</td><td><a href="https://github.com/arvkevi/ezancestry">arvkevi/ezancestry</a></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="limits">
+  <div class="disclaimer"><strong>Not medical advice.</strong> A genotyping array reads a fixed set of common sites, about 0.02% of the genome. It cannot see rare variants, copy-number genes or full HLA types, and its calls at rare sites are wrong often enough that a published check found 40% of them did not confirm (Tandy-Connor et al., <em>Genetics in Medicine</em> 2018). gnomancer tells you what the chip says and how much to trust it. Anything that matters deserves a clinical-grade test and a conversation with a clinician or genetic counselor.</div>
+</section>
+</main>
+
+<footer><div class="wrap">
+  <span>gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · <a href="https://github.com/codebase/gnomancer/releases">releases</a> · <a href="https://github.com/codebase/gnomancer/blob/main/CONTRIBUTING.md">contribute</a></span>
+  <span>No cookies, no analytics, no uploads.</span>
+</div></footer>
+</body>
+</html>
