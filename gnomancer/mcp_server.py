@@ -33,7 +33,7 @@ Rules: the file never leaves the machine and you must not paste genotype rows an
 rare-site calls need clinical confirmation. Never diagnose. If the user has no file yet, read the
 gnomancer://guide/get-your-data resource."""
 
-server = MCPServer("gnomancer", version="0.3.2", instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
+server = MCPServer("gnomancer", version="0.4.0", instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
 _state: dict = {"report_dir": os.environ.get("GNOMANCER_REPORT"), "df_cache": {}}
 
 
