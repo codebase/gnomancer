@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 PY=${PYTHON:-python3}
 [ -d .venv ] || $PY -m venv .venv
 .venv/bin/pip install -q --upgrade pip
-.venv/bin/pip install -q -e . -r requirements.txt
+.venv/bin/pip install -q -e ".[mcp]" -r requirements.txt
 echo "python deps ok"
 
 # Haplogrep3 (mtDNA). The "linux" bundle is a jar + launcher and runs on macOS too.

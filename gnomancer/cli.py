@@ -41,6 +41,10 @@ def run_ezancestry(inp: Path, loaded) -> dict | None:
 
 
 def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ["serve"]:
+        from .mcp_server import main as serve
+        return serve()
     ap = argparse.ArgumentParser(prog="gnomancer", description="Analyze a consumer raw DNA file locally.")
     ap.add_argument("input", help="raw data file (.txt/.csv/.tsv/.vcf, optionally .zip/.gz)")
     ap.add_argument("--out", default=None, help="output directory (default: <input>_analysis)")
@@ -55,6 +59,7 @@ def main(argv=None):
     ap.add_argument("--ai", action="store_true", help="have Claude write the narrative summary (sends the structured results, not the raw file, to the Anthropic API; needs credentials)")
     ap.add_argument("--version", action="version", version=__version__)
     a = ap.parse_args(argv)
+    run_args = argv
 
     inp = Path(a.input)
     out = Path(a.out) if a.out else inp.with_name(inp.stem.replace(".", "_") + "_analysis")
@@ -129,7 +134,9 @@ def main(argv=None):
     extra = dict(clinvar=cv, clinvar_text=cv_text, pharmcat=pc, pharmcat_text=pc_text, glance=glance, narrative=narrative)
     rep = write(out / "REPORT.md", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, extra)
     html = write_html(out / "REPORT.html", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, input_name=inp.name, extra=extra)
-    json.dump(dict(input=str(inp), source=loaded.source, build=loaded.build, count=loaded.count, qc=qc,
+    json.dump(dict(input=str(inp.resolve()), args=[str(Path(x).resolve()) if Path(x).exists() else x for x in run_args],
+                   report_html=str((out / "REPORT.html").resolve()), report_md=str((out / "REPORT.md").resolve()), glance=glance,
+                   source=loaded.source, build=loaded.build, count=loaded.count, qc=qc,
                    roh_total_mb=float(roh.length_mb.sum()) if not roh.empty else 0.0, y=y, mt=mt,
                    combos=combo, ancestry=ancestry, notes=loaded.notes,
                    clinvar=dict(sites_in_clinvar=cv.get("sites_in_clinvar"), pathogenic_sites_typed=cv.get("pathogenic_sites_typed"),

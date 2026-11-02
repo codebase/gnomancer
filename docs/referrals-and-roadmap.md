@@ -40,7 +40,7 @@ Nobody needs a GitHub account to use gnomancer: the repo is public, releases are
 3. **Homebrew tap** (`brew install codebase/tap/gnomancer`): a formula that depends on python@3.12 and openjdk; solves the Java problem on macOS.
 4. **Native Windows**: PyInstaller build of the CLI plus bundled JRE, or a Tauri desktop app. The desktop app is the real answer for non-terminal users.
 5. **Claude skill / plugin** (done: `skills/gnomancer/SKILL.md`, `.claude-plugin/plugin.json`): any Claude Code or Claude Desktop user can say "analyze my DNA file" and the agent installs, runs, and summarizes. Submit to the Claude Code plugin marketplace and the Anthropic skills directory.
-6. **MCP server** (`gnomancer serve`, stdio): tools `analyze(path)`, `summary()`, `lookup(rsid)`, `section(name)`. Lets ChatGPT, Cursor, Claude Desktop and others drive it. Publish to the official MCP Registry (registry.modelcontextprotocol.io) and Smithery. Privacy note for the listing: runs locally; only what the assistant reads leaves the machine, same caveat as `--ai`. About a day of work.
+6. **MCP server** (done: `gnomancer serve`, `server.json`, `docs/mcp-registry.md`). Registry publication is blocked on PyPI (step 2).
 
 **Where people look (announce in this order):**
 - r/AncestryDNA, r/23andme, r/Genealogy, r/promethease, r/SNPedia: the "what can I do with my raw data" threads are weekly.

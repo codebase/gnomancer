@@ -17,7 +17,20 @@ open AncestryDNA_analysis/REPORT.html
 Not sure how to get the file? [gnomancer.com/get-your-data](https://gnomancer.com/get-your-data/) has the steps for every vendor.
 Full install notes, including Windows: [gnomancer.com/install](https://gnomancer.com/install/).
 
-Using Claude? The repo doubles as a Claude plugin: `skills/gnomancer/SKILL.md` teaches the agent to install, run and summarize.
+**Use it from your AI assistant.** gnomancer is also an MCP server, so Claude Desktop, Claude Code, Cursor and others can run it and answer questions about your report, all locally:
+
+```bash
+claude mcp add gnomancer -- ~/gnomancer/.venv/bin/gnomancer serve        # Claude Code
+```
+
+Claude Desktop (`claude_desktop_config.json`):
+```json
+{ "mcpServers": { "gnomancer": { "command": "/Users/you/gnomancer/.venv/bin/gnomancer", "args": ["serve"] } } }
+```
+
+Tools: `analyze`, `summary`, `section`, `lookup`, `narrative_prompt` / `set_narrative`, and (only on request) `clinvar_findings`,
+`pharmacogenomics`. The raw file never leaves the machine; only derived results reach the assistant. The repo also doubles
+as a Claude plugin (`skills/gnomancer/SKILL.md`).
 
 ![demo report](docs/demo-report.png)
 
@@ -82,6 +95,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the sourcing rules.
 
 Haplogroup context lives in `data/haplogroup_context.tsv`, matched by prefix so a call like `R-M269 / R1b1a2a1a2`
 shows the chain R → R1b → R-M269.
+
+## MCP server
+
+`gnomancer serve` speaks MCP over stdio. Registry manifest: `server.json`; publishing steps: `docs/mcp-registry.md`.
 
 ## Options
 

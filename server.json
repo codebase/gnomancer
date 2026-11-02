@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.codebase/gnomancer",
+  "description": "Analyze a consumer raw DNA file (AncestryDNA, 23andMe, MyHeritage, FTDNA, LivingDNA, VCF) locally: haplogroups, traits, ClinVar, pharmacogenomics, plain-language report. Nothing is uploaded.",
+  "title": "gnomancer",
+  "websiteUrl": "https://gnomancer.com",
+  "repository": { "url": "https://github.com/codebase/gnomancer", "source": "github" },
+  "version": "0.3.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "gnomancer",
+      "version": "0.3.0",
+      "transport": { "type": "stdio" },
+      "runtimeHint": "uvx",
+      "packageArguments": [ { "type": "positional", "value": "serve" } ]
+    }
+  ]
+}

@@ -15,6 +15,11 @@ user's machine. Your job is to run it, write the narrative summary it asks for, 
 - Do not read `clinvar-hits.tsv` or the health sections aloud unless the user asks; the report collapses them on purpose.
 - Say plainly that an array is probabilistic and rare-site calls need clinical confirmation. Never diagnose.
 
+## If the gnomancer MCP server is connected
+Prefer its tools: `analyze(path)`, then `narrative_prompt()` → write the narrative → `set_narrative(text)`, then `summary()`,
+`section(name)`, `lookup(rsid)`. Use `clinvar_findings()` / `pharmacogenomics()` only when asked about health or drugs.
+Otherwise follow the steps below with the CLI.
+
 ## Steps
 1. **Install if missing.** `command -v gnomancer || ls ~/gnomancer/.venv/bin/gnomancer`. If absent, run
    `curl -fsSL https://gnomancer.com/install.sh | bash` (macOS/Linux; Windows users need WSL, see
