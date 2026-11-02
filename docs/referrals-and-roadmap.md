@@ -60,16 +60,35 @@ Nobody needs a GitHub account to use gnomancer: the repo is public, releases are
 - House rule to post prominently: share haplogroups, traits and questions; never paste raw files, ClinVar rows or health tables. Genetic data posted publicly is public forever.
 - A self-hosted Discourse is the step after that, only if giscus is outgrown.
 
-## Value-add ideas, roughly in order of payoff ÷ effort
+## Roadmap (prioritized 2026-11-02)
 
-1. **Population frequencies on every panel row.** Embed 1000 Genomes / gnomAD allele frequencies per super-population in `markers.tsv`, so each row says "about 31% of Europeans share this genotype". No server, no user data, makes every row meaningful. One afternoon.
-2. **ClinVar reclassification watch.** `gnomancer watch` re-downloads ClinVar monthly and diffs classifications at the user's typed sites; emails/prints only what changed. Clinicians do this by hand; nobody offers it to consumers. Half a day.
-3. **Run in the browser (Pyodide/WebAssembly).** "Analyze without installing" on gnomancer.com, file never leaves the tab. The biggest adoption unlock and the only honest way to offer a paid tier later. One to two weeks; Java tools (Haplogrep3, PharmCAT) need WASM ports or a reduced browser mode.
-4. **MCP server for the report.** `gnomancer serve` exposes the results to Claude Desktop / any MCP client so people can ask "what does my report say about caffeine?" locally. Fits the AI-agent angle, small effort.
-5. **Family mode.** Two or more kits: shared segments via `apriha/lineage`, parent/child/sibling confirmation, which parent each lineage came from, inherited-together traits. Medium effort, high emotional value.
-6. **Printable pharmacogenomics wallet card.** One-page PDF with the PharmCAT table and "confirm clinically" footer, for the pharmacist. Small effort, very practical.
-7. **Privacy scrubber + vendor converter.** Strip health and carrier sites from a raw file before uploading to GEDmatch; convert between vendor formats (snps can). On-brand, unique.
-8. **Haplogroup story pages on the site.** One page per major Y/mt haplogroup from `haplogroup_context.tsv`, with a map. SEO, content, and the natural home for per-haplogroup discussion.
-9. **Shareable cards for non-sensitive results** (haplogroups, taste, earwax, caffeine) as PNGs for social. Growth loop with health kept out by design.
-10. **Polygenic risk scores** from PGS Catalog for a few well-validated traits, reported as percentiles against 1000 Genomes with the imputation caveat. Big "wow", larger effort, more medical-adjacent.
-11. **One-click desktop app** (Tauri wrapper around the CLI). Adoption for non-terminal users.
+Status key: ☐ not started · ◐ in progress · ☑ done
+
+### Make the report better (private by construction)
+1. ◐ **Population frequencies on every panel row.** "About 31% of Europeans share this genotype." 1000 Genomes super-population frequencies baked into `marker_frequencies.tsv`; genotype frequency under Hardy-Weinberg for the user's ancestry group (or EUR by default). Half a day.
+2. ◐ **ClinVar reclassification watch.** `gnomancer watch <report>` re-downloads ClinVar when NCBI publishes a new release, rescans the user's typed sites, and reports only what changed (new pathogenic hits, upgrades, downgrades). Snapshot stored with the report. Half a day.
+3. ☐ **Pharmacist wallet card.** One-page PDF of the PharmCAT table with the "confirm clinically" footer. An hour.
+4. ☐ **Family mode.** Two or more kits: relatedness confirmation, which parent gave which lineage, shared segments via `apriha/lineage`. A few days.
+5. ☐ **Polygenic risk scores** (PGS Catalog) for a few well-validated traits as percentiles vs 1000 Genomes, with the imputation caveat. A week; more medical-adjacent.
+
+### Reach more people
+6. ☐ **Run in the browser** (Pyodide/WebAssembly). "Analyze without installing" on gnomancer.com, file never leaves the tab. Biggest adoption unlock and the only honest base for a paid tier. One to two weeks; Java tools need a reduced browser mode.
+7. ☐ **Native Windows / desktop app** (Tauri wrapper, bundled JRE). A week.
+8. ☐ **Homebrew tap** (`brew install codebase/tap/gnomancer`) that pulls python and openjdk. An hour.
+10. ☐ **Haplogroup story pages** on the site, one per major lineage, with a map. SEO plus the natural home for community. A day.
+
+### Polish and trust
+11. ☐ **Checksum verification** for downloaded tools (SECURITY.md currently admits we don't). An hour.
+12. ☐ **Light-mode and print-to-PDF pass** on the report. An hour.
+13. ☐ **Walkthrough video** for the site and YouTube. Needs the maintainer on mic, or a script.
+
+### Done
+- ☑ Core pipeline, HTML/Markdown reports, at-a-glance digest, narrative slot (`--summary`, `--ai`)
+- ☑ ClinVar scan with plausibility scoring; PharmCAT; yhaplo + Yleaf; Haplogrep3; ezancestry
+- ☑ gnomancer.com (home, get-your-data, install, installer script), PyPI, MCP server + official registry, Glama, mcp.so and awesome-list submissions, Claude skill/plugin
+- ☑ Logo, brand accent, README rewrite
+
+### Waiting on the maintainer
+- Discord server (consumer forum) → invite link for the site footer
+- Affiliate sign-ups (FamilyTreeDNA via CJ, Sequencing.com via FlexOffers) if `/next-steps` should earn
+- ISOGG / SNPedia / DNA Painter accounts and the Reddit posts
