@@ -13,15 +13,17 @@ from pathlib import Path
 
 import pandas as pd
 
-REPO = Path(__file__).resolve().parent.parent
+from .paths import ancestry_bin
+
 TREES = ("yfull", "ftdna", "isogg")
 
 
 def _bin() -> str | None:
-    for c in (REPO / ".venv-ancestry" / "bin" / "Yleaf", Path(sys.executable).parent / "Yleaf"):
-        if c.exists():
-            return str(c)
-    return shutil.which("Yleaf")
+    c = ancestry_bin("Yleaf")
+    if c:
+        return str(c)
+    local = Path(sys.executable).parent / "Yleaf"
+    return str(local) if local.exists() else shutil.which("Yleaf")
 
 
 def write_plink(df: pd.DataFrame, prefix: Path, sample: str = "sample") -> int:
@@ -51,7 +53,7 @@ def run(df: pd.DataFrame, outdir: Path, sample: str = "sample") -> dict:
     res = dict(available=bool(_bin()), n_y_snps=0, trees={}, error=None)
     exe = _bin()
     if not exe:
-        res["error"] = "Yleaf not installed (optional; setup.sh installs it into .venv-ancestry when python3.11 exists)"
+        res["error"] = "Yleaf not installed (optional; `gnomancer setup` installs it when python3.11 exists)"
         return res
     ydir = (outdir / "yleaf").resolve()
     ydir.mkdir(parents=True, exist_ok=True)

@@ -3,7 +3,7 @@
 Thanks for helping. The two most valuable contributions are **marker rows** and **vendor fixtures**.
 
 ## Adding a marker
-Edit `data/markers.tsv`. Every row needs:
+Edit `gnomancer/data/markers.tsv`. Every row needs:
 - `ref` and `effect` on the **GRCh37 forward strand**. Check dbSNP (the "+" strand alleles for GRCh37) or SNPedia's
   orientation field. If the gene is on the minus strand, the literature allele is the complement of what goes here.
 - A source for the interpretation text: a replicated GWAS, a CPIC/PharmGKB guideline, ClinVar, or a review. Put it in `note` if it is not obvious.

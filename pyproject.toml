@@ -9,6 +9,8 @@ description = "Local, private deep dive into a consumer raw DNA file (AncestryDN
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
+keywords = ["dna", "genetics", "23andme", "ancestrydna", "haplogroup", "pharmacogenomics", "clinvar", "mcp"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Topic :: Scientific/Engineering :: Bio-Informatics"]
 dependencies = ["snps>=2.9", "pandas>=2.0", "numpy>=1.24"]
 
 [project.urls]
@@ -25,3 +27,6 @@ gnomancer-mcp = "gnomancer.mcp_server:main"
 
 [tool.setuptools]
 packages = ["gnomancer"]
+
+[tool.setuptools.package-data]
+gnomancer = ["data/*"]

@@ -9,9 +9,9 @@ from pathlib import Path
 
 import pandas as pd
 
-HERE = Path(__file__).resolve().parent
-REPO = HERE.parent
-RCRS = REPO / "data" / "rCRS_NC_012920.1.fasta"
+from .paths import DATA, tool
+
+RCRS = DATA / "rCRS_NC_012920.1.fasta"
 
 
 def _bin(name: str) -> str | None:
@@ -67,7 +67,7 @@ def _haplogrep() -> str | None:
     env = os.environ.get("HAPLOGREP3")
     if env and Path(env).exists():
         return env
-    cand = REPO / "tools" / "haplogrep3" / "haplogrep3"
+    cand = tool("haplogrep3", "haplogrep3")
     if cand.exists():
         return str(cand)
     return shutil.which("haplogrep3")
@@ -110,7 +110,7 @@ def call_mt(df: pd.DataFrame, outdir: Path, build_original: int, sample: str = "
     res["diffs"], res["indels"] = diffs, indels
     exe = _haplogrep()
     if not exe:
-        res["error"] = "haplogrep3 not found; run setup.sh or set HAPLOGREP3"
+        res["error"] = "haplogrep3 not found; run `gnomancer setup` or set HAPLOGREP3"
         return res
     mdir = (outdir / "haplogrep3").resolve()
     mdir.mkdir(parents=True, exist_ok=True)

@@ -13,8 +13,9 @@ from pathlib import Path
 
 import pandas as pd
 
-REPO = Path(__file__).resolve().parent.parent
-DEFAULT_VCF = REPO / "tools" / "clinvar" / "clinvar_GRCh37.vcf.gz"
+from .paths import tool
+
+DEFAULT_VCF = tool("clinvar", "clinvar_GRCh37.vcf.gz")
 PATHOGENIC = ("Pathogenic", "Likely_pathogenic")
 STAR = {"practice_guideline": 4, "reviewed_by_expert_panel": 3, "criteria_provided,_multiple_submitters,_no_conflicts": 2,
         "criteria_provided,_single_submitter": 1, "criteria_provided,_conflicting_classifications": 1,
@@ -46,7 +47,7 @@ def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
     """df: normalized SNP table (chrom, pos, genotype). Returns dict with hits table and coverage stats."""
     res = dict(available=vcf.exists(), vcf=str(vcf), sites_in_clinvar=0, pathogenic_sites_typed=0, hits=pd.DataFrame(), note="")
     if not vcf.exists():
-        res["note"] = "ClinVar VCF not found; run setup.sh (downloads ~200 MB from NCBI)."
+        res["note"] = "ClinVar VCF not found; run `gnomancer setup` (downloads ~200 MB from NCBI)."
         return res
     called = df[df.genotype.notna()]
     key = {}

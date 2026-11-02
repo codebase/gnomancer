@@ -12,8 +12,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-MARKERS = HERE.parent / "data" / "markers.tsv"
-RCRS = HERE.parent / "data" / "rCRS_NC_012920.1.fasta"
+MARKERS = HERE.parent / "gnomancer" / "data" / "markers.tsv"
+RCRS = HERE.parent / "gnomancer" / "data" / "rCRS_NC_012920.1.fasta"
 
 # Build-37 anchor SNPs used by `snps` to detect the assembly.
 ANCHORS = [("rs3094315", "1", 752566), ("rs3131972", "1", 752721), ("rs11928389", "3", 50927009),

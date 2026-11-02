@@ -37,7 +37,7 @@ def test_clinvar_scan_flags_and_filters(tmp_path):
 
 def test_clinvar_missing_file_is_graceful(tmp_path):
     r = clinvar.scan(pd.DataFrame(columns=["chrom", "pos", "genotype"]), tmp_path / "nope.vcf.gz")
-    assert not r["available"] and "setup.sh" in clinvar.interpret(r)
+    assert not r["available"] and "gnomancer setup" in clinvar.interpret(r)
 
 
 def test_pharmcat_vcf_builder(tmp_path, monkeypatch):

@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def test_markers_table_is_well_formed():
-    rows = load_markers(ROOT / "data" / "markers.tsv")
+    rows = load_markers(ROOT / "gnomancer" / "data" / "markers.tsv")
     assert len(rows) > 50
     dup = [k for k, v in collections.Counter(r["rsid"] for r in rows).items() if v > 1]
     assert not dup, dup

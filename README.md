@@ -9,10 +9,13 @@ traits, carrier sites and pharmacogenomics, each with plain-language context and
 Nothing is uploaded. The only network traffic is the one-time download of public tools and reference files.
 
 ```bash
-curl -fsSL https://gnomancer.com/install.sh | bash     # macOS / Linux / Windows via WSL; or clone and run ./setup.sh
+pipx install gnomancer          # or: pip install gnomancer   (Python 3.10+; Java 11+ for haplogroups and PharmCAT)
+gnomancer setup                 # downloads the open-source tools and reference files once (~250 MB) into ~/.gnomancer
 gnomancer ~/Downloads/AncestryDNA.zip
 open AncestryDNA_analysis/REPORT.html
 ```
+
+No Python yet? `curl -fsSL https://gnomancer.com/install.sh | bash` does all of it on macOS/Linux/WSL.
 
 Not sure how to get the file? [gnomancer.com/get-your-data](https://gnomancer.com/get-your-data/) has the steps for every vendor.
 Full install notes, including Windows: [gnomancer.com/install](https://gnomancer.com/install/).
@@ -83,7 +86,7 @@ normalizes everything. Quirks that are handled:
 
 ## The marker panel
 
-`data/markers.tsv` is a plain TSV anyone can extend:
+`gnomancer/data/markers.tsv` is a plain TSV anyone can extend:
 
 ```
 rsid  category  gene  label  ref  effect  interp0  interp1  interp2  note
@@ -93,7 +96,7 @@ rsid  category  gene  label  ref  effect  interp0  interp1  interp2  note
 `interp0/1/2` is shown for 0/1/2 copies. Categories: `ancestry`, `trait`, `health`, `carrier`, `pgx`.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the sourcing rules.
 
-Haplogroup context lives in `data/haplogroup_context.tsv`, matched by prefix so a call like `R-M269 / R1b1a2a1a2`
+Haplogroup context lives in `gnomancer/data/haplogroup_context.tsv`, matched by prefix so a call like `R-M269 / R1b1a2a1a2`
 shows the chain R → R1b → R-M269.
 
 ## MCP server
@@ -160,8 +163,9 @@ Deploy with `npx wrangler deploy` (Node 22+, `wrangler login` once). It is stati
 ## Development
 
 ```bash
-.venv/bin/pip install -e ".[dev]"
+./setup.sh            # venv, editable install, tools
 .venv/bin/pytest
+python -m build       # sdist + wheel; releases publish to PyPI from GitHub Actions (trusted publishing)
 ```
 
 CI runs the tests and builds a demo report on every push. Real raw-data files and `*_analysis/` folders are
@@ -177,3 +181,6 @@ Web (uploads your data): GEDmatch, James Lick's mthap, Morley's Y-SNP predictor,
 
 MIT. Haplogroup tools and references have their own licenses: yhaplo (23andMe), Haplogrep3 (GENEPI Innsbruck),
 PhyloTree, ISOGG.
+
+<!-- registry ownership proof -->
+mcp-name: io.github.codebase/gnomancer

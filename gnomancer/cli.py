@@ -19,7 +19,7 @@ from . import yleaf as yleaf_mod
 from . import summary as summary_mod
 from .report_html import write_html
 
-REPO = Path(__file__).resolve().parent.parent
+from .paths import DATA, ancestry_python
 
 
 def run_ezancestry(inp: Path, loaded) -> dict | None:
@@ -28,8 +28,8 @@ def run_ezancestry(inp: Path, loaded) -> dict | None:
     import subprocess
     code = ("import json,sys\nfrom snps import SNPs\nr=SNPs(sys.argv[1]).predict_ancestry()\n"
             "print(json.dumps({k:v for k,v in r.items() if k!='ezancestry_df'}, default=str))")
-    venv_py = REPO / ".venv-ancestry" / "bin" / "python"
-    py = str(venv_py) if venv_py.exists() else sys.executable
+    venv_py = ancestry_python()
+    py = str(venv_py) if venv_py else sys.executable
     try:
         p = subprocess.run([py, "-c", code, str(inp)], capture_output=True, text=True, timeout=1800)
         if p.returncode != 0:
@@ -45,10 +45,13 @@ def main(argv=None):
     if argv[:1] == ["serve"]:
         from .mcp_server import main as serve
         return serve()
-    ap = argparse.ArgumentParser(prog="gnomancer", description="Analyze a consumer raw DNA file locally.")
+    if argv[:1] == ["setup"]:
+        from .setup_cmd import run as setup
+        return setup(argv[1:])
+    ap = argparse.ArgumentParser(prog="gnomancer", description="Analyze a consumer raw DNA file locally. Subcommands: `gnomancer setup` (download tools), `gnomancer serve` (MCP server).")
     ap.add_argument("input", help="raw data file (.txt/.csv/.tsv/.vcf, optionally .zip/.gz)")
     ap.add_argument("--out", default=None, help="output directory (default: <input>_analysis)")
-    ap.add_argument("--markers", default=str(REPO / "data" / "markers.tsv"), help="marker panel TSV")
+    ap.add_argument("--markers", default=str(DATA / "markers.tsv"), help="marker panel TSV")
     ap.add_argument("--no-y", action="store_true", help="skip Y haplogroup")
     ap.add_argument("--no-mt", action="store_true", help="skip mtDNA haplogroup")
     ap.add_argument("--ancestry", action="store_true", help="run ezancestry population prediction (uses .venv-ancestry if present)")

@@ -69,7 +69,7 @@ def test_reports_render(demo_dir, tmp_path):
     ct = chromosome_table(L.df)
     qc = summary(L.df, ct, L.sex)
     roh = find_roh(L.df)
-    panel = evaluate(L.df, load_markers(ROOT / "data" / "markers.tsv"))
+    panel = evaluate(L.df, load_markers(ROOT / "gnomancer" / "data" / "markers.tsv"))
     y, mt = dict(error="skipped"), dict(error="skipped")
     md = write(tmp_path / "r.md", L, qc, ct, roh, interpret(roh), panel, combos(L.df), y, mt, None)
     html = write_html(tmp_path / "r.html", L, qc, ct, roh, interpret(roh), panel, combos(L.df), y, mt, None, "demo")

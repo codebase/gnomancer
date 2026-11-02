@@ -4,7 +4,9 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-DATA = Path(__file__).resolve().parent.parent / "data" / "haplogroup_context.tsv"
+from .paths import DATA as _DATA
+
+DATA = _DATA / "haplogroup_context.tsv"
 
 
 def _rows():

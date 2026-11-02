@@ -13,9 +13,10 @@ from pathlib import Path
 
 import pandas as pd
 
-REPO = Path(__file__).resolve().parent.parent
-JAR = REPO / "tools" / "pharmcat" / "pharmcat.jar"
-POSITIONS = REPO / "tools" / "pharmcat" / "pharmcat_positions.vcf"
+from .paths import tool
+
+JAR = tool("pharmcat", "pharmcat.jar")
+POSITIONS = tool("pharmcat", "pharmcat_positions.vcf")
 COMP = {"A": "T", "T": "A", "C": "G", "G": "C"}
 
 
@@ -75,7 +76,7 @@ def build_vcf(df: pd.DataFrame, out: Path, sample: str = "sample") -> dict:
 def run(df: pd.DataFrame, outdir: Path, sample: str = "sample") -> dict:
     res = dict(available=JAR.exists() and POSITIONS.exists(), calls=pd.DataFrame(), stats={}, error=None, html=None)
     if not res["available"]:
-        res["error"] = "PharmCAT not installed; run setup.sh"
+        res["error"] = "PharmCAT not installed; run `gnomancer setup`"
         return res
     pdir = (outdir / "pharmcat").resolve()
     pdir.mkdir(parents=True, exist_ok=True)
