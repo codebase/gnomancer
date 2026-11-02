@@ -33,7 +33,7 @@ Rules: the file never leaves the machine and you must not paste genotype rows an
 rare-site calls need clinical confirmation. Never diagnose. If the user has no file yet, read the
 gnomancer://guide/get-your-data resource."""
 
-server = MCPServer("gnomancer", version="0.4.1", instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
+server = MCPServer("gnomancer", version="0.4.2", instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
 _state: dict = {"report_dir": os.environ.get("GNOMANCER_REPORT"), "df_cache": {}}
 
 
@@ -60,11 +60,14 @@ def _cli(args: list[str]) -> subprocess.CompletedProcess:
 @server.tool()
 def analyze(path: str, out_dir: str | None = None, ancestry: bool = False, fast: bool = False) -> dict:
     """Run gnomancer on a raw DNA file (AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA, LivingDNA, VCF; .zip OK).
-    Takes about a minute (longer with ancestry=True the first time). fast=True skips Yleaf, ClinVar and PharmCAT.
-    Returns the output directory, report paths and the at-a-glance digest. The file never leaves this machine."""
+    Takes about a minute; the very first run also downloads ~250 MB of open-source tools and references (a few
+    minutes), automatically. fast=True skips Yleaf, ClinVar and PharmCAT. Returns the output directory, report paths
+    and the at-a-glance digest. The file never leaves this machine."""
     inp = Path(path).expanduser()
     if not inp.exists():
         raise ValueError(f"file not found: {inp}")
+    from .setup_cmd import tools_present
+    first_run = not any(tools_present().values())
     out = Path(out_dir).expanduser() if out_dir else inp.with_name(inp.stem.replace(".", "_") + "_analysis")
     args = [str(inp), "--out", str(out)]
     if ancestry:
@@ -76,9 +79,12 @@ def analyze(path: str, out_dir: str | None = None, ancestry: bool = False, fast:
         raise RuntimeError("gnomancer failed: " + (p.stderr or p.stdout)[-1500:])
     _state["report_dir"] = str(out)
     s = _summary(str(out))
+    notes = list(s.get("notes") or [])
+    if first_run:
+        notes.append("First run: the open-source tools and reference files (~250 MB) were downloaded to ~/.gnomancer before analysis. Later runs are faster.")
     return dict(report_dir=str(out), report_html=str(out / "REPORT.html"), report_md=str(out / "REPORT.md"),
                 source=s.get("source"), build=s.get("build"), sites=s.get("count"), sex=s.get("qc", {}).get("sex_inferred"),
-                at_a_glance=s.get("glance"), notes=s.get("notes"))
+                at_a_glance=s.get("glance"), notes=notes)
 
 
 @server.tool()

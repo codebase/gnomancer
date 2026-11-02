@@ -1,5 +1,7 @@
 # Command-line options
 
+On the very first run, `gnomancer FILE` downloads the open-source tools and reference files automatically (same as `gnomancer setup`); pass `--no-setup` to prevent that.
+
 ```
 gnomancer FILE [--out DIR] [--markers TSV] [--no-y] [--no-yleaf] [--no-mt] [--no-clinvar] [--no-pharmcat] [--ancestry]
           [--summary summary.md] [--ai]

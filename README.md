@@ -48,7 +48,7 @@ gnomancer is also an MCP server. Connect it and ask "what does my report say abo
 claude mcp add gnomancer -- uvx gnomancer serve          # Claude Code; Claude Desktop/Cursor: command "uvx", args ["gnomancer","serve"]
 ```
 
-Only derived results reach the assistant, never the raw file. Health tables are separate tools fetched only on request. The repo also works as a Claude plugin (`skills/gnomancer/SKILL.md`).
+Only derived results reach the assistant, never the raw file. The first `analyze` downloads the tools automatically. Health tables are separate tools fetched only on request. The repo also works as a Claude plugin (`skills/gnomancer/SKILL.md`).
 
 ## Privacy
 

@@ -72,8 +72,10 @@ Status key: ☐ not started · ◐ in progress · ☑ done
 5. ☐ **Polygenic risk scores** (PGS Catalog) for a few well-validated traits as percentiles vs 1000 Genomes, with the imputation caveat. A week; more medical-adjacent.
 
 ### Reach more people
-6. ☐ **Run in the browser** (Pyodide/WebAssembly). "Analyze without installing" on gnomancer.com, file never leaves the tab. Biggest adoption unlock and the only honest base for a paid tier. One to two weeks; Java tools need a reduced browser mode.
-7. ☐ **Native Windows / desktop app** (Tauri wrapper, bundled JRE). A week.
+
+The assistant path (MCP server + skill) is the front door; `analyze` now auto-runs setup on first use so there is no manual step at all.
+6. ⏸ **Run in the browser** (Pyodide). Parked 2026-11-02: a web page asking for a genome contradicts the product's one promise, however it works under the hood. Revisit only as a no-file-picker demo on the synthetic sample.
+7. ⏸ **Native desktop app**. Parked 2026-11-02: needs paid signing certificates (Apple $99/yr, Windows $200+/yr) to avoid scary warnings, and the audience it serves is reached better through the MCP server and skill, which auto-install. Revisit if non-assistant users ask for it.
 8. ☑ **Homebrew tap** (`brew install codebase/tap/gnomancer`; formula in github.com/codebase/homebrew-tap, bump url/sha256 per release) (`brew install codebase/tap/gnomancer`) that pulls python and openjdk. An hour.
 10. ☐ **Haplogroup story pages** on the site, one per major lineage, with a map. SEO plus the natural home for community. A day.
 

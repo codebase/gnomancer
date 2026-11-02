@@ -60,6 +60,7 @@ def main(argv=None):
     ap.add_argument("--no-mt", action="store_true", help="skip mtDNA haplogroup")
     ap.add_argument("--ancestry", action="store_true", help="run ezancestry population prediction (uses .venv-ancestry if present)")
     ap.add_argument("--no-clinvar", action="store_true", help="skip the ClinVar scan")
+    ap.add_argument("--no-setup", action="store_true", help="do not auto-download tools on first run")
     ap.add_argument("--no-yleaf", action="store_true", help="skip the Yleaf second-opinion Y call")
     ap.add_argument("--no-pharmcat", action="store_true", help="skip PharmCAT")
     ap.add_argument("--summary", default=None, help="Markdown/text file with a narrative summary (e.g. written by your AI agent) to show at the top of the report")
@@ -72,6 +73,9 @@ def main(argv=None):
     out = Path(a.out) if a.out else inp.with_name(inp.stem.replace(".", "_") + "_analysis")
     out.mkdir(parents=True, exist_ok=True)
 
+    if not a.no_setup:
+        from .setup_cmd import ensure_setup
+        ensure_setup()
     print(f"[1/6] loading {inp} ...", file=sys.stderr)
     loaded = load(str(inp))
     df = loaded.df

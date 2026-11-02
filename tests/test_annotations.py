@@ -123,3 +123,13 @@ def test_setup_verify_checksums(tmp_path):
     with pytest.raises(RuntimeError):
         verify(f, sha256="0" * 64)
     assert not f.exists()
+
+
+def test_auto_setup_only_when_nothing_present(monkeypatch):
+    from gnomancer import setup_cmd
+    calls = []
+    monkeypatch.setattr(setup_cmd, "run", lambda argv: calls.append(argv))
+    monkeypatch.setattr(setup_cmd, "tools_present", lambda: dict(haplogrep3=False, pharmcat=False, clinvar=False, yhaplo=False))
+    assert setup_cmd.ensure_setup(quiet=True) is True and calls == [["--no-ancestry"]]
+    monkeypatch.setattr(setup_cmd, "tools_present", lambda: dict(haplogrep3=True, pharmcat=False, clinvar=False, yhaplo=False))
+    assert setup_cmd.ensure_setup(quiet=True) is False and len(calls) == 1

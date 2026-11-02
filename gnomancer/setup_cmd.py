@@ -129,3 +129,27 @@ def run(argv=None) -> int:
             print("  skipped: python3.11 not on PATH (brew install python@3.11 to enable)")
     print("done. Run:  gnomancer /path/to/raw-file.zip")
     return 0
+
+
+def tools_present() -> dict:
+    """Which optional tools are installed (used to decide whether to auto-run setup)."""
+    from .paths import tool
+    out = dict(haplogrep3=tool("haplogrep3", "haplogrep3").exists(), pharmcat=tool("pharmcat", "pharmcat.jar").exists(),
+               clinvar=tool("clinvar", "clinvar_GRCh37.vcf.gz").exists())
+    try:
+        import yhaplo  # noqa: F401
+        out["yhaplo"] = True
+    except ImportError:
+        out["yhaplo"] = False
+    return out
+
+
+def ensure_setup(quiet: bool = False) -> bool:
+    """Run setup automatically when nothing has been fetched yet. Returns True if setup ran."""
+    present = tools_present()
+    if any(present.values()):
+        return False
+    if not quiet:
+        print("First run: downloading the open-source tools and reference files (~250 MB, once) ...", file=sys.stderr)
+    run(["--no-ancestry"])
+    return True
