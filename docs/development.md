@@ -21,3 +21,9 @@ Deploy with `npx wrangler deploy` (Node 22+, `wrangler login` once). It is stati
 3. `mcp-publisher login http --domain gnomancer.com --private-key <seed>` then `mcp-publisher publish` (key lives outside the repo).
 4. Homebrew tap: update `url` and `sha256` in `codebase/homebrew-tap/Formula/gnomancer.rb` from the PyPI sdist (`https://pypi.org/pypi/gnomancer/X.Y.Z/json`).
 5. If a pinned tool version changes, update `SHA256` in `gnomancer/setup_cmd.py`.
+
+## Homebrew tap caveat (Nov 2026)
+
+On macOS 26.2 Homebrew's Python bottles have a `pyexpat`/libexpat mismatch that breaks pip inside the build sandbox,
+so the tap formula cannot be verified there until Apple's next point release. The formula is correct as written
+(python@3.13, pip via the venv's python); the installer and pipx paths are the verified routes meanwhile.
