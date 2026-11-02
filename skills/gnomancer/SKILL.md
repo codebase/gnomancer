@@ -21,9 +21,9 @@ Prefer its tools: `analyze(path)`, then `narrative_prompt()` → write the narra
 Otherwise follow the steps below with the CLI.
 
 ## Steps
-1. **Install if missing.** `command -v gnomancer || ls ~/gnomancer/.venv/bin/gnomancer`. If absent, run
-   `curl -fsSL https://gnomancer.com/install.sh | bash` (macOS/Linux; Windows users need WSL, see
-   https://gnomancer.com/install/). Prerequisites: git, Python 3.10+, Java 11+ (Java only for haplogroups/PharmCAT).
+1. **Install if missing.** `command -v gnomancer || ls ~/.gnomancer/venv/bin/gnomancer`. If absent: `pipx install gnomancer && gnomancer setup`
+   (or `curl -fsSL https://gnomancer.com/install.sh | bash`; Windows needs WSL, see https://gnomancer.com/install/).
+   Prerequisites: Python 3.10+, Java 11+ (Java only for haplogroups/PharmCAT).
 2. **Find the file.** Ask for the path if not given. Zips are fine. If the user has no file yet, point them to
    https://gnomancer.com/get-your-data/ for per-vendor download steps.
 3. **Run it.** `gnomancer <file> --out <dir>` (add `--ancestry` if the user wants a population estimate; it is slow

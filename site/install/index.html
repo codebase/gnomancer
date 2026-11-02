@@ -26,17 +26,17 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 48px;colo
 <div class="card">
 <ol>
 <li>Open <strong>Terminal</strong> (press <code>⌘ Space</code>, type Terminal, press Enter).</li>
-<li>If you have never used Homebrew, install it from <a href="https://brew.sh">brew.sh</a> (one command on that page), then install the three prerequisites:
-<pre><code>brew install git python@3.12 openjdk</code></pre></li>
+<li>If you have never used Homebrew, install it from <a href="https://brew.sh">brew.sh</a> (one command on that page), then install the two prerequisites:
+<pre><code>brew install python@3.12 openjdk</code></pre></li>
 <li>Install gnomancer:
 <pre><code>curl -fsSL https://gnomancer.com/install.sh | bash</code></pre>
-This puts everything in a folder called <code>gnomancer</code> in your home directory and downloads the open-source tools and reference files it uses (about 250 MB, once). You can <a href="/install.sh">read the script</a> before running it.</li>
+This installs the <a href="https://pypi.org/project/gnomancer/">gnomancer package from PyPI</a> into a private folder (<code>~/.gnomancer</code>) and downloads the open-source tools and reference files it uses (about 250 MB, once). You can <a href="/install.sh">read the script</a> before running it. Already comfortable with Python? <code>pipx install gnomancer && gnomancer setup</code> is the same thing.</li>
 </ol></div>
 
 <h2 id="linux">Linux</h2>
 <div class="card"><ol>
 <li>Install the prerequisites with your package manager. Debian or Ubuntu:
-<pre><code>sudo apt install git python3 python3-venv default-jre</code></pre>Fedora: <code>sudo dnf install git python3 java-21-openjdk</code></li>
+<pre><code>sudo apt install python3 python3-venv default-jre</code></pre>Fedora: <code>sudo dnf install python3 java-21-openjdk</code></li>
 <li>Then:
 <pre><code>curl -fsSL https://gnomancer.com/install.sh | bash</code></pre></li>
 </ol></div>
@@ -47,18 +47,18 @@ This puts everything in a folder called <code>gnomancer</code> in your home dire
 <ol>
 <li>Open <strong>PowerShell</strong> as administrator and run <code>wsl --install</code>. Restart when asked and set a username and password for Ubuntu when it opens.</li>
 <li>In the Ubuntu window, install the prerequisites and gnomancer:
-<pre><code>sudo apt update && sudo apt install -y git python3 python3-venv default-jre
+<pre><code>sudo apt update && sudo apt install -y python3 python3-venv default-jre
 curl -fsSL https://gnomancer.com/install.sh | bash</code></pre></li>
 <li>Your Windows files are visible inside Ubuntu under <code>/mnt/c/</code>, so a file in your Downloads folder is at <code>/mnt/c/Users/YourName/Downloads/</code>.</li>
 </ol>
-<div class="note">A native Windows installer is on the roadmap. If you are comfortable with Python on Windows already, <code>pip install git+https://github.com/codebase/gnomancer</code> works too, without the Java-based haplogroup and PharmCAT steps.</div></div>
+<div class="note">A native Windows installer is on the roadmap. If you are comfortable with Python on Windows already, <code>pip install gnomancer</code> then <code>gnomancer setup</code> works too; install a Java runtime for the haplogroup and PharmCAT steps.</div></div>
 
 <h2 id="run">Run it</h2>
 <div class="card">
 <p>First <a href="/get-your-data/">download your raw data file</a> from your testing company. Then:</p>
 <pre><code>gnomancer ~/Downloads/dna-data-2026-11-02.zip</code></pre>
 <p>It takes about a minute. The report appears in a new folder next to your file; open <code>REPORT.html</code> in any browser. Add <code>--ancestry</code> for a population estimate (slower the first time, it downloads reference models) and <code>--summary summary.md</code> to embed a narrative written by your AI assistant (the run writes a ready-made prompt for it as <code>summary-prompt.md</code>).</p>
-<p>If <code>gnomancer</code> is not found, use the full path: <code>~/gnomancer/.venv/bin/gnomancer</code>.</p></div>
+<p>If <code>gnomancer</code> is not found, use the full path: <code>~/.gnomancer/venv/bin/gnomancer</code>.</p></div>
 
 <h2 id="trouble">Trouble?</h2>
 <div class="card"><ul>
