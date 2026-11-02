@@ -312,6 +312,10 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
     calls = pc.get("calls")
     H.append('<section id="pharmcat"><h2>PharmCAT pharmacogenomics</h2><p class="lead">PharmCAT (PharmGKB) assigns star-allele diplotypes and CPIC phenotypes per gene from the sites the chip typed. It is the same engine used in clinical pipelines, but here it sees only a fraction of each gene\'s defining positions.</p>')
     H.append(f'<div class="card">{e(extra.get("pharmcat_text", "not run"))}</div>')
+    card = extra.get("card") or {}
+    if card.get("rows"):
+        link = Path(card["pdf"] or card["html"]).name
+        H.append(f'<p class="caption"><a class="btn" href="{e(link)}">Open the one-page card for your pharmacist</a> (same table, printable; "confirm clinically" footer included)</p>')
     if calls is not None and not calls.empty:
         from .summary import PGX_DRUGS
         H.append('<div class="tablewrap"><table><thead><tr><th>Gene</th><th>Diplotype</th><th>Phenotype</th><th>Drugs it matters for</th><th>Positions typed</th><th>Coverage</th></tr></thead><tbody>')

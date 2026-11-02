@@ -128,6 +128,9 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
     pc = extra.get("pharmcat") or {}
     L.append("\n## 10. PharmCAT pharmacogenomics\n")
     L.append(extra.get("pharmcat_text", "not run"))
+    card = extra.get("card") or {}
+    if card.get("rows"):
+        L.append(f"\nOne-page card for a pharmacist: `{Path(card['pdf'] or card['html']).name}`")
     calls = pc.get("calls")
     if calls is not None and not calls.empty:
         from .summary import PGX_DRUGS

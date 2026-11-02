@@ -17,6 +17,7 @@ from . import clinvar as clinvar_mod
 from . import pharmcat as pharmcat_mod
 from . import yleaf as yleaf_mod
 from . import summary as summary_mod
+from . import pgxcard
 from .report_html import write_html
 
 from .paths import DATA, ancestry_python
@@ -122,6 +123,7 @@ def main(argv=None):
         if pc.get("calls") is not None and not pc["calls"].empty:
             pc["calls"].to_csv(out / "pharmcat-calls.tsv", sep="\t", index=False)
     pc_text = pharmcat_mod.interpret(pc) if not a.no_pharmcat else pc["error"]
+    card = pgxcard.write(out, pc, panel, loaded.source, inp.name)
     ancestry = None
     if a.ancestry:
         print("[8/8] ancestry prediction (ezancestry) ...", file=sys.stderr)
@@ -141,7 +143,7 @@ def main(argv=None):
         except Exception as e:  # noqa: BLE001
             loaded.notes.append(f"AI summary failed: {e}")
     pop = (ancestry or {}).get("superpopulation_code") or "EUR"
-    extra = dict(clinvar=cv, clinvar_text=cv_text, pharmcat=pc, pharmcat_text=pc_text, glance=glance, narrative=narrative, pop=pop)
+    extra = dict(clinvar=cv, clinvar_text=cv_text, pharmcat=pc, pharmcat_text=pc_text, glance=glance, narrative=narrative, pop=pop, card=card)
     rep = write(out / "REPORT.md", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, extra)
     html = write_html(out / "REPORT.html", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, input_name=inp.name, extra=extra)
     json.dump(dict(input=str(inp.resolve()), args=[str(Path(x).resolve()) if Path(x).exists() else x for x in run_args],
@@ -154,7 +156,7 @@ def main(argv=None):
                    pharmcat=dict(stats={k: v for k, v in pc.get("stats", {}).items() if k != "genes"}, error=pc.get("error"),
                                  calls=(pc["calls"].to_dict("records") if pc.get("calls") is not None and not pc["calls"].empty else []))),
               open(out / "summary.json", "w"), indent=1, default=str)
-    print(f"\nReport: {html}\n        {rep}", file=sys.stderr)
+    print(f"\nReport: {html}\n        {rep}" + (f"\nPGx card: {card['pdf'] or card['html']}" if card.get("rows") else ""), file=sys.stderr)
     if y.get("haplogroup"):
         print(f"Y: {y['haplogroup']}   ", end="", file=sys.stderr)
     if mt.get("haplogroup"):

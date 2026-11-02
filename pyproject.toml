@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gnomancer"
-version = "0.4.0"
+version = "0.4.1"
 description = "Local, private deep dive into a consumer raw DNA file (AncestryDNA, 23andMe, MyHeritage, FTDNA, LivingDNA, VCF): QC, haplogroups, traits, pharmacogenomics, one HTML report."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 keywords = ["dna", "genetics", "23andme", "ancestrydna", "haplogroup", "pharmacogenomics", "clinvar", "mcp"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Topic :: Scientific/Engineering :: Bio-Informatics"]
-dependencies = ["snps>=2.9", "pandas>=2.0", "numpy>=1.24"]
+dependencies = ["snps>=2.9", "pandas>=2.0", "numpy>=1.24", "reportlab>=4"]
 
 [project.urls]
 Homepage = "https://github.com/codebase/gnomancer"

@@ -90,3 +90,23 @@ def test_watch_diff_and_render():
     assert "Newly pathogenic" in text and "Downgraded" in text and "rs5" in text and "confirm clinically" in text
     assert "No change" not in text
     assert "No change" in watch.render(watch.diff(new, new), "a", "a")
+
+
+def test_pgx_card(tmp_path):
+    from gnomancer import pgxcard
+    calls = pd.DataFrame([dict(gene="CYP2C19", diplotype="*1/*2", phenotype="Intermediate Metabolizer", missing_positions=True),
+                          dict(gene="CYP2C9", diplotype="*1/*1", phenotype="Normal Metabolizer /", missing_positions=False)])
+    panel = pd.DataFrame([dict(category="health", gene="F5", genotype="CC", interpretation="negative"),
+                          dict(category="pgx", gene="HCP5", genotype="TT", interpretation="negative")])
+    r = pgxcard.write(tmp_path, dict(calls=calls), panel, "AncestryDNA", "demo.zip")
+    assert r["rows"] == 4 and Path(r["html"]).exists() and r["pdf"] and Path(r["pdf"]).stat().st_size > 1000
+    t = Path(r["html"]).read_text()
+    assert "clopidogrel" in t and "Factor V Leiden" in t and "Normal Metabolizer</td>" in t and "provisional" in t
+
+
+def test_pgx_card_tidies_alternatives():
+    from gnomancer.pgxcard import _tidy_result, _tidy_pheno
+    assert _tidy_result("*1/*5 OR *1/*15 OR *1/*40 OR *1/*45 OR *5/*45") == "*1/*5 or *1/*15 or *1/*40 (+2 more possible)"
+    assert _tidy_result("*1/*1") == "*1/*1"
+    assert _tidy_pheno("Decreased Function / Decreased Function / Poor Function / Poor Function") == "Decreased Function or Poor Function"
+    assert _tidy_pheno("Normal Metabolizer /") == "Normal Metabolizer" and _tidy_pheno("") == "—"

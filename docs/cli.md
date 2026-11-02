@@ -23,6 +23,10 @@ python examples/make_demo.py demo      # synthetic AncestryDNA / 23andMe / MyHer
 gnomancer demo/demo_AncestryDNA.txt
 ```
 
+## Pharmacist card
+
+Every run also writes `pgx-card.pdf` (and `pgx-card.html`): a one-page summary of the PharmCAT diplotypes, phenotypes and the drugs each gene matters for, with the clotting and abacavir single-site results and a footer that says it is array-based and provisional. Print it or show it on a phone; the report links to it from the PharmCAT section.
+
 ## `gnomancer watch REPORT_DIR`: ClinVar reclassification check
 
 ClinVar reclassifies variants every month. `watch` keeps a snapshot of every ClinVar-classified allele you carry
