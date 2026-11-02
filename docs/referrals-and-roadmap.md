@@ -89,6 +89,6 @@ Status key: ☐ not started · ◐ in progress · ☑ done
 - ☑ Logo, brand accent, README rewrite
 
 ### Waiting on the maintainer
-- Discord server (consumer forum) → invite link for the site footer
+- ☑ Discord server: https://discord.gg/aGjqzqErQH (Medium verification, Community mode, rules screening, 12 channels)
 - Affiliate sign-ups (FamilyTreeDNA via CJ, Sequencing.com via FlexOffers) if `/next-steps` should earn
 - ISOGG / SNPedia / DNA Painter accounts and the Reddit posts

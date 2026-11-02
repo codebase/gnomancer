@@ -8,7 +8,8 @@
 <a href="https://gnomancer.com/get-your-data/">get your raw data</a> ·
 <a href="https://gnomancer.com/install/">install</a> ·
 <a href="https://pypi.org/project/gnomancer/">PyPI</a> ·
-<a href="https://registry.modelcontextprotocol.io">MCP Registry</a></p>
+<a href="https://registry.modelcontextprotocol.io">MCP Registry</a> ·
+<a href="https://discord.gg/aGjqzqErQH">Discord</a></p>
 
 <p align="center">
 <a href="https://pypi.org/project/gnomancer/"><img src="https://img.shields.io/pypi/v/gnomancer?color=7c3aed" alt="PyPI"></a>
@@ -58,7 +59,7 @@ A genotyping array reads about 0.02% of the genome at pre-chosen sites, and its 
 
 ## More
 
-[CLI options](docs/cli.md) · [vendors and quirks](docs/vendors.md) · [the marker panel](docs/marker-panel.md) · [tools under the hood](docs/tools.md) · [development](docs/development.md) · [MCP registry](docs/mcp-registry.md) · [contributing](CONTRIBUTING.md)
+[Discord community](https://discord.gg/aGjqzqErQH) · [CLI options](docs/cli.md) · [vendors and quirks](docs/vendors.md) · [the marker panel](docs/marker-panel.md) · [tools under the hood](docs/tools.md) · [development](docs/development.md) · [MCP registry](docs/mcp-registry.md) · [contributing](CONTRIBUTING.md)
 
 MIT licensed. The bundled tools keep their own licenses.
 
