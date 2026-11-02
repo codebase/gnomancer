@@ -29,6 +29,17 @@ gnomancer demo/demo_AncestryDNA.txt
 
 Every run also writes `pgx-card.pdf` (and `pgx-card.html`): a one-page summary of the PharmCAT diplotypes, phenotypes and the drugs each gene matters for, with the clotting and abacavir single-site results and a footer that says it is array-based and provisional. Print it or show it on a phone; the report links to it from the PharmCAT section.
 
+## `gnomancer family KIT1 KIT2 [KIT3 ...]`: compare relatives
+
+Give it two or more raw files (any vendors). It writes `family-report.html` / `.md` with:
+
+- **Shared DNA per pair** (segments via [`apriha/lineage`](https://github.com/apriha/lineage) on the HapMap genetic map, 7 cM minimum) and a relationship estimate from total centimorgans. Parent/child and full siblings are called confidently; the overlapping classes (grandparent / half-sibling / aunt-uncle, first cousin / great-grandparent, ...) are listed as "one of these".
+- **Shared lineages**: same mtDNA haplogroup means the same maternal line; same Y means the same paternal line.
+- **Panel sites side by side**, and for a parent-parent-child set, which parent each of the child's alleles came from where that is determinable.
+- **Mendelian-consistency check** for trios: well above 1% inconsistencies means a mislabeled kit.
+
+Options: `--names dad,mom,me` (labels in file order), `--out DIR`, `--no-haplogroups` (faster). First run downloads the HapMap map (~20 MB). Segment plots per pair land in `shared-dna/`. From an assistant: the MCP tool `family`.
+
 ## `gnomancer watch REPORT_DIR`: ClinVar reclassification check
 
 ClinVar reclassifies variants every month. `watch` keeps a snapshot of every ClinVar-classified allele you carry

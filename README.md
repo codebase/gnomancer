@@ -37,6 +37,7 @@ Open `AncestryDNA_analysis/REPORT.html`. macOS: `brew install codebase/tap/gnoma
 - **Lineages.** Y haplogroup (yhaplo, plus Yleaf on current YFull/FTDNA/ISOGG trees) and mtDNA haplogroup (Haplogrep3), each with population context.
 - **Traits and ancestry markers.** About 110 well-replicated sites: pigmentation, lactose, caffeine, bitter taste, blood group and more.
 - **Health, carefully.** Carrier sites, common risk variants, a ClinVar scan of every typed site with plausibility scoring, and PharmCAT pharmacogenomics. All collapsed by default so nobody sees a result they didn't ask for.
+- **Family mode.** `gnomancer family dad.zip mom.zip me.zip` shows shared DNA and the likely relationship for each pair, which lines you share, and which parent each of your alleles came from.
 - **Stays current.** `gnomancer watch` re-checks ClinVar each month and tells you only what was reclassified at sites you carry.
 - **Honest limits.** Every section says what the chip can and cannot tell you.
 

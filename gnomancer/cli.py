@@ -52,7 +52,10 @@ def main(argv=None):
     if argv[:1] == ["watch"]:
         from .watch import run as watch
         return watch(argv[1:])
-    ap = argparse.ArgumentParser(prog="gnomancer", description="Analyze a consumer raw DNA file locally. Subcommands: `gnomancer setup` (download tools), `gnomancer serve` (MCP server), `gnomancer watch REPORT_DIR` (ClinVar reclassification check).")
+    if argv[:1] == ["family"]:
+        from .family import run as family
+        return family(argv[1:])
+    ap = argparse.ArgumentParser(prog="gnomancer", description="Analyze a consumer raw DNA file locally. Subcommands: `gnomancer setup` (download tools), `gnomancer serve` (MCP server), `gnomancer watch REPORT_DIR` (ClinVar reclassification check), `gnomancer family KIT1 KIT2 ...` (compare relatives).")
     ap.add_argument("input", help="raw data file (.txt/.csv/.tsv/.vcf, optionally .zip/.gz)")
     ap.add_argument("--out", default=None, help="output directory (default: <input>_analysis)")
     ap.add_argument("--markers", default=str(DATA / "markers.tsv"), help="marker panel TSV")

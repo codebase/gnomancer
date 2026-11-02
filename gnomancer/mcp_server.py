@@ -33,7 +33,7 @@ Rules: the file never leaves the machine and you must not paste genotype rows an
 rare-site calls need clinical confirmation. Never diagnose. If the user has no file yet, read the
 gnomancer://guide/get-your-data resource."""
 
-server = MCPServer("gnomancer", version="0.4.2", instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
+server = MCPServer("gnomancer", version="0.5.0", instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
 _state: dict = {"report_dir": os.environ.get("GNOMANCER_REPORT"), "df_cache": {}}
 
 
@@ -167,6 +167,25 @@ def clinvar_watch(report_dir: str | None = None, force: bool = False) -> str:
     if p.returncode != 0:
         raise RuntimeError((p.stderr or p.stdout)[-1200:])
     return (p.stdout or "").strip() or (p.stderr or "").strip()
+
+
+@server.tool()
+def family(paths: list[str], names: list[str] | None = None, out_dir: str | None = None, haplogroups: bool = True) -> dict:
+    """Compare two or more relatives' raw DNA files: shared DNA per pair with a relationship estimate, shared maternal/
+    paternal lines, side-by-side panel genotypes and, for parent-parent-child sets, which parent each allele came from
+    plus a Mendelian-consistency check. Runs locally. Returns the pair table and report paths."""
+    ps = [Path(p).expanduser() for p in paths]
+    for p in ps:
+        if not p.exists():
+            raise ValueError(f"file not found: {p}")
+    out = Path(out_dir).expanduser() if out_dir else ps[0].with_name("family_analysis")
+    args = ["family", *map(str, ps), "--out", str(out)] + (["--names", ",".join(names)] if names else []) + ([] if haplogroups else ["--no-haplogroups"])
+    r = _cli(args)
+    if r.returncode != 0:
+        raise RuntimeError("gnomancer family failed: " + (r.stderr or r.stdout)[-1500:])
+    md = (out / "family-report.md").read_text()
+    table = md.split("## Who shares what", 1)[1].split("\n\n", 2)[1] if "## Who shares what" in md else ""
+    return dict(report_html=str(out / "family-report.html"), report_md=str(out / "family-report.md"), pairs=table)
 
 
 @server.tool()

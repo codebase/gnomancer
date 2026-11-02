@@ -17,7 +17,7 @@ user's machine. Your job is to run it, write the narrative summary it asks for, 
 
 ## If the gnomancer MCP server is connected
 Prefer its tools: `analyze(path)`, then `narrative_prompt()` → write the narrative → `set_narrative(text)`, then `summary()`,
-`section(name)`, `lookup(rsid)`. Use `clinvar_findings()` / `pharmacogenomics()` only when asked about health or drugs; `clinvar_watch()` re-checks ClinVar for reclassifications when the user asks whether anything changed.
+`section(name)`, `lookup(rsid)`. For two or more relatives' files use `family(paths)`. Use `clinvar_findings()` / `pharmacogenomics()` only when asked about health or drugs; `clinvar_watch()` re-checks ClinVar for reclassifications when the user asks whether anything changed.
 Otherwise follow the steps below with the CLI.
 
 ## Steps

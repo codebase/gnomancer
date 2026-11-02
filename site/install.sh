@@ -8,12 +8,19 @@ say() { printf '\033[1m%s\033[0m\n' "$*"; }
 need() { command -v "$1" >/dev/null 2>&1; }
 
 say "gnomancer installer"
+# A usable Python: 3.10+, and able to load its XML module (Homebrew's Python bottles on macOS 26.2 cannot, which breaks pip).
+healthy() { "$1" -c 'import sys, platform, pyexpat; sys.exit(0 if sys.version_info >= (3,10) and platform.mac_ver()[0] != "" or sys.platform != "darwin" else 1)' 2>/dev/null; }
 PY=""
 for c in python3.13 python3.12 python3.11 python3.10 python3; do
-  if need "$c" && "$c" -c 'import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)' 2>/dev/null; then PY="$c"; break; fi
+  if need "$c" && healthy "$(command -v "$c")"; then PY="$(command -v "$c")"; break; fi
 done
+if [ -z "$PY" ] && need uv; then
+  say "No healthy system Python found; using uv to fetch a standalone CPython 3.13"
+  uv python install 3.13 -q && PY="$(uv python find 3.13)"
+fi
 if [ -z "$PY" ]; then
-  echo "Python 3.10 or newer is required."
+  echo "No working Python 3.10+ found (a Python that is installed but cannot import its XML module counts as not working)."
+  echo "Easiest fix on any platform: install uv (https://docs.astral.sh/uv/) and re-run this script; it will fetch a standalone Python."
   if [ "$(uname)" = "Darwin" ]; then echo "macOS: install Homebrew (https://brew.sh), then:  brew install python@3.12 openjdk";
   else echo "Debian/Ubuntu:  sudo apt install python3 python3-venv default-jre     Fedora:  sudo dnf install python3 java-21-openjdk"; fi
   exit 1

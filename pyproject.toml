@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gnomancer"
-version = "0.4.2"
+version = "0.5.0"
 description = "Local, private deep dive into a consumer raw DNA file (AncestryDNA, 23andMe, MyHeritage, FTDNA, LivingDNA, VCF): QC, haplogroups, traits, pharmacogenomics, one HTML report."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 keywords = ["dna", "genetics", "23andme", "ancestrydna", "haplogroup", "pharmacogenomics", "clinvar", "mcp"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Topic :: Scientific/Engineering :: Bio-Informatics"]
-dependencies = ["snps>=2.9", "pandas>=2.0", "numpy>=1.24", "reportlab>=4"]
+dependencies = ["snps>=2.9", "pandas>=2.0", "numpy>=1.24", "reportlab>=4", "lineage>=4.5"]
 
 [project.urls]
 Homepage = "https://github.com/codebase/gnomancer"
@@ -30,3 +30,6 @@ packages = ["gnomancer"]
 
 [tool.setuptools.package-data]
 gnomancer = ["data/*"]
+
+[tool.pytest.ini_options]
+markers = ["slow: needs network for the HapMap genetic map and takes ~30s"]
