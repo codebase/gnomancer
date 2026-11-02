@@ -9,7 +9,7 @@ from pathlib import Path
 import pandas as pd
 
 from . import __version__
-from .context import lookup
+from .context import lookup, page_url
 from .panel import CATEGORY_ORDER, POPS, POP_LABEL
 from .report import DISCLAIMER
 
@@ -242,7 +242,7 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
                 labels.append(t["haplogroup"].split("*")[0].split("(")[0])
             H.append("</dl>")
         for r in lookup("Y", *labels):
-            H.append(f'<li><b>{e(r["name"])}</b>{e(r["text"])}</li>')
+            H.append(f'<li><b>{e(r["name"])}</b>{e(r["text"])} <a href="{e(page_url("Y", r["name"]))}">More</a></li>')
         H.append("</ul>")
     else:
         H.append(f'<div class="caption">Not called: {e(y.get("error") or "unknown")}</div>')
@@ -250,7 +250,7 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
     if mt_ok:
         H.append(f'<div class="hg">{e(mt["haplogroup"])}<small>quality {mt["quality"]:.2f}</small></div><div class="caption">Haplogrep3, {mt["n_mt_snps"]} typed sites. Differences from rCRS: {e(", ".join(mt["diffs"]) or "none")}.</div><ul class="chain">')
         for r in lookup("MT", mt["haplogroup"]):
-            H.append(f'<li><b>{e(r["name"])}</b>{e(r["text"])}</li>')
+            H.append(f'<li><b>{e(r["name"])}</b>{e(r["text"])} <a href="{e(page_url("MT", r["name"]))}">More</a></li>')
         H.append("</ul>")
     else:
         H.append(f'<div class="caption">Not called: {e(mt.get("error") or "unknown")}</div>')

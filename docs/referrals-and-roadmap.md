@@ -77,7 +77,7 @@ The assistant path (MCP server + skill) is the front door; `analyze` now auto-ru
 6. ⏸ **Run in the browser** (Pyodide). Parked 2026-11-02: a web page asking for a genome contradicts the product's one promise, however it works under the hood. Revisit only as a no-file-picker demo on the synthetic sample.
 7. ⏸ **Native desktop app**. Parked 2026-11-02: needs paid signing certificates (Apple $99/yr, Windows $200+/yr) to avoid scary warnings, and the audience it serves is reached better through the MCP server and skill, which auto-install. Revisit if non-assistant users ask for it.
 8. ☑ **Homebrew tap** (`brew install codebase/tap/gnomancer`; formula in github.com/codebase/homebrew-tap, bump url/sha256 per release) (`brew install codebase/tap/gnomancer`) that pulls python and openjdk. An hour.
-10. ☐ **Haplogroup story pages** on the site, one per major lineage, with a map. SEO plus the natural home for community. A day.
+10. ☑ **Haplogroup story pages**: 67 pages under gnomancer.com/haplogroups/ generated from `haplogroup_context.tsv` by `site/build_haplogroups.py` (re-run after editing the table); report lineage cards link to them. No map yet.
 
 ### Polish and trust
 11. ☑ **Checksum verification** for downloaded tools (SECURITY.md currently admits we don't). An hour.

@@ -30,3 +30,15 @@ def lookup(kind: str, *labels: str) -> list[dict]:
             if lab and (lab == r["prefix"] or lab.startswith(r["prefix"])):
                 hits.setdefault(r["name"], r)  # one entry per lineage name, whichever prefix matched first
     return sorted(hits.values(), key=lambda r: -int(r.get("depth") or len(r["prefix"])))
+
+
+def slug(name: str) -> str:
+    """'E-M123 / E-M34' -> 'e-m123'; 'Haplogroup H1' -> 'h1'; 'Haplogrep3 + ...' style names are not expected."""
+    import re
+    n = name.split("/")[0].strip()
+    n = re.sub(r"^Haplogroup\s+", "", n, flags=re.I)
+    return re.sub(r"[^a-z0-9]+", "-", n.lower()).strip("-")
+
+
+def page_url(kind: str, name: str) -> str:
+    return f"https://gnomancer.com/haplogroups/{'y' if kind == 'Y' else 'mt'}/{slug(name)}/"

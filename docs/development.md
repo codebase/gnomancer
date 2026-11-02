@@ -14,6 +14,10 @@ git-ignored; never commit them.
 `site/` is the landing page at https://gnomancer.com, served as a Cloudflare Worker with static assets (`wrangler.toml`).
 Deploy with `npx wrangler deploy` (Node 22+, `wrangler login` once). It is static: no cookies, no analytics.
 
+## Haplogroup pages
+
+`site/haplogroups/` is generated: edit `gnomancer/data/haplogroup_context.tsv`, run `.venv/bin/python site/build_haplogroups.py`, then deploy. The script also rewrites `site/sitemap.xml`.
+
 ## Release checklist
 
 1. Bump the version in `pyproject.toml`, `gnomancer/__init__.py`, `gnomancer/mcp_server.py`, `server.json`, `.claude-plugin/plugin.json`.
