@@ -26,10 +26,10 @@ SENSITIVE = {"health", "carrier"}
 
 CSS = """
 :root{color-scheme:light;--bg:#fcfcfb;--surface:#ffffff;--line:#e6e4df;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#8a8781;
---accent:#2a78d6;--accent-soft:#cde2fb;--accent-ink:#184f95;--good:#0ca30c;--warn:#fab219;--serious:#ec835a;--critical:#d03b3b;
+--accent:#7c3aed;--accent-soft:#efe9fd;--accent-ink:#5b21b6;--good:#0ca30c;--warn:#fab219;--serious:#ec835a;--critical:#d03b3b;
 --radius:12px;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#141413;--surface:#1a1a19;--line:#2e2e2c;--ink:#f0efec;--ink-2:#c3c2b7;--ink-3:#8f8e86;--accent:#3987e5;--accent-soft:#0d366b;--accent-ink:#9ec5f4}}
-:root[data-theme=dark]{color-scheme:dark;--bg:#141413;--surface:#1a1a19;--line:#2e2e2c;--ink:#f0efec;--ink-2:#c3c2b7;--ink-3:#8f8e86;--accent:#3987e5;--accent-soft:#0d366b;--accent-ink:#9ec5f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#141413;--surface:#1a1a19;--line:#2e2e2c;--ink:#f0efec;--ink-2:#c3c2b7;--ink-3:#8f8e86;--accent:#a78bfa;--accent-soft:#2e1a5e;--accent-ink:#c4b5fd}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#141413;--surface:#1a1a19;--line:#2e2e2c;--ink:#f0efec;--ink-2:#c3c2b7;--ink-3:#8f8e86;--accent:#a78bfa;--accent-soft:#2e1a5e;--accent-ink:#c4b5fd}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
 .wrap{max-width:1040px;margin:0 auto;padding:0 16px 64px}
@@ -60,6 +60,7 @@ tr:first-child td{border-top:0}
 td.gt,td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .badge{display:inline-block;min-width:34px;text-align:center;padding:1px 8px;border-radius:999px;font-size:12.5px;font-family:var(--mono);border:1px solid var(--line);color:var(--ink-2)}
 .badge.n1{border-color:var(--accent);color:var(--accent-ink)}.badge.n2{background:var(--accent);border-color:var(--accent);color:#fff}
+.bar{fill:var(--accent)}
 .badge.na{color:var(--ink-3);border-style:dashed}
 .readings{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 .readings .card .value{font-size:18px;font-weight:600;margin:2px 0 4px}.readings .card .note{font-size:13.5px;color:var(--ink-2)}

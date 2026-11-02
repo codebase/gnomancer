@@ -37,8 +37,12 @@ def main(outdir: str, seed: int = 7, n_filler: int = 20000):
         if m["gene"].startswith("G6PD"):
             ch = "X"
         pos = rng.randint(1_000_000, int(CHR_LEN[ch]) - 1_000_000)
-        p_eff = 0.08 if m["category"] in ("carrier",) else 0.35
-        a = [m["effect"] if rng.random() < p_eff else m["ref"] for _ in range(2)]
+        # Realistic-looking profile: carrier sites almost always reference, health risk alleles at modest frequency.
+        p_eff = {"carrier": 0.01, "health": 0.22}.get(m["category"], 0.35)
+        if m["rsid"] in ("rs429358", "rs7412"):  # APOE e3/e3 for the demo
+            a = [m["ref"], m["ref"]]
+        else:
+            a = [m["effect"] if rng.random() < p_eff else m["ref"] for _ in range(2)]
         rows.append((m["rsid"], ch, pos, a[0], a[1]))
     for rsid, ch, pos in ANCHORS:
         rows.append((rsid, ch, pos, "A", "A"))

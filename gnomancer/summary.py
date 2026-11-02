@@ -76,14 +76,17 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
         for _, r in p[p.category.isin(["health", "carrier"])].iterrows():
             n = str(r.effect_count).split("/")[0]
             if n == "2" and r.category == "health":
-                notable.append(f"{r.gene} {r.label}: {r.interpretation}.")
+                if "protective" in str(r.interpretation).lower():
+                    reassuring.append(f"{r.gene}: {r.interpretation}.")
+                else:
+                    notable.append(f"{r.gene} {r.label}: {r.interpretation}.")
             elif n == "1" and r.category == "carrier":
                 notable.append(f"{r.gene} {r.label}: carrier ({r.interpretation}).")
             elif n == "2" and r.category == "carrier":
                 notable.append(f"{r.gene} {r.label}: two copies ({r.interpretation}).")
         hets = p[(p.category == "health") & (p.effect_count.astype(str).str.startswith("1")) & ~p.interpretation.str.contains("benign", case=False)]
         if not hets.empty:
-            notable.append("One copy of a common risk allele at: " + ", ".join(f"{r.gene} ({r.label})" for _, r in hets.iterrows()) + ". Population-average territory, listed for completeness.")
+            notable.append("One copy of a risk allele at: " + ", ".join(f"{r.gene} ({r.label})" for _, r in hets.iterrows()) + ". Population-average territory, listed for completeness.")
     if "APOE" in combo:
         v = combo["APOE"][0].split(" (")[0]
         (reassuring if v == "e3/e3" else notable).append(f"APOE {v}: {combo['APOE'][1]}.")
