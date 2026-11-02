@@ -7,7 +7,9 @@ from gnomancer.roh import find_roh, interpret
 from gnomancer.panel import evaluate, combos, load_markers
 from gnomancer.report import write
 from gnomancer.report_html import write_html
-from tests.conftest import ROOT
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
 
 
 @pytest.mark.parametrize("name,source", [("demo_AncestryDNA.txt", "AncestryDNA"), ("demo_23andMe.txt", "23andMe"),
