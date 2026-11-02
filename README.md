@@ -1,5 +1,7 @@
 # gnomancer
 
+**https://gnomancer.com**
+
 **A private, local deep dive into your raw DNA file.** One command turns an AncestryDNA, 23andMe, MyHeritage,
 FamilyTreeDNA, LivingDNA or VCF export into a readable HTML report: file quality, Y and mitochondrial lineages,
 traits, carrier sites and pharmacogenomics, each with plain-language context and honest limits.
@@ -128,6 +130,11 @@ pgsc_calc polygenic scores (arrays need imputation first), SNPedia (non-commerci
 - Y and mtDNA resolution stops at the few thousand / few hundred sites typed.
 - Admixture percentages need a reference panel; the vendor's own estimate is the easy source.
 - **This is not medical advice.** Confirm anything that matters with a clinical-grade test and a clinician or genetic counselor.
+
+## Website
+
+`site/` is the landing page at https://gnomancer.com, served as a Cloudflare Worker with static assets (`wrangler.toml`).
+Deploy with `npx wrangler deploy` (Node 22+, `wrangler login` once). It is static: no cookies, no analytics.
 
 ## Development
 
