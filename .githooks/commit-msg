@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Strip AI attribution trailers from commit messages. Enabled with: git config core.hooksPath .githooks
+f="$1"
+sed -i.bak -E '/^(Co-Authored-By|Co-authored-by): .*(Claude|Anthropic|noreply@anthropic\.com)/d; /Generated with \[?Claude Code/d; /^🤖 Generated with/d' "$f" && rm -f "$f.bak"
+# collapse trailing blank lines left behind
+printf '%s\n' "$(cat "$f")" > "$f"

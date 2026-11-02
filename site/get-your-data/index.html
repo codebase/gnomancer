@@ -1,15 +1,15 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>How to download your raw DNA data from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA and LivingDNA</title>
 <meta name="description" content="Step-by-step instructions for downloading the raw DNA data file from each major testing company, with the official help links, what the file looks like, and the gotchas (expiring links, waiting times, which file to pick).">
-<link rel="canonical" href="https://gnomancer.com/get-your-data/"><link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="canonical" href="https://gnomancer.com/get-your-data/"><link rel="icon" href="/assets/logo-64.png" type="image/png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:title" content="How to download your raw DNA data from every major testing company"><meta property="og:description" content="AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA, LivingDNA: the exact steps, the official links, and the gotchas."><meta property="og:url" content="https://gnomancer.com/get-your-data/">
 <style>
-:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#2a78d6;--accent-2:#1c5cab;--accent-soft:#e3eefb;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#3f8de8;--accent-2:#9ec5f4;--accent-soft:#0f2f55}}
+:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#7c3aed;--accent-2:#5b21b6;--accent-soft:#efe9fd;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#a78bfa;--accent-2:#c4b5fd;--accent-soft:#2e1a5e}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
 a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:860px;margin:0 auto;padding:0 20px}
 header{position:sticky;top:0;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:5}header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1080px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink)}.brand svg{width:26px;height:26px;color:var(--accent)}nav a{margin-left:22px;font-size:14.5px;color:var(--ink-2)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink)}.brand img{width:30px;height:30px;border-radius:50%}nav a{margin-left:22px;font-size:14.5px;color:var(--ink-2)}
 h1{font-size:clamp(30px,4.5vw,44px);letter-spacing:-.02em;line-height:1.1;margin:56px 0 12px}p.lead{font-size:18px;color:var(--ink-2);margin:0 0 28px;max-width:62ch}
 h2{font-size:24px;letter-spacing:-.015em;margin:44px 0 8px;scroll-margin-top:72px}h3{font-size:17px;margin:22px 0 6px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin:14px 0}
@@ -18,7 +18,7 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--r
 .note{border-left:4px solid var(--accent);background:var(--surface);border-radius:8px;padding:10px 14px;color:var(--ink-2);font-size:14.5px;margin:12px 0}
 .toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}.toc a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px;color:var(--ink-2)}.toc a:hover{text-decoration:none;border-color:var(--accent)}
 footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 48px;color:var(--ink-3);font-size:14px}
-</style></head><body><header><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10c14 8 14 36 28 44M46 10C32 18 32 46 18 54"/><path d="M22 20h20M19 32h26M22 44h20" opacity=".55"/></svg>gnomancer</a><nav><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header><main class="wrap">
+</style></head><body><header><div class="wrap"><a class="brand" href="/"><img src="/assets/logo-64.png" alt="" width="30" height="30">gnomancer</a><nav><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header><main class="wrap">
 <h1>Get your raw DNA data</h1>
 <p class="lead">Every major testing company lets you download the raw genotype file they built your results from. It is yours, it is free, and it is the only input gnomancer needs. Here is how to get it from each one, as of November 2026. Menus move; when they do, the official help link under each heading is the source of truth.</p>
 <div class="toc"><a href="#ancestry">AncestryDNA</a><a href="#23andme">23andMe</a><a href="#myheritage">MyHeritage</a><a href="#ftdna">FamilyTreeDNA</a><a href="#livingdna">LivingDNA</a><a href="#after">What to do with the file</a></div>

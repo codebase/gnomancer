@@ -25,5 +25,14 @@
         }
       ]
     }
+  ],
+  "icons": [
+    {
+      "src": "https://gnomancer.com/assets/logo-256.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "256x256"
+      ]
+    }
   ]
 }

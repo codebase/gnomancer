@@ -7,24 +7,24 @@
 <meta name="description" content="gnomancer turns an AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA, LivingDNA or VCF export into a readable report: quality, haplogroups, traits, ClinVar, pharmacogenomics. Open source, runs locally, nothing uploaded.">
 <meta property="og:title" content="gnomancer · your DNA, decoded on your own machine">
 <meta property="og:description" content="Open-source raw DNA analysis that runs on your computer. One command, one readable report, nothing uploaded.">
-<meta property="og:image" content="https://gnomancer.com/assets/demo-report.png">
+<meta property="og:image" content="https://gnomancer.com/assets/logo-512.png">
 <meta property="og:url" content="https://gnomancer.com/">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/logo-64.png" type="image/png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <style>
-:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#2a78d6;--accent-2:#1c5cab;--accent-soft:#e3eefb;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#3f8de8;--accent-2:#9ec5f4;--accent-soft:#0f2f55}}
+:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#7c3aed;--accent-2:#5b21b6;--accent-soft:#efe9fd;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#a78bfa;--accent-2:#c4b5fd;--accent-soft:#2e1a5e}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
 a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 header{position:sticky;top:0;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:5}
 header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}.brand svg{width:26px;height:26px;color:var(--accent)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}.brand img{width:30px;height:30px;border-radius:50%}
 nav a{margin-left:22px;font-size:14.5px;color:var(--ink-2)}nav a:hover{color:var(--ink);text-decoration:none}
 .btn{display:inline-block;padding:10px 16px;border-radius:10px;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .btn:hover{text-decoration:none;border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
-.hero{padding:84px 0 44px}.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.06;letter-spacing:-.025em;margin:0 0 18px;max-width:17ch}
+.hero{padding:72px 0 44px}.herorow{display:flex;align-items:center;gap:26px;margin-bottom:18px}.herologo{width:128px;height:128px;border-radius:50%;flex:none;box-shadow:0 20px 50px -20px rgba(124,58,237,.6)}@media (max-width:640px){.herorow{flex-direction:column;align-items:flex-start;gap:14px}.herologo{width:96px;height:96px}}.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.06;letter-spacing:-.025em;margin:0;max-width:17ch}
 .hero p.lead{font-size:19px;color:var(--ink-2);max-width:56ch;margin:0 0 28px}
 .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
 pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;overflow-x:auto;font:14px/1.6 var(--mono);margin:0}
@@ -47,13 +47,13 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
 </head>
 <body>
 <header><div class="wrap">
-  <a class="brand" href="/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10c14 8 14 36 28 44M46 10C32 18 32 46 18 54"/><path d="M22 20h20M19 32h26M22 44h20" opacity=".55"/></svg>gnomancer</a>
+  <a class="brand" href="/"><img src="/assets/logo-64.png" alt="" width="30" height="30">gnomancer</a>
   <nav><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="#privacy" class="hide">Privacy</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav>
 </div></header>
 
 <main class="wrap">
 <section class="hero">
-  <h1>Your DNA, decoded on your own machine.</h1>
+  <div class="herorow"><img class="herologo" src="/assets/logo-256.png" alt="gnomancer: a pixel-art wizard holding a DNA helix staff" width="128" height="128"><h1>Your DNA, decoded on your own machine.</h1></div>
   <p class="lead">gnomancer turns the raw file you already downloaded from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA into one readable report: lineages, traits, carrier status, drug metabolism, and a plain-language summary. Open source. Runs locally. Nothing is uploaded.</p>
   <div class="cta"><a class="btn primary" href="/install/">Install in 5 minutes</a><a class="btn" href="/get-your-data/">How to get your raw data</a><a class="btn" href="https://github.com/codebase/gnomancer">Source on GitHub</a></div>
 <pre><span class="c"># macOS / Linux (Windows via WSL): one line to install, one to run</span>

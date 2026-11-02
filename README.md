@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/logo.png" width="180" alt="gnomancer"></p>
+
 # gnomancer
 
 **https://gnomancer.com**
