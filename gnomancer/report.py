@@ -27,6 +27,14 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
     extra = extra or {}
     L = []
     L.append(f"# Raw DNA analysis report\n\n{DISCLAIMER}\n")
+    if extra.get("narrative"):
+        L.append("## In plain language\n\n" + extra["narrative"] + "\n")
+    g = extra.get("glance") or {}
+    if g:
+        L.append("## At a glance\n")
+        for title, key in (("Who the data says you are", "who"), ("Worth knowing", "notable"), ("Reassuring", "reassuring"), ("Sensible next steps", "next")):
+            if g.get(key):
+                L.append(f"**{title}**\n" + "\n".join(f"- {b}" for b in g[key]) + "\n")
     L.append("## 1. Input\n")
     L.append(f"- Vendor/format detected: **{loaded.source}**" + (f" (chip {loaded.chip} {loaded.chip_version})" if loaded.chip else ""))
     L.append(f"- Genome build: GRCh{loaded.build}" + (f" (remapped from build {loaded.build_original})" if loaded.remapped else "") +
@@ -56,8 +64,9 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
         yl = y.get("yleaf") or {}
         if yl.get("trees"):
             L.append("\nSecond opinion from Yleaf on current trees (" + f"{yl['n_y_snps']:,} Y SNPs):")
+            names = dict(yfull="YFull v14", ftdna="FamilyTreeDNA", isogg="ISOGG")
             for tree, t in yl["trees"].items():
-                L.append(f"- {tree}: **{t['haplogroup']}** (defining marker {t['marker']}, {t['valid_markers']} valid markers, QC {t['qc']})")
+                L.append(f"- {names.get(tree, tree)}: **{t['haplogroup']}** (defining marker {t['marker']}, {t['valid_markers']} valid markers, QC {t['qc']})")
         elif yl.get("error"):
             L.append(f"\nYleaf second opinion not available: {yl['error']}")
         L.append("\nArrays type only a few thousand Y sites, so this is the deepest branch the chip can see; "
@@ -82,8 +91,11 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
             L.append("Not run. Add `--ancestry` for a 1000 Genomes population classification "
                      "(needs `pip install git+https://github.com/arvkevi/ezancestry`, Python ≤3.11).")
     if ancestry:
-        L.append(f"- Predicted population: **{ancestry.get('population_description', ancestry.get('population_code'))}** "
-                 f"(super-population {ancestry.get('superpopulation_description', ancestry.get('superpopulation_code'))})")
+        from .summary import POP_NAMES
+        pp, sp = ancestry.get("population_code"), ancestry.get("superpopulation_code")
+        L.append(f"- Nearest reference population: **{POP_NAMES.get(pp, pp)}** ({pp}); super-population **{POP_NAMES.get(sp, sp)}** ({sp})")
+        if isinstance(ancestry.get("superpopulation_percent"), (int, float)):
+            L.append(f"- Share of nearest neighbours in that super-population: {ancestry['superpopulation_percent']:.0%}; in the single nearest population: {ancestry.get('population_percent', 0):.0%}")
         probs = ancestry.get("superpopulation_probabilities") or {}
         if probs:
             L.append("- Super-population probabilities: " + ", ".join(f"{k} {v:.0%}" for k, v in sorted(probs.items(), key=lambda kv: -kv[1])))
@@ -112,7 +124,14 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
     L.append(extra.get("pharmcat_text", "not run"))
     calls = pc.get("calls")
     if calls is not None and not calls.empty:
-        L.append("\n" + _md_table(calls, ["gene", "diplotype", "phenotype", "activity", "typed", "missing_positions"]))
+        from .summary import PGX_DRUGS
+        c = calls.copy()
+        c["phenotype"] = c.phenotype.str.strip().str.rstrip("/").str.strip().replace("", "—")
+        c["drugs"] = c.gene.map(PGX_DRUGS).fillna("")
+        c["coverage"] = c.missing_positions.map({True: "partial", False: "complete"})
+        L.append("\n" + _md_table(c, ["gene", "diplotype", "phenotype", "drugs", "typed", "coverage"]))
+        L.append("\nRYR1/CACNA1S 'Uncertain Susceptibility' means a variant of uncertain significance for malignant hyperthermia was seen, not a positive result. "
+                 "The CFTR row describes ivacaftor response, not cystic fibrosis status.")
     L.append("\n## 11. What this file cannot tell you\n")
     L.append("- Rare pathogenic variants (the chip targets common variation; BRCA, CFTR, etc. are covered at a handful of sites only).")
     L.append("- Copy-number genes such as CYP2D6, or HLA types beyond tag SNPs.")

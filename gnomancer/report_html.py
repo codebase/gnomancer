@@ -73,6 +73,8 @@ details.sensitive>summary{cursor:pointer;padding:10px 0;font-weight:600}details.
 .axis{stroke:var(--line)}.lbl{fill:var(--ink-2);font-size:11px;font-family:var(--sans)}
 .caption{font-size:13px;color:var(--ink-3);margin:6px 2px 0}
 .limits li{margin:4px 0}
+.glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.glance .card ul{margin:6px 0 0;padding-left:18px}.glance .card li{margin:5px 0;font-size:14.5px}
+.narrative .prose p{margin:0 0 10px;font-size:15.5px;line-height:1.6;max-width:72ch}
 footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:13.5px}
 .disclaimer{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--ink-2);margin:0 0 20px}
 .kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;font-size:14px}.kv dt{color:var(--ink-2)}.kv dd{margin:0}
@@ -171,7 +173,17 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
     H.append(f'<header><div><h1><span>gnomancer</span> · raw DNA report</h1><div class="meta">{e(input_name)} · generated {now} · gnomancer v{__version__}</div></div>'
              f'<div class="toolbar"><button id="theme">Light / dark</button><button id="reveal">Reveal health sections</button><button id="print">Print / PDF</button></div></header>')
     H.append(f'<div class="disclaimer">{e(DISCLAIMER)}</div>')
-    H.append('<nav class="toc"><a href="#overview">Overview</a><a href="#quality">Quality</a><a href="#roh">Homozygosity</a><a href="#lineage">Lineages</a>'
+    if extra.get("narrative"):
+        paras = "".join(f"<p>{e(x.strip())}</p>" for x in extra["narrative"].split("\n\n") if x.strip())
+        H.append(f'<section id="plain" class="narrative"><h2>In plain language</h2><div class="card prose">{paras}<div class="caption">Written by your AI assistant from the structured results below; it adds no new facts.</div></div></section>')
+    g = extra.get("glance") or {}
+    if g:
+        H.append('<section id="glance"><h2>At a glance</h2><div class="glance">')
+        for title, key in (("Who the data says you are", "who"), ("Worth knowing", "notable"), ("Reassuring", "reassuring"), ("Sensible next steps", "next")):
+            if g.get(key):
+                H.append(f'<div class="card"><h3>{title}</h3><ul>' + "".join(f"<li>{e(b)}</li>" for b in g[key]) + "</ul></div>")
+        H.append("</div></section>")
+    H.append('<nav class="toc"><a href="#glance">At a glance</a><a href="#overview">Overview</a><a href="#quality">Quality</a><a href="#roh">Homozygosity</a><a href="#lineage">Lineages</a>'
              '<a href="#readings">Readings</a><a href="#panel">Marker panel</a><a href="#clinvar">ClinVar</a><a href="#pharmcat">PharmCAT</a><a href="#limits">Limits</a></nav>')
     # Tiles
     vendor = e(loaded.source)
@@ -235,9 +247,13 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
         H.append(f'<div class="caption">Not called: {e(mt.get("error") or "unknown")}</div>')
     H.append("</div></div>")
     if ancestry:
-        probs = ancestry.get("superpopulation_probabilities") or {}
-        H.append(f'<div class="card"><h3>Population classification (ezancestry)</h3><div class="value">{e(str(ancestry.get("population_description", ancestry.get("population_code"))))}</div>'
-                 f'<div class="caption">Nearest 1000 Genomes reference group by PCA. ' + ", ".join(f"{e(k)} {v:.0%}" for k, v in sorted(probs.items(), key=lambda kv: -kv[1])) + "</div></div>")
+        from .summary import POP_NAMES
+        pp, sp = ancestry.get("population_code"), ancestry.get("superpopulation_code")
+        spp, ppp = ancestry.get("superpopulation_percent"), ancestry.get("population_percent")
+        pct = (f" {spp:.0%} of the nearest reference samples are {e(POP_NAMES.get(sp, sp))}; {ppp:.0%} are specifically {e(POP_NAMES.get(pp, pp))}."
+               if isinstance(spp, (int, float)) and isinstance(ppp, (int, float)) else "")
+        H.append(f'<div class="card"><h3>Population estimate · ezancestry</h3><div class="hg">{e(POP_NAMES.get(sp, sp))}<small>nearest group: {e(POP_NAMES.get(pp, pp))}</small></div>'
+                 f'<div class="caption">Nearest-neighbour classification against 1000 Genomes reference populations.{pct} This places you near a reference group; it is not an admixture breakdown.</div></div>')
     H.append("</section>")
     # Readings
     H.append('<section id="readings"><h2>Readings that need more than one site</h2><div class="readings">')
@@ -287,12 +303,16 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
     H.append('<section id="pharmcat"><h2>PharmCAT pharmacogenomics</h2><p class="lead">PharmCAT (PharmGKB) assigns star-allele diplotypes and CPIC phenotypes per gene from the sites the chip typed. It is the same engine used in clinical pipelines, but here it sees only a fraction of each gene\'s defining positions.</p>')
     H.append(f'<div class="card">{e(extra.get("pharmcat_text", "not run"))}</div>')
     if calls is not None and not calls.empty:
-        H.append('<div class="tablewrap"><table><thead><tr><th>Gene</th><th>Diplotype</th><th>Phenotype</th><th>Activity</th><th>Positions typed</th><th>Coverage</th></tr></thead><tbody>')
+        from .summary import PGX_DRUGS
+        H.append('<div class="tablewrap"><table><thead><tr><th>Gene</th><th>Diplotype</th><th>Phenotype</th><th>Drugs it matters for</th><th>Positions typed</th><th>Coverage</th></tr></thead><tbody>')
         for _, r in calls.iterrows():
+            pheno = str(r.phenotype).strip().rstrip("/").strip() or "—"
+            drugs = PGX_DRUGS.get(r.gene, "")
             cov = ('<span class="badge na" title="untyped positions were assumed reference">partial</span>' if r.missing_positions
                    else '<span class="badge n2" title="every defining position was typed">complete</span>')
-            H.append(f'<tr><td><b>{e(r.gene)}</b></td><td style="font-family:var(--mono);max-width:300px">{e(r.diplotype)}</td><td>{e(r.phenotype)}</td><td class="num">{e(r.activity)}</td><td class="num">{e(r.typed)}</td><td>{cov}</td></tr>')
+            H.append(f'<tr><td><b>{e(r.gene)}</b></td><td style="font-family:var(--mono);max-width:280px">{e(r.diplotype)}</td><td>{e(pheno)}</td><td><span class="caption">{e(drugs)}</span></td><td class="num">{e(r.typed)}</td><td>{cov}</td></tr>')
         H.append("</tbody></table></div>")
+        H.append('<p class="caption">RYR1/CACNA1S "Uncertain Susceptibility" means a variant of uncertain significance for malignant hyperthermia was seen, not a positive result. The CFTR row describes ivacaftor response, not cystic fibrosis status.</p>')
     H.append("</section>")
     H.append('<section id="limits"><h2>What this file cannot tell you</h2><ul class="limits">'
              '<li>Rare pathogenic variants. The chip targets common variation; genes like BRCA1/2 and CFTR are covered at a handful of sites only.</li>'

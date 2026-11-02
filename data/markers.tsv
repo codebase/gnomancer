@@ -32,24 +32,24 @@ rs762551	trait	CYP1A2	Caffeine metabolism *1F	A	C	AA: fast caffeine metabolizer	
 rs2472297	trait	CYP1A1/2 region	Caffeine intake tendency	C	T	lower-intake alleles	intermediate	higher-intake alleles	
 rs4410790	trait	AHR	Caffeine intake tendency	T	C	lower-intake alleles	intermediate	higher-intake alleles	
 rs713598	trait	TAS2R38	Bitter taste PTC (A49P)	C	G	non-taster allele on both copies	taster	taster	see combined TAS2R38 reading
-rs1726866	trait	TAS2R38	Bitter taste (V262A)	A	G				see combined TAS2R38 reading
-rs10246939	trait	TAS2R38	Bitter taste (I296V)	T	C				see combined TAS2R38 reading
+rs1726866	trait	TAS2R38	Bitter taste (V262A)	A	G	non-taster allele on both copies	taster	taster	see combined TAS2R38 reading
+rs10246939	trait	TAS2R38	Bitter taste (I296V)	T	C	non-taster allele on both copies	taster	taster	see combined TAS2R38 reading
 rs72921001	trait	OR6A2	Cilantro soapy taste	A	C	no soapy-taste allele	one soapy-taste allele	cilantro likely tastes soapy	
 rs9939609	trait	FTO	BMI/obesity risk	T	A	no risk allele	one risk allele (~+1.2 kg on average)	two risk alleles (~+3 kg on average)	
 rs17782313	trait	MC4R	BMI	T	C	no risk allele	one risk allele	two risk alleles	
 rs16969968	trait	CHRNA5	Nicotine dependence D398N	G	A	no risk allele	one risk allele: heavier smoking if a smoker	two risk alleles	
 rs4680	trait	COMT	Val158Met	G	A	Val/Val: higher COMT activity	Val/Met	Met/Met: lower COMT activity	popular but weak-effect marker
-rs6265	trait	BDNF	Val66Met	C	T	Val/Val	Val/Met	Met/Met	weak-effect marker
+rs6265	trait	BDNF	Val66Met	C	T	Val/Val (most common)	Val/Met	Met/Met	weak-effect marker
 rs1799971	trait	OPRM1	A118G	A	G	reference	one G allele	two G alleles	weak-effect marker
 rs601338	trait	FUT2	Secretor status W154X	G	A	secretor	secretor (one non-secretor allele)	non-secretor: resistant to common norovirus strains; altered gut flora	
 rs2180439	trait	PAX1 region	Male pattern hair loss	T	C	no risk allele	one risk allele	two risk alleles	
-rs53576	trait	OXTR	Oxytocin receptor	G	A	GG	GA	AA	weak-effect marker
+rs53576	trait	OXTR	Oxytocin receptor	G	A	no variant allele	one variant allele	two variant alleles	weak-effect marker, popular online but poorly replicated
 rs1800497	trait	ANKK1/DRD2	TaqIA	G	A	A2/A2	A1/A2	A1/A1	weak-effect marker
 rs8176719	trait	ABO	O allele (261delG)	I	D	no O allele	one O allele	blood group O	see combined ABO reading
 rs8176746	trait	ABO	B allele	G	T	no B allele	one B allele	B/B	see combined ABO reading
 rs1050828	health	G6PD	G6PD A- (V68M)	C	T	no deficiency allele	carrier / affected if male	deficient	X-linked; hemizygous in males
-rs429358	health	APOE	e4-defining site (C112R)	T	C				see combined APOE reading
-rs7412	health	APOE	e2-defining site (R158C)	C	T				see combined APOE reading
+rs429358	health	APOE	e4-defining site (C112R)	T	C	no e4 allele	one e4 allele	two e4 alleles	see combined APOE reading
+rs7412	health	APOE	e2-defining site (R158C)	C	T	no e2 allele	one e2 allele	two e2 alleles	see combined APOE reading
 rs6025	health	F5	Factor V Leiden R506Q	C	T	negative	heterozygous: ~5x venous thrombosis risk; relevant for surgery, estrogen, long flights	homozygous: substantially elevated clotting risk	
 rs1799963	health	F2	Prothrombin G20210A	G	A	negative	heterozygous: ~2-3x venous thrombosis risk	homozygous	
 rs1800562	health	HFE	Hemochromatosis C282Y	G	A	negative	carrier; iron overload uncommon unless compound heterozygous with H63D	C282Y homozygous: high risk of iron overload, check ferritin/transferrin saturation	
@@ -74,7 +74,7 @@ rs75932628	health	TREM2	R47H Alzheimer's	C	T	negative	carrier (~3x AD odds)	homo
 rs76763715	health	GBA	N370S (Gaucher / Parkinson's)	T	C	negative	carrier: ~5x Parkinson's odds; Gaucher carrier	Gaucher type 1 likely	
 rs34637584	health	LRRK2	G2019S Parkinson's	G	A	negative	carrier: elevated Parkinson's risk (penetrance ~30% by 80)	homozygous	
 rs2802292	health	FOXO3	Longevity-associated	T	G	no longevity allele	one copy	two copies (modest association with reaching 90+)	
-rs1800629	health	TNF	-308 promoter	G	A	GG	GA	AA	weak-effect marker
+rs1800629	health	TNF	-308 promoter	G	A	no variant allele	one variant allele	two variant alleles	weak-effect marker
 rs113993960	carrier	CFTR	deltaF508 cystic fibrosis	I	D	negative	CF carrier (most common CF allele)	affected	arrays type 1-3 CFTR sites of 2000+
 rs333	carrier	CCR5	delta32	I	D	negative	one delta32 copy	homozygous: resistant to R5-tropic HIV-1	
 rs80357906	carrier	BRCA1	185delAG (Ashkenazi founder)	I	D	negative at this site	pathogenic variant present: confirm clinically	homozygous	

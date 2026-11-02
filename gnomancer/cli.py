@@ -16,6 +16,7 @@ from .report import write
 from . import clinvar as clinvar_mod
 from . import pharmcat as pharmcat_mod
 from . import yleaf as yleaf_mod
+from . import summary as summary_mod
 from .report_html import write_html
 
 REPO = Path(__file__).resolve().parent.parent
@@ -50,6 +51,8 @@ def main(argv=None):
     ap.add_argument("--no-clinvar", action="store_true", help="skip the ClinVar scan")
     ap.add_argument("--no-yleaf", action="store_true", help="skip the Yleaf second-opinion Y call")
     ap.add_argument("--no-pharmcat", action="store_true", help="skip PharmCAT")
+    ap.add_argument("--summary", default=None, help="Markdown/text file with a narrative summary (e.g. written by your AI agent) to show at the top of the report")
+    ap.add_argument("--ai", action="store_true", help="have Claude write the narrative summary (sends the structured results, not the raw file, to the Anthropic API; needs credentials)")
     ap.add_argument("--version", action="version", version=__version__)
     a = ap.parse_args(argv)
 
@@ -110,7 +113,20 @@ def main(argv=None):
         print("[8/8] ancestry prediction (ezancestry) ...", file=sys.stderr)
         ancestry = run_ezancestry(inp, loaded)
 
-    extra = dict(clinvar=cv, clinvar_text=cv_text, pharmcat=pc, pharmcat_text=pc_text)
+    glance = summary_mod.at_a_glance(loaded, qc, roh, roh_text, combo, y, mt, ancestry, panel, cv, pc)
+    prompt = summary_mod.build_prompt(glance, combo, y, mt, ancestry, panel, cv, pc, qc)
+    summary_mod.write_prompt_file(out, prompt)
+    narrative = None
+    if a.summary:
+        narrative = Path(a.summary).read_text().strip()
+    elif a.ai:
+        print("      narrative summary (Claude) ...", file=sys.stderr)
+        try:
+            narrative = summary_mod.ai_summary(prompt)
+            (out / "summary.md").write_text(narrative + "\n")
+        except Exception as e:  # noqa: BLE001
+            loaded.notes.append(f"AI summary failed: {e}")
+    extra = dict(clinvar=cv, clinvar_text=cv_text, pharmcat=pc, pharmcat_text=pc_text, glance=glance, narrative=narrative)
     rep = write(out / "REPORT.md", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, extra)
     html = write_html(out / "REPORT.html", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, input_name=inp.name, extra=extra)
     json.dump(dict(input=str(inp), source=loaded.source, build=loaded.build, count=loaded.count, qc=qc,

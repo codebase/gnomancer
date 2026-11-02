@@ -21,6 +21,18 @@ STAR = {"practice_guideline": 4, "reviewed_by_expert_panel": 3, "criteria_provid
         "criteria_provided,_conflicting_interpretations": 1, "no_assertion_criteria_provided": 0, "no_classification_provided": 0}
 
 
+def _conditions(raw: str, limit: int = 4) -> str:
+    """'Disease_A|not_provided|Disease_B' -> 'Disease A; Disease B' (deduplicated, generic entries dropped, at most `limit`)."""
+    seen, out = set(), []
+    for c in raw.replace("_", " ").split("|"):
+        c = c.strip()
+        if not c or c.lower() in ("not provided", "not specified", "see cases") or c in seen:
+            continue
+        seen.add(c)
+        out.append(c)
+    return "; ".join(out[:limit]) + (f" (+{len(out) - limit} more)" if len(out) > limit else "")
+
+
 def _info(s: str) -> dict:
     d = {}
     for kv in s.split(";"):
@@ -93,7 +105,7 @@ def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
             hits.append(dict(rsid=("rs" + info["RS"]) if info.get("RS") else p[2], chrom=chrom, pos=k[1], genotype=gt,
                              ref=ref, alt=",".join(alts), zygosity=zyg, gene=info.get("GENEINFO", "").split(":")[0],
                              significance=sig.replace("_", " "), review=rev.replace("_", " "), stars=STAR.get(rev, 0),
-                             condition=info.get("CLNDN", "").replace("_", " ").replace("|", "; ")[:160],
+                             condition=_conditions(info.get("CLNDN", "")),
                              variant=info.get("CLNHGVS", ""), alt_af=af, confidence=confidence, flags="; ".join(flags)))
     res["sites_in_clinvar"], res["pathogenic_sites_typed"] = n_in, n_path
     out = pd.DataFrame(hits)
