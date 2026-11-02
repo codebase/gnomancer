@@ -79,7 +79,7 @@ Status key: ☐ not started · ◐ in progress · ☑ done
 
 ### Polish and trust
 11. ☑ **Checksum verification** for downloaded tools (SECURITY.md currently admits we don't). An hour.
-12. ☐ **Light-mode and print-to-PDF pass** on the report. An hour.
+12. ☑ **Light-mode and print-to-PDF pass** on the report (checked 2026-11-02; print CSS collapses controls and expands the health sections).
 13. ☐ **Walkthrough video** for the site and YouTube. Needs the maintainer on mic, or a script.
 
 ### Done
