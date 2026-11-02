@@ -4,10 +4,10 @@ The server is `gnomancer serve` (stdio). `server.json` at the repo root is the o
 
 ## Official MCP Registry (registry.modelcontextprotocol.io)
 Prerequisite: the package must be on **PyPI** as `gnomancer`, and its PyPI README must contain the line
-`mcp-name: io.github.codebase/gnomancer` so the registry can verify ownership.
+`mcp-name: com.gnomancer/gnomancer` so the registry can verify ownership.
 1. Publish to PyPI (trusted publisher via GitHub Actions is the clean way; needs a PyPI account owned by the maintainer).
 2. Install the publisher CLI: `brew install mcp-publisher` (or download from github.com/modelcontextprotocol/registry/releases).
-3. `mcp-publisher login github` (authenticates the `io.github.codebase/*` namespace via GitHub).
+3. `mcp-publisher login http --domain gnomancer.com --private-key <hex seed>` (ownership is proven by the Ed25519 public key served at https://gnomancer.com/.well-known/mcp-registry-auth; the private key lives outside the repo).
 4. `mcp-publisher publish` from the repo root.
 Bump `version` in `server.json` with each release.
 

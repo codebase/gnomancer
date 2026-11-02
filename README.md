@@ -183,4 +183,4 @@ MIT. Haplogroup tools and references have their own licenses: yhaplo (23andMe), 
 PhyloTree, ISOGG.
 
 <!-- registry ownership proof -->
-mcp-name: io.github.codebase/gnomancer
+mcp-name: com.gnomancer/gnomancer
