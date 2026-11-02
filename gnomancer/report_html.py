@@ -10,7 +10,7 @@ import pandas as pd
 
 from . import __version__
 from .context import lookup
-from .panel import CATEGORY_ORDER
+from .panel import CATEGORY_ORDER, POPS, POP_LABEL
 from .report import DISCLAIMER
 
 CAT_TITLES = dict(ancestry="Ancestry-informative markers", trait="Traits",
@@ -142,8 +142,16 @@ def _het_chart(ct: pd.DataFrame) -> str:
         'X near zero with Y present indicates a male sample; MT is always homozygous.</p>'
 
 
-def _panel_table(sub: pd.DataFrame) -> str:
-    h = ['<div class="tablewrap"><table class="panel"><thead><tr><th>Marker</th><th>Gene</th><th>What it tags</th><th>Genotype</th><th>Effect allele</th><th>Reading</th></tr></thead><tbody>']
+def _share_cell(r, pop: str) -> str:
+    v = r.get(f"gf_{pop}")
+    if not isinstance(v, float):
+        return '<td class="num"><span class="caption">—</span></td>'
+    parts = [f"{POP_LABEL[p]}: {r.get(f'gf_{p}'):.0%}" for p in POPS if isinstance(r.get(f"gf_{p}"), float)]
+    return f'<td class="num" title="{e("; ".join(parts))}">{v:.0%}</td>'
+
+
+def _panel_table(sub: pd.DataFrame, pop: str = "EUR") -> str:
+    h = [f'<div class="tablewrap"><table class="panel"><thead><tr><th>Marker</th><th>Gene</th><th>What it tags</th><th>Genotype</th><th>Effect allele</th><th title="Share of the {e(POP_LABEL.get(pop, pop))} 1000 Genomes reference population expected to carry the same genotype. Hover for all five super-populations.">How common ({e(pop)})</th><th>Reading</th></tr></thead><tbody>']
     for _, r in sub.iterrows():
         gt = r["genotype"]
         ec = str(r["effect_count"])
@@ -156,7 +164,7 @@ def _panel_table(sub: pd.DataFrame) -> str:
             gtc = e(gt)
         interp = e(str(r["interpretation"]))
         note = e(str(r.get("note", "") or ""))
-        h.append(f'<tr><td class="num">{e(r["rsid"])}</td><td>{e(r["gene"])}</td><td>{e(r["label"])}</td><td class="gt">{gtc}</td><td>{badge}</td><td>{interp}' + (f'<div class="caption">{note}</div>' if note else "") + "</td></tr>")
+        h.append(f'<tr><td class="num">{e(r["rsid"])}</td><td>{e(r["gene"])}</td><td>{e(r["label"])}</td><td class="gt">{gtc}</td><td>{badge}</td>{_share_cell(r, pop)}<td>{interp}' + (f'<div class="caption">{note}</div>' if note else "") + "</td></tr>")
     h.append("</tbody></table></div>")
     return "".join(h)
 
@@ -272,13 +280,14 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
                  f'<div class="readings"><div class="card"><h3>APOE</h3><div class="value">{e(v)}</div><div class="note">{e(n)}</div></div></div></details>')
     H.append("</section>")
     # Panel
-    H.append('<section id="panel"><h2>Marker panel</h2><p class="lead">Each row is one well-studied site. The badge counts how many copies of the <em>effect allele</em> you carry (0, 1 or 2) on the GRCh37 forward strand. "Not on array" means this vendor\'s chip does not type the site.</p>'
+    pop = extra.get("pop") or "EUR"
+    H.append(f'<section id="panel"><h2>Marker panel</h2><p class="lead">Each row is one well-studied site. The badge counts how many copies of the <em>effect allele</em> you carry (0, 1 or 2) on the GRCh37 forward strand. The share column says what fraction of the {e(POP_LABEL.get(pop, pop))} reference population (1000 Genomes) is expected to carry the same genotype; hover it for all five world regions. "Not on array" means this vendor\'s chip does not type the site.</p>'
              '<div class="filter"><input id="q" type="search" placeholder="Filter by gene, rsID or keyword…" aria-label="Filter markers"></div>')
     for cat in CATEGORY_ORDER:
         sub = panel[panel.category == cat]
         if sub.empty:
             continue
-        block = f'<div class="catblock"><h3>{e(CAT_TITLES.get(cat, cat))}</h3><p class="lead">{e(CAT_BLURB.get(cat, ""))}</p>{_panel_table(sub)}</div>'
+        block = f'<div class="catblock"><h3>{e(CAT_TITLES.get(cat, cat))}</h3><p class="lead">{e(CAT_BLURB.get(cat, ""))}</p>{_panel_table(sub, pop)}</div>'
         if cat in SENSITIVE:
             H.append(f'<details class="sensitive"><summary>{e(CAT_TITLES[cat])}<small>Collapsed on purpose: contains disease-risk and carrier results. Open when you are ready, or use "Reveal health sections" above.</small></summary>{block}</details>')
         else:

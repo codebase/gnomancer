@@ -140,7 +140,8 @@ def main(argv=None):
             (out / "summary.md").write_text(narrative + "\n")
         except Exception as e:  # noqa: BLE001
             loaded.notes.append(f"AI summary failed: {e}")
-    extra = dict(clinvar=cv, clinvar_text=cv_text, pharmcat=pc, pharmcat_text=pc_text, glance=glance, narrative=narrative)
+    pop = (ancestry or {}).get("superpopulation_code") or "EUR"
+    extra = dict(clinvar=cv, clinvar_text=cv_text, pharmcat=pc, pharmcat_text=pc_text, glance=glance, narrative=narrative, pop=pop)
     rep = write(out / "REPORT.md", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, extra)
     html = write_html(out / "REPORT.html", loaded, qc, ct, roh, roh_text, panel, combo, y, mt, ancestry, input_name=inp.name, extra=extra)
     json.dump(dict(input=str(inp.resolve()), args=[str(Path(x).resolve()) if Path(x).exists() else x for x in run_args],

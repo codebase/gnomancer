@@ -65,7 +65,7 @@ Nobody needs a GitHub account to use gnomancer: the repo is public, releases are
 Status key: ☐ not started · ◐ in progress · ☑ done
 
 ### Make the report better (private by construction)
-1. ◐ **Population frequencies on every panel row.** "About 31% of Europeans share this genotype." 1000 Genomes super-population frequencies baked into `marker_frequencies.tsv`; genotype frequency under Hardy-Weinberg for the user's ancestry group (or EUR by default). Half a day.
+1. ☑ **Population frequencies on every panel row.** "About 31% of Europeans share this genotype." 1000 Genomes super-population frequencies baked into `marker_frequencies.tsv`; genotype frequency under Hardy-Weinberg for the user's ancestry group (or EUR by default). Half a day.
 2. ☑ **ClinVar reclassification watch.** `gnomancer watch <report>` re-downloads ClinVar when NCBI publishes a new release, rescans the user's typed sites, and reports only what changed (new pathogenic hits, upgrades, downgrades). Snapshot stored with the report. Half a day.
 3. ☐ **Pharmacist wallet card.** One-page PDF of the PharmCAT table with the "confirm clinically" footer. An hour.
 4. ☐ **Family mode.** Two or more kits: relatedness confirmation, which parent gave which lineage, shared segments via `apriha/lineage`. A few days.

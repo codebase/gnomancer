@@ -17,6 +17,30 @@ import pandas as pd
 
 COMP = {"A": "T", "T": "A", "C": "G", "G": "C", "I": "I", "D": "D"}
 CATEGORY_ORDER = ["ancestry", "trait", "health", "carrier", "pgx"]
+POPS = ("AFR", "AMR", "EAS", "EUR", "SAS")
+POP_LABEL = dict(AFR="African", AMR="Admixed American", EAS="East Asian", EUR="European", SAS="South Asian")
+FREQ_FILE = Path(__file__).resolve().parent / "data" / "marker_frequencies.tsv"
+
+
+def load_frequencies(path: Path = FREQ_FILE) -> dict:
+    """rsid -> {pop: effect-allele frequency} from the bundled 1000 Genomes table."""
+    out = {}
+    if not path.exists():
+        return out
+    with open(path, newline="") as f:
+        lines = [l for l in f if l.strip() and not l.startswith("#")]
+    for r in csv.DictReader(lines, delimiter="\t"):
+        d = {p: float(r[p]) for p in POPS if r.get(p)}
+        if d:
+            out[r["rsid"]] = d
+    return out
+
+
+def genotype_frequency(effect_count: int, ploidy: int, p: float) -> float:
+    """Share of a population expected to carry this genotype (Hardy-Weinberg)."""
+    if ploidy == 1:
+        return p if effect_count == 1 else 1 - p
+    return {0: (1 - p) ** 2, 1: 2 * p * (1 - p), 2: p * p}[effect_count]
 
 
 def load_markers(path: Path) -> list[dict]:
@@ -37,13 +61,14 @@ def _lookup(df: pd.DataFrame, rsid: str):
     return None
 
 
-def evaluate(df: pd.DataFrame, markers: list[dict]) -> pd.DataFrame:
+def evaluate(df: pd.DataFrame, markers: list[dict], frequencies: dict | None = None) -> pd.DataFrame:
+    frequencies = load_frequencies() if frequencies is None else frequencies
     out = []
     for m in markers:
         row = _lookup(df, m["rsid"])
         rec = dict(rsid=m["rsid"], category=m["category"], gene=m["gene"], label=m["label"],
                    ref=m["ref"], effect=m["effect"], chrom="", pos="", genotype="", effect_count="",
-                   interpretation="", note=m.get("note", ""))
+                   interpretation="", note=m.get("note", ""), **{f"gf_{p}": None for p in POPS})
         if row is None:
             rec["genotype"] = "not on array"
             out.append(rec)
@@ -71,6 +96,8 @@ def evaluate(df: pd.DataFrame, markers: list[dict]) -> pd.DataFrame:
         n = g.count(m["effect"])
         ploidy = len(g)
         rec["effect_count"] = f"{n}/{ploidy}"
+        for pop, af in (frequencies.get(m["rsid"]) or {}).items():
+            rec[f"gf_{pop}"] = round(genotype_frequency(n, ploidy, af), 4)
         key = {0: "interp0", 1: "interp1", 2: "interp2"}[n if ploidy == 2 else (2 if n == 1 else 0)]
         text = m.get(key) or f"{n} copy(ies) of effect allele {m['effect']}"
         if ploidy == 1:

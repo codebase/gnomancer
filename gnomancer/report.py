@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .panel import CATEGORY_ORDER
+from .panel import CATEGORY_ORDER, POPS, POP_LABEL
 
 DISCLAIMER = (
     "Computed locally from a consumer genotyping array. The array reports a fixed list of common sites, "
@@ -104,7 +104,10 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
     for name, val, note in combos:
         L.append(f"- **{name}:** {val}" + (f" — {note}" if note else ""))
     L.append("\n## 8. Marker panel\n")
-    L.append("Effect-allele counts are on the GRCh37 forward strand. `not on array` means the vendor's chip does not type that site.\n")
+    pop = extra.get("pop") or "EUR"
+    L.append(f"Effect-allele counts are on the GRCh37 forward strand. `not on array` means the vendor's chip does not type that site. "
+             f"`share` is the fraction of the {POP_LABEL.get(pop, pop)} 1000 Genomes reference population expected to carry the same genotype "
+             f"(Hardy-Weinberg from the effect-allele frequency); the TSV has all five super-populations.\n")
     titles = dict(ancestry="Ancestry-informative markers", trait="Traits", health="Health-associated common variants",
                   carrier="Carrier / rare pathogenic sites typed on arrays", pgx="Pharmacogenomics")
     for cat in CATEGORY_ORDER:
@@ -112,7 +115,10 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
         if sub.empty:
             continue
         L.append(f"\n### {titles.get(cat, cat)}\n")
-        L.append(_md_table(sub, ["rsid", "gene", "label", "genotype", "effect_count", "interpretation"]))
+        sub = sub.copy()
+        col = f"gf_{pop}"
+        sub["share"] = sub[col].map(lambda v: f"{v:.0%}" if isinstance(v, float) else "") if col in sub else ""
+        L.append(_md_table(sub, ["rsid", "gene", "label", "genotype", "effect_count", "share", "interpretation"]))
     cv = extra.get("clinvar") or {}
     L.append("\n## 9. ClinVar scan of every typed site\n")
     L.append(extra.get("clinvar_text", "not run"))
