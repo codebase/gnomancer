@@ -29,10 +29,34 @@ The report already sends people to a next step in four places. These are the pro
 - Sequencing.com: FlexOffers.
 - Nebula / DNA Complete: Awin.
 
+## Distribution and discoverability (for people without a GitHub login)
+
+Nobody needs a GitHub account to use gnomancer: the repo is public, releases are plain downloads, and the installer is
+`curl -fsSL https://gnomancer.com/install.sh | bash`. The gaps are packaging and being found.
+
+**Packaging, in order:**
+1. `install.sh` on gnomancer.com (done) and the `/install/` page with macOS, Linux and Windows-via-WSL steps (done).
+2. **PyPI**: `pipx install gnomancer`. pyproject is ready; needs a PyPI account and a trusted-publisher GitHub Action. the maintainer creates the account.
+3. **Homebrew tap** (`brew install codebase/tap/gnomancer`): a formula that depends on python@3.12 and openjdk; solves the Java problem on macOS.
+4. **Native Windows**: PyInstaller build of the CLI plus bundled JRE, or a Tauri desktop app. The desktop app is the real answer for non-terminal users.
+5. **Claude skill / plugin** (done: `skills/gnomancer/SKILL.md`, `.claude-plugin/plugin.json`): any Claude Code or Claude Desktop user can say "analyze my DNA file" and the agent installs, runs, and summarizes. Submit to the Claude Code plugin marketplace and the Anthropic skills directory.
+6. **MCP server** (`gnomancer serve`, stdio): tools `analyze(path)`, `summary()`, `lookup(rsid)`, `section(name)`. Lets ChatGPT, Cursor, Claude Desktop and others drive it. Publish to the official MCP Registry (registry.modelcontextprotocol.io) and Smithery. Privacy note for the listing: runs locally; only what the assistant reads leaves the machine, same caveat as `--ai`. About a day of work.
+
+**Where people look (announce in this order):**
+- r/AncestryDNA, r/23andme, r/Genealogy, r/promethease, r/SNPedia: the "what can I do with my raw data" threads are weekly.
+- ISOGG wiki "Autosomal DNA tools" and the SNPedia "tools" page: standing lists people actually consult.
+- Genetic-genealogy blogs that review tools: DNAeXplained (Roberta Estes), The DNA Geek, Your DNA Guide, Genealogy Explained.
+- Hacker News "Show HN" and Product Hunt, once the browser or desktop version exists.
+- A 10-minute YouTube walkthrough: download the file, run, read the report. Search traffic for "what to do with raw DNA data" is large.
+
+**SEO pages on the site** (each is a question people type): `/get-your-data/` (done), `/install/` (done), one page per major haplogroup, "what is a raw DNA file", "is my 23andMe data safe to upload to X".
+
 ## Community
 
-- **Start with GitHub Discussions** (free, no moderation infra, no accounts with us). Turn on in repo settings.
-- **If a forum on gnomancer.com is wanted**, embed Discussions with [giscus](https://giscus.app): it renders as a forum on our domain, uses GitHub login, zero servers. Structure categories by haplogroup (like FTDNA projects) plus "Reading your report" and "Tools".
+- Most of the audience has no GitHub login, so GitHub Discussions / giscus is the wrong front door for them (fine for developers).
+- **Discord** is the pragmatic consumer forum: nearly everyone has an account, free, good moderation tools, channels per haplogroup. Create the server, add an invite link to the site footer.
+- A hosted **Discourse** (email sign-up, searchable by Google, threads that last) is the better long-term forum if the community grows; ~$100/month hosted, or self-host.
+- Keep GitHub Issues/Discussions for bugs and developer talk.
 - House rule to post prominently: share haplogroups, traits and questions; never paste raw files, ClinVar rows or health tables. Genetic data posted publicly is public forever.
 - A self-hosted Discourse is the step after that, only if giscus is outgrown.
 

@@ -1,0 +1,70 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Install gnomancer on macOS, Linux or Windows</title>
+<meta name="description" content="Install gnomancer in a few minutes on macOS, Linux or Windows (via WSL), then run it on your raw DNA file. No account, no upload.">
+<link rel="canonical" href="https://gnomancer.com/install/"><link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#2a78d6;--accent-2:#1c5cab;--accent-soft:#e3eefb;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#3f8de8;--accent-2:#9ec5f4;--accent-soft:#0f2f55}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:5}header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1080px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink)}.brand svg{width:26px;height:26px;color:var(--accent)}nav a{margin-left:22px;font-size:14.5px;color:var(--ink-2)}
+h1{font-size:clamp(30px,4.5vw,44px);letter-spacing:-.02em;line-height:1.1;margin:56px 0 12px}p.lead{font-size:18px;color:var(--ink-2);margin:0 0 28px;max-width:62ch}
+h2{font-size:24px;letter-spacing:-.015em;margin:44px 0 8px;scroll-margin-top:72px}h3{font-size:17px;margin:22px 0 6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin:14px 0}
+ol,ul{padding-left:22px}li{margin:6px 0}code{font:14px var(--mono);background:var(--accent-soft);padding:1px 6px;border-radius:5px}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;overflow-x:auto;font:14px/1.6 var(--mono)}pre code{background:none;padding:0}
+.note{border-left:4px solid var(--accent);background:var(--surface);border-radius:8px;padding:10px 14px;color:var(--ink-2);font-size:14.5px;margin:12px 0}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}.toc a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px;color:var(--ink-2)}.toc a:hover{text-decoration:none;border-color:var(--accent)}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 48px;color:var(--ink-3);font-size:14px}
+</style></head><body><header><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10c14 8 14 36 28 44M46 10C32 18 32 46 18 54"/><path d="M22 20h20M19 32h26M22 44h20" opacity=".55"/></svg>gnomancer</a><nav><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header><main class="wrap">
+<h1>Install gnomancer</h1>
+<p class="lead">gnomancer is a command-line program today. That means a few minutes in the Terminal once, after which running it is one line. A point-and-click app is on the roadmap. Nothing here creates an account or uploads anything.</p>
+<div class="toc"><a href="#mac">macOS</a><a href="#linux">Linux</a><a href="#windows">Windows</a><a href="#run">Run it</a><a href="#trouble">Trouble?</a></div>
+
+<h2 id="mac">macOS</h2>
+<div class="card">
+<ol>
+<li>Open <strong>Terminal</strong> (press <code>⌘ Space</code>, type Terminal, press Enter).</li>
+<li>If you have never used Homebrew, install it from <a href="https://brew.sh">brew.sh</a> (one command on that page), then install the three prerequisites:
+<pre><code>brew install git python@3.12 openjdk</code></pre></li>
+<li>Install gnomancer:
+<pre><code>curl -fsSL https://gnomancer.com/install.sh | bash</code></pre>
+This puts everything in a folder called <code>gnomancer</code> in your home directory and downloads the open-source tools and reference files it uses (about 250 MB, once). You can <a href="/install.sh">read the script</a> before running it.</li>
+</ol></div>
+
+<h2 id="linux">Linux</h2>
+<div class="card"><ol>
+<li>Install the prerequisites with your package manager. Debian or Ubuntu:
+<pre><code>sudo apt install git python3 python3-venv default-jre</code></pre>Fedora: <code>sudo dnf install git python3 java-21-openjdk</code></li>
+<li>Then:
+<pre><code>curl -fsSL https://gnomancer.com/install.sh | bash</code></pre></li>
+</ol></div>
+
+<h2 id="windows">Windows</h2>
+<div class="card">
+<p>gnomancer runs on Windows through the Windows Subsystem for Linux, which Microsoft ships with Windows 10 and 11. It takes one extra step the first time.</p>
+<ol>
+<li>Open <strong>PowerShell</strong> as administrator and run <code>wsl --install</code>. Restart when asked and set a username and password for Ubuntu when it opens.</li>
+<li>In the Ubuntu window, install the prerequisites and gnomancer:
+<pre><code>sudo apt update && sudo apt install -y git python3 python3-venv default-jre
+curl -fsSL https://gnomancer.com/install.sh | bash</code></pre></li>
+<li>Your Windows files are visible inside Ubuntu under <code>/mnt/c/</code>, so a file in your Downloads folder is at <code>/mnt/c/Users/YourName/Downloads/</code>.</li>
+</ol>
+<div class="note">A native Windows installer is on the roadmap. If you are comfortable with Python on Windows already, <code>pip install git+https://github.com/codebase/gnomancer</code> works too, without the Java-based haplogroup and PharmCAT steps.</div></div>
+
+<h2 id="run">Run it</h2>
+<div class="card">
+<p>First <a href="/get-your-data/">download your raw data file</a> from your testing company. Then:</p>
+<pre><code>gnomancer ~/Downloads/dna-data-2026-11-02.zip</code></pre>
+<p>It takes about a minute. The report appears in a new folder next to your file; open <code>REPORT.html</code> in any browser. Add <code>--ancestry</code> for a population estimate (slower the first time, it downloads reference models) and <code>--summary summary.md</code> to embed a narrative written by your AI assistant (the run writes a ready-made prompt for it as <code>summary-prompt.md</code>).</p>
+<p>If <code>gnomancer</code> is not found, use the full path: <code>~/gnomancer/.venv/bin/gnomancer</code>.</p></div>
+
+<h2 id="trouble">Trouble?</h2>
+<div class="card"><ul>
+<li><strong>"python3: command not found"</strong>: install Python 3.10 or newer (macOS: <code>brew install python@3.12</code>).</li>
+<li><strong>Java warnings</strong>: the mitochondrial haplogroup and PharmCAT sections need Java 11 or newer. Everything else runs without it.</li>
+<li><strong>"Could not parse any SNPs"</strong>: the file is probably not a raw-data export. Check <a href="/get-your-data/">which file to download</a>; a PDF or the company's report file will not work.</li>
+<li>Anything else: open an issue on <a href="https://github.com/codebase/gnomancer/issues">GitHub</a> (no account needed to read existing ones) and include the first 20 lines of your file's header, never the genotype lines.</li>
+</ul></div>
+</main><footer><div class="wrap">gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · no cookies, no analytics, no uploads.</div></footer></body></html>

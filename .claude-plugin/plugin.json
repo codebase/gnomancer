@@ -1,0 +1,10 @@
+{
+  "name": "gnomancer",
+  "description": "Analyze a consumer raw DNA file locally and explain the results. Nothing is uploaded.",
+  "version": "0.2.0",
+  "author": { "name": "gnomancer contributors", "url": "https://gnomancer.com" },
+  "homepage": "https://gnomancer.com",
+  "repository": "https://github.com/codebase/gnomancer",
+  "license": "MIT",
+  "keywords": ["dna", "genetics", "23andme", "ancestrydna", "haplogroup", "pharmacogenomics"]
+}

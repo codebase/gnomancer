@@ -1,0 +1,90 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to download your raw DNA data from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA and LivingDNA</title>
+<meta name="description" content="Step-by-step instructions for downloading the raw DNA data file from each major testing company, with the official help links, what the file looks like, and the gotchas (expiring links, waiting times, which file to pick).">
+<link rel="canonical" href="https://gnomancer.com/get-your-data/"><link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<meta property="og:title" content="How to download your raw DNA data from every major testing company"><meta property="og:description" content="AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA, LivingDNA: the exact steps, the official links, and the gotchas."><meta property="og:url" content="https://gnomancer.com/get-your-data/">
+<style>
+:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#2a78d6;--accent-2:#1c5cab;--accent-soft:#e3eefb;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#3f8de8;--accent-2:#9ec5f4;--accent-soft:#0f2f55}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:5}header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1080px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink)}.brand svg{width:26px;height:26px;color:var(--accent)}nav a{margin-left:22px;font-size:14.5px;color:var(--ink-2)}
+h1{font-size:clamp(30px,4.5vw,44px);letter-spacing:-.02em;line-height:1.1;margin:56px 0 12px}p.lead{font-size:18px;color:var(--ink-2);margin:0 0 28px;max-width:62ch}
+h2{font-size:24px;letter-spacing:-.015em;margin:44px 0 8px;scroll-margin-top:72px}h3{font-size:17px;margin:22px 0 6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin:14px 0}
+ol,ul{padding-left:22px}li{margin:6px 0}code{font:14px var(--mono);background:var(--accent-soft);padding:1px 6px;border-radius:5px}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;overflow-x:auto;font:14px/1.6 var(--mono)}pre code{background:none;padding:0}
+.note{border-left:4px solid var(--accent);background:var(--surface);border-radius:8px;padding:10px 14px;color:var(--ink-2);font-size:14.5px;margin:12px 0}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}.toc a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px;color:var(--ink-2)}.toc a:hover{text-decoration:none;border-color:var(--accent)}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 48px;color:var(--ink-3);font-size:14px}
+</style></head><body><header><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10c14 8 14 36 28 44M46 10C32 18 32 46 18 54"/><path d="M22 20h20M19 32h26M22 44h20" opacity=".55"/></svg>gnomancer</a><nav><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header><main class="wrap">
+<h1>Get your raw DNA data</h1>
+<p class="lead">Every major testing company lets you download the raw genotype file they built your results from. It is yours, it is free, and it is the only input gnomancer needs. Here is how to get it from each one, as of November 2026. Menus move; when they do, the official help link under each heading is the source of truth.</p>
+<div class="toc"><a href="#ancestry">AncestryDNA</a><a href="#23andme">23andMe</a><a href="#myheritage">MyHeritage</a><a href="#ftdna">FamilyTreeDNA</a><a href="#livingdna">LivingDNA</a><a href="#after">What to do with the file</a></div>
+<div class="note">Do all of this on a computer, not the phone app. Keep the downloaded file somewhere private and backed up; it is the most personal file you own. You do not need to unzip it: gnomancer reads the zip directly.</div>
+
+<h2 id="ancestry">AncestryDNA</h2>
+<div class="card"><ol>
+<li>Sign in at ancestry.com on a computer and open the <strong>DNA</strong> menu, then your DNA results.</li>
+<li>Click <strong>Settings</strong> (the gear icon, top right of your results page).</li>
+<li>Find <strong>Download DNA data</strong> and click <strong>Download</strong>. Be careful: the <em>Delete test results</em> option sits right next to it.</li>
+<li>Re-enter your Ancestry password and confirm. Ancestry emails you a confirmation link; it can take up to an hour.</li>
+<li>Open the email, click <strong>Confirm data download</strong>, then <strong>Download DNA raw data</strong>. The link in the email expires after 7 days.</li>
+</ol>
+<p>You get a zip file named <code>dna-data-YYYY-MM-DD.zip</code> containing <code>AncestryDNA.txt</code>, about 18 MB unzipped with roughly 665,000 lines.</p>
+<p>Official help: <a href="https://support.ancestry.com/s/article/Downloading-AncestryDNA-Raw-Data">Ancestry Support: Downloading DNA data</a></p></div>
+
+<h2 id="23andme">23andMe</h2>
+<div class="card"><ol>
+<li>Sign in at 23andme.com on a computer, click your name (top right) and choose <strong>Settings</strong>.</li>
+<li>Scroll to <strong>23andMe Data</strong> and click <strong>View</strong>.</li>
+<li>Under <strong>Raw Data</strong>, choose <strong>Download Raw Data</strong>. Pick the plain raw genotype data, not the "imputed" or "phased" variants if offered.</li>
+<li>Confirm the request. 23andMe prepares the file and emails you when it is ready: often within a day, sometimes up to a few weeks for US accounts. You can also view the data on screen at once under <strong>Browse Raw Data</strong>.</li>
+<li>Download the zip when the email arrives.</li>
+</ol>
+<p>You get <code>genome_Your_Name_v5_Full_YYYYMMDDhhmmss.zip</code> (the chip version number, v3 to v5, is in the name) containing a tab-separated text file.</p>
+<p>Official help: <a href="https://customercare.23andme.com/hc/en-us/articles/212196868-Accessing-and-Downloading-Your-Raw-Data">23andMe Customer Care: Accessing and downloading your raw data</a></p>
+<div class="note">If you are considering deleting your 23andMe account, download the file first. Deletion is permanent and the data goes with it.</div></div>
+
+<h2 id="myheritage">MyHeritage</h2>
+<div class="card"><ol>
+<li>Sign in at myheritage.com on a computer or Android device (downloads do not work on iPhone or iPad).</li>
+<li>Hover over the <strong>DNA</strong> tab and choose <strong>Manage DNA kits</strong>.</li>
+<li>On the right of your kit, click the three dots and choose <strong>Download kit</strong>.</li>
+<li>Follow the prompts; MyHeritage may ask you to confirm by email and enter a two-factor code.</li>
+<li>Download the file. The link is valid for 24 hours; if it expires, repeat the steps.</li>
+</ol>
+<p>You get a zip containing a CSV named like <code>MyHeritage_raw_dna_data.csv</code>. Only the kit's manager can download it, and kits that were <em>uploaded</em> to MyHeritage from another company cannot be downloaded again: go back to the original company.</p>
+<p>Official help: <a href="https://www.myheritage.com/help/en/articles/12851869-how-do-i-download-my-raw-dna-data-file-or-cram-file-from-myheritage">MyHeritage Help: How do I download my raw DNA data file</a></p></div>
+
+<h2 id="ftdna">FamilyTreeDNA</h2>
+<div class="card"><ol>
+<li>Sign in at familytreedna.com and open your dashboard.</li>
+<li>Go to <strong>Results &amp; Tools</strong>, then <strong>Autosomal DNA</strong>, then <strong>Download Raw Data</strong>.</li>
+<li>Choose the <strong>Build 37 Concatenated Raw Data</strong> file. It contains the autosomal and X-chromosome sites in one file. Men who have taken a Y test can also download a separate Y-SNP file; gnomancer does not need it.</li>
+<li>Download the file. It is GZIP-compressed (<code>.csv.gz</code>). gnomancer reads it as is; if you want to open it yourself, macOS and Linux unpack it by double-click or <code>gunzip</code>, Windows needs 7-Zip.</li>
+</ol>
+<p>Official help: <a href="https://www.familytreedna.com/learn/user-guide/family-finder-myftdna/download-raw-data-page">FamilyTreeDNA User Guide: Download Raw Data page</a></p></div>
+
+<h2 id="livingdna">LivingDNA</h2>
+<div class="card"><ol>
+<li>Sign in at livingdna.com.</li>
+<li>In the left sidebar choose <strong>Download Raw Data</strong>.</li>
+<li>Tick the consent box and choose the <strong>autosomal (family ancestry)</strong> file. mtDNA and Y-DNA files are offered separately; gnomancer needs only the autosomal one.</li>
+<li>Download the file.</li>
+</ol>
+<p>Official help: <a href="https://support.livingdna.com/hc/en-us/articles/360011384960">LivingDNA Support: Downloading your raw data</a></p></div>
+
+<h2 id="after">What to do with the file</h2>
+<div class="card">
+<p>Run gnomancer on it (<a href="/install/">install instructions</a>):</p>
+<pre><code>gnomancer ~/Downloads/dna-data-2026-11-02.zip</code></pre>
+<p>gnomancer detects the company and genome build from the file itself, so you never have to tell it which service the file came from. The report lands next to the file in a folder ending in <code>_analysis</code>.</p>
+<h3>Keep it safe</h3>
+<ul>
+<li>The file identifies you and your relatives permanently. Store it like a passport scan: encrypted disk, offline backup, never in a shared folder or email.</li>
+<li>Before uploading it anywhere else (GEDmatch, other analysis sites), read that site's privacy terms. Uploads cannot be un-done in any meaningful sense.</li>
+<li>gnomancer never uploads it. Everything runs on your computer.</li>
+</ul></div>
+</main><footer><div class="wrap">gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · no cookies, no analytics, no uploads.</div></footer></body></html>

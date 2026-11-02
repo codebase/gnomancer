@@ -9,11 +9,15 @@ traits, carrier sites and pharmacogenomics, each with plain-language context and
 Nothing is uploaded. The only network traffic is the one-time download of public tools and reference files.
 
 ```bash
-git clone https://github.com/codebase/gnomancer && cd gnomancer
-./setup.sh                                   # venv + snps + yhaplo + Haplogrep3 + PharmCAT (Java 11+) + ClinVar (~200 MB)
-.venv/bin/gnomancer ~/Downloads/AncestryDNA.zip
+curl -fsSL https://gnomancer.com/install.sh | bash     # macOS / Linux / Windows via WSL; or clone and run ./setup.sh
+gnomancer ~/Downloads/AncestryDNA.zip
 open AncestryDNA_analysis/REPORT.html
 ```
+
+Not sure how to get the file? [gnomancer.com/get-your-data](https://gnomancer.com/get-your-data/) has the steps for every vendor.
+Full install notes, including Windows: [gnomancer.com/install](https://gnomancer.com/install/).
+
+Using Claude? The repo doubles as a Claude plugin: `skills/gnomancer/SKILL.md` teaches the agent to install, run and summarize.
 
 ![demo report](docs/demo-report.png)
 

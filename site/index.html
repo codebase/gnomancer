@@ -48,19 +48,17 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
 <body>
 <header><div class="wrap">
   <a class="brand" href="/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10c14 8 14 36 28 44M46 10C32 18 32 46 18 54"/><path d="M22 20h20M19 32h26M22 44h20" opacity=".55"/></svg>gnomancer</a>
-  <nav><a href="#what">What you get</a><a href="#how" class="hide">How it works</a><a href="#privacy">Privacy</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav>
+  <nav><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="#privacy" class="hide">Privacy</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav>
 </div></header>
 
 <main class="wrap">
 <section class="hero">
   <h1>Your DNA, decoded on your own machine.</h1>
   <p class="lead">gnomancer turns the raw file you already downloaded from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA into one readable report: lineages, traits, carrier status, drug metabolism, and a plain-language summary. Open source. Runs locally. Nothing is uploaded.</p>
-  <div class="cta"><a class="btn primary" href="https://github.com/codebase/gnomancer">Get it on GitHub</a><a class="btn" href="#how">See how it works</a></div>
-<pre><span class="c"># macOS / Linux, Python 3.10+, Java 11+ for the haplogroup tools</span>
-<span class="p">$</span> git clone https://github.com/codebase/gnomancer && cd gnomancer
-<span class="p">$</span> ./setup.sh
-<span class="p">$</span> .venv/bin/gnomancer ~/Downloads/AncestryDNA.zip
-<span class="p">$</span> open AncestryDNA_analysis/REPORT.html</pre>
+  <div class="cta"><a class="btn primary" href="/install/">Install in 5 minutes</a><a class="btn" href="/get-your-data/">How to get your raw data</a><a class="btn" href="https://github.com/codebase/gnomancer">Source on GitHub</a></div>
+<pre><span class="c"># macOS / Linux (Windows via WSL): one line to install, one to run</span>
+<span class="p">$</span> curl -fsSL https://gnomancer.com/install.sh | bash
+<span class="p">$</span> gnomancer ~/Downloads/AncestryDNA.zip</pre>
   <div class="shot"><img src="/assets/demo-report.png" alt="A gnomancer report: overview tiles for vendor, sites, sex, Y haplogroup, mtDNA haplogroup and blood group, with quality checks" width="1440" height="769"></div>
   <p class="caption">The report, generated from a synthetic demo file. Real reports open with an at-a-glance digest and an optional narrative written by your own AI assistant.</p>
 </section>
@@ -82,8 +80,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
   <h2>How it works</h2>
   <p class="sub">Three steps, all on your computer.</p>
   <div class="grid">
-    <div class="card"><span class="n">1</span><h3>Download your raw data</h3><p>Every major vendor lets you export it from your account settings. gnomancer reads the zip or the text file directly and detects the vendor and genome build.</p></div>
-    <div class="card"><span class="n">2</span><h3>Run one command</h3><p><code>setup.sh</code> installs the open-source tools and public reference files once. Then <code>gnomancer yourfile.zip</code> does everything else in about a minute.</p></div>
+    <div class="card"><span class="n">1</span><h3>Download your raw data</h3><p>Every major vendor lets you export it from your account settings. <a href="/get-your-data/">Step-by-step for each company.</a> gnomancer reads the zip directly and detects the vendor and genome build.</p></div>
+    <div class="card"><span class="n">2</span><h3>Run one command</h3><p>The <a href="/install/">installer</a> sets up the open-source tools and public reference files once. Then <code>gnomancer yourfile.zip</code> does everything else in about a minute.</p></div>
     <div class="card"><span class="n">3</span><h3>Read the report</h3><p>Open <code>REPORT.html</code>. Light and dark, printable, searchable, with the technical detail one scroll below the summary.</p></div>
   </div>
   <p class="sub" style="margin-top:26px">Reads <span class="pill">AncestryDNA</span><span class="pill">23andMe</span><span class="pill">MyHeritage</span><span class="pill">FamilyTreeDNA</span><span class="pill">LivingDNA</span><span class="pill">Genes for Good</span><span class="pill">tellmeGen</span><span class="pill">VCF</span> and remaps older builds to GRCh37.</p>
