@@ -1,4 +1,0 @@
-snps>=2.9
-pandas>=2.0
-numpy>=1.24
-yhaplo @ git+https://github.com/23andMe/yhaplo
