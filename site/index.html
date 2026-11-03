@@ -8,10 +8,10 @@
 <meta property="og:title" content="gnomancer · your DNA, decoded on your own machine">
 <meta property="og:description" content="Open-source raw DNA analysis that runs on your computer. One command, one readable report, nothing uploaded.">
 <meta property="og:image" content="https://gnomancer.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://gnomancer.com/assets/og.jpg">
-<meta property="og:url" content="https://gnomancer.com/">
+<meta property="og:url" content="https://gnomancer.com/"><meta property="og:type" content="website"><meta property="og:site_name" content="gnomancer"><link rel="canonical" href="https://gnomancer.com/">
 <link rel="icon" href="/assets/mark-64.png" type="image/png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <style>
-:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#7c3aed;--accent-2:#5b21b6;--accent-soft:#efe9fd;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
+:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#6e6c65;--accent:#7c3aed;--accent-2:#5b21b6;--accent-soft:#efe9fd;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
 @media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#a78bfa;--accent-2:#c4b5fd;--accent-soft:#2e1a5e}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
@@ -22,12 +22,12 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;heigh
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}.brand img{width:30px;height:30px;border-radius:50%}
 nav a{margin-left:22px;font-size:14.5px;color:var(--ink-2)}nav a:hover{color:var(--ink);text-decoration:none}
 .btn{display:inline-block;padding:10px 16px;border-radius:10px;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
-.btn:hover{text-decoration:none;border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn:hover{text-decoration:none;border-color:var(--accent)}.btn.primary{background:#7c3aed;border-color:#7c3aed;color:#fff}.btn.primary:hover{background:#6d28d9;border-color:#6d28d9}
 .hero{padding:80px 0 44px}.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.06;letter-spacing:-.025em;margin:0 0 18px;max-width:17ch}
 .hero p.lead{font-size:19px;color:var(--ink-2);max-width:56ch;margin:0 0 28px}
 .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
 pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;overflow-x:auto;font:14px/1.6 var(--mono);margin:0}
-pre .c{color:var(--ink-3)}pre .p{color:var(--accent-2)}
+pre .c{color:var(--ink-3)}pre .p{color:var(--accent-2);user-select:none}
 .shot{margin:44px 0 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)}.shot img{display:block;width:100%;height:auto}
 .caption{font-size:13.5px;color:var(--ink-3);margin:10px 2px 0}
 section{padding:56px 0;scroll-margin-top:70px}section h2{font-size:30px;letter-spacing:-.02em;margin:0 0 8px}section p.sub{color:var(--ink-2);font-size:17px;margin:0 0 26px;max-width:62ch}
@@ -41,8 +41,8 @@ table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--surf
 .tablewrap{overflow-x:auto;border-radius:var(--r)}
 .disclaimer{font-size:14px;color:var(--ink-2);border:1px dashed var(--line);border-radius:var(--r);padding:16px 18px}
 footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);font-size:14px}footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
-@media (max-width:640px){nav a{margin-left:14px}nav a.hide{display:none}.hero{padding:56px 0 32px}}
-.menu{display:none;font:inherit;font-size:22px;line-height:1;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer}@media (max-width:720px){.menu{display:inline-block}header .wrap{flex-wrap:wrap;height:auto;min-height:56px;padding-top:8px;padding-bottom:8px}nav{display:none;flex-basis:100%;flex-direction:column;gap:2px;padding:6px 0 4px;border-top:1px solid var(--line);margin-top:8px}header.open nav{display:flex}nav a{margin:0;padding:10px 4px;font-size:16px;border-bottom:1px solid var(--line)}nav a:last-child{border-bottom:0}nav a.hide{display:block}}@media (max-width:640px){.hero h1{font-size:30px}.hero p.lead{font-size:17px}pre{font-size:12.5px;padding:12px}section{padding:40px 0}section h2{font-size:24px}.btn{padding:10px 14px}.cta{gap:8px}.cta .btn{flex:1 1 auto;text-align:center}.tablewrap{margin:0 -16px;border-radius:0}table{font-size:13px}th,td{padding:8px}}</style>
+@media (max-width:640px){nav a{margin-left:14px}.hero{padding:56px 0 32px}}
+.menu{display:none;font:inherit;font-size:22px;line-height:1;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer}@media (max-width:720px){.menu{display:inline-block}header .wrap{flex-wrap:wrap;height:auto;min-height:56px;padding-top:8px;padding-bottom:8px}nav{display:none;flex-basis:100%;flex-direction:column;gap:2px;padding:6px 0 4px;border-top:1px solid var(--line);margin-top:8px}header.open nav{display:flex}nav a{margin:0;padding:10px 4px;font-size:16px;border-bottom:1px solid var(--line)}nav a:last-child{border-bottom:0}}@media (max-width:640px){.hero h1{font-size:30px}.hero p.lead{font-size:17px}pre{font-size:12.5px;padding:12px;white-space:pre-wrap;word-break:break-all}section{padding:40px 0}section h2{font-size:24px}.btn{padding:10px 14px}.cta{gap:8px}.cta .btn{flex:1 1 auto;text-align:center}.tablewrap{margin:0 -16px;border-radius:0}table{font-size:13px}th,td{padding:8px}}</style>
 </head>
 <body>
 <header><div class="wrap">
@@ -58,7 +58,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
 <pre><span class="c"># macOS / Linux (Windows via WSL): one line to install, one to run</span>
 <span class="p">$</span> curl -fsSL https://gnomancer.com/install.sh | bash      <span class="c"># or: pipx install gnomancer && gnomancer setup</span>
 <span class="p">$</span> gnomancer ~/Downloads/AncestryDNA.zip</pre>
-  <div class="shot"><img src="/assets/demo-report.png?v=2" alt="A gnomancer report opening in plain language, then its at-a-glance digest: who the data says you are, worth knowing, reassuring" width="1440" height="1510"></div>
+  <div class="shot"><img src="/assets/demo-report.png?v=2" fetchpriority="high" alt="A gnomancer report opening in plain language, then its at-a-glance digest: who the data says you are, worth knowing, reassuring" width="1440" height="1510"></div>
   <p class="caption">The report, generated from a synthetic demo file. Questions, haplogroup cousins, help installing: <a href="https://discord.gg/aGjqzqErQH">join the Discord</a>.</p>
 </section>
 
@@ -70,7 +70,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
     <div class="card"><h3>Traits and ancestry markers</h3><p>A curated panel of about 110 well-replicated sites: eye and hair pigmentation, lactase persistence, caffeine and alcohol metabolism, bitter taste, blood group, and more.</p></div>
     <div class="card"><h3>Health and carrier sites</h3><p>APOE, Factor V Leiden, hemochromatosis, celiac HLA tags, macular degeneration, type 2 diabetes and the rare pathogenic sites that happen to be on consumer chips. Collapsed by default, for people who would rather not look.</p></div>
     <div class="card"><h3>ClinVar scan</h3><p>Every typed site checked against ClinVar. Each hit is scored for plausibility, because arrays are unreliable at rare sites and a homozygous rare "pathogenic" call is usually an artifact.</p></div>
-    <div class="card"><h3>Pharmacogenomics</h3><p>PharmCAT star-allele diplotypes and CPIC phenotypes for 18 genes, with the drugs each one matters for and an honest per-gene coverage figure.</p></div>
+    <div class="card"><h3>Pharmacogenomics</h3><p>PharmCAT star-allele diplotypes and CPIC phenotypes for the CPIC genes your chip covers (typically 15 to 20), with the drugs each one matters for and an honest per-gene coverage figure.</p></div>
     <div class="card"><h3>Plain language, and your own AI</h3><p>An automatic at-a-glance digest, plus a narrative written by whichever AI assistant you already use. gnomancer is an MCP server too: connect it to Claude Desktop, Claude Code or Cursor and just ask "what does my report say about caffeine?" The file still never leaves your machine.</p></div>
   </div>
 </section>
@@ -124,5 +124,5 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
   <span>gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · <a href="https://github.com/codebase/gnomancer/releases">releases</a> · <a href="https://discord.gg/aGjqzqErQH">Discord community</a> · <a href="https://github.com/codebase/gnomancer/blob/main/CONTRIBUTING.md">contribute</a></span>
   <span>No cookies, no analytics, no uploads.</span>
 </div></footer>
-<script>(function(){var h=document.querySelector('header'),b=document.getElementById('menu');if(b){b.onclick=function(){var o=h.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');};}})();</script></body>
+<script>(function(){var h=document.querySelector('header'),b=document.getElementById('menu');if(!b)return;function set(o){h.classList.toggle('open',o);b.setAttribute('aria-expanded',o?'true':'false');}b.onclick=function(){set(!h.classList.contains('open'));};document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});document.addEventListener('click',function(e){if(h.classList.contains('open')&&!h.contains(e.target))set(false);});})();</script></body>
 </html>

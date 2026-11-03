@@ -76,3 +76,14 @@ def test_reports_render(demo_dir, tmp_path):
     assert "## Marker panel" in md.read_text()
     t = html.read_text()
     assert "<svg" in t and "Marker panel" in t and "<script" in t and "http" not in t.split("<footer>")[0].replace("https://github.com", "")
+
+
+def test_versions_agree():
+    """The version is declared in four files; a release bumps all of them."""
+    import json, re
+    from gnomancer import __version__
+    root = Path(__file__).resolve().parent.parent
+    assert re.search(r'^version = "([^"]+)"', (root / "pyproject.toml").read_text(), re.M).group(1) == __version__
+    sj = json.loads((root / "server.json").read_text())
+    assert sj["version"] == __version__ and sj["packages"][0]["version"] == __version__
+    assert json.loads((root / ".claude-plugin" / "plugin.json").read_text())["version"] == __version__

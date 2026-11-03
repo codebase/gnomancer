@@ -14,17 +14,16 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7c3aed" alt="MIT"></a>
 </p>
 
-Take the raw file you already downloaded from **AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA** and turn it into one readable report. Everything runs on your computer. Nothing is uploaded.
+Take the raw file you already downloaded from **AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA** (or a VCF) and turn it into one readable report. Everything runs on your computer. Nothing is uploaded.
 
 ## Quick start
 
 ```bash
-pipx install gnomancer      # Python 3.10+; Java 11+ for the haplogroup and PharmCAT steps
-gnomancer setup             # fetches the open-source tools and reference files once (~250 MB)
-gnomancer ~/Downloads/AncestryDNA.zip
+pipx install gnomancer      # Python 3.10+; Java 17+ for the mtDNA haplogroup and PharmCAT steps
+gnomancer ~/Downloads/AncestryDNA.zip   # first run fetches the open-source tools and references once (~250 MB)
 ```
 
-Open `AncestryDNA_analysis/REPORT.html`. macOS: `brew install codebase/tap/gnomancer` pulls Python and Java for you. No Python at all? `curl -fsSL https://gnomancer.com/install.sh | bash`. Windows: [via WSL](https://gnomancer.com/install/).
+Open `AncestryDNA_analysis/REPORT.html`. No Python? `curl -fsSL https://gnomancer.com/install.sh | bash` sets everything up (macOS and Linux; Windows [via WSL](https://gnomancer.com/install/)).
 
 ![demo report](docs/demo-report.png)
 
@@ -46,7 +45,7 @@ gnomancer is also an MCP server. Connect it and ask "what does my report say abo
 claude mcp add gnomancer -- uvx gnomancer serve          # Claude Code; Claude Desktop/Cursor: command "uvx", args ["gnomancer","serve"]
 ```
 
-Only derived results reach the assistant, never the raw file. The first `analyze` downloads the tools automatically. Health tables are separate tools fetched only on request. The repo also works as a Claude plugin (`skills/gnomancer/SKILL.md`).
+Only derived results reach the assistant, never the raw file, and the health tables are separate tools fetched only on request. The repo also works as a Claude plugin (`skills/gnomancer/SKILL.md`).
 
 ## Privacy
 
@@ -60,6 +59,6 @@ A genotyping array reads about 0.02% of the genome at pre-chosen sites, and its 
 
 [Discord community](https://discord.gg/aGjqzqErQH) · [CLI options](docs/cli.md) · [vendors and quirks](docs/vendors.md) · [the marker panel](docs/marker-panel.md) · [tools under the hood](docs/tools.md) · [development](docs/development.md) · [MCP registry](docs/mcp-registry.md) · [contributing](CONTRIBUTING.md)
 
-MIT licensed. The bundled tools keep their own licenses.
+MIT licensed. The tools it downloads keep their own licenses; see [NOTICE.md](NOTICE.md) for credits.
 
 <sub>mcp-name: com.gnomancer/gnomancer</sub>

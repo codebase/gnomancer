@@ -1,4 +1,5 @@
 name = "gnomancer-site"
+main = "worker.js"
 compatibility_date = "2026-10-01"
 workers_dev = false
 
@@ -9,4 +10,6 @@ routes = [
 
 [assets]
 directory = "./site"
+binding = "ASSETS"
 not_found_handling = "404-page"
+run_worker_first = true

@@ -15,9 +15,13 @@ Run `pytest` afterwards: the test suite checks the table parses, alleles are val
 ## Adding a vendor
 Parsing lives in the [`snps`](https://github.com/apriha/snps) library. If a file does not load, first check whether `snps`
 supports it; if not, open an issue there and here with the first 20 lines of the file (header only, no genotypes).
-Add an anonymised fixture under `tests/fixtures/` generated with `examples/make_demo.py` style synthetic data, never real data.
+Test data is synthetic: `tests/conftest.py` builds it with `examples/make_demo.py` and `examples/make_family.py`. Extend those generators for a new layout; never add real data.
 
 ## Rules
 - Never commit a real raw-data file or a real report. `.gitignore` blocks the common names; stay alert anyway.
 - Keep the tool offline: the only network calls allowed are downloading public tools and reference files.
-- Health wording goes through the "would a genetic counselor wince?" test.
+- Health wording, concretely:
+  - Effect sizes only as published odds ("~2x odds") with a source in `note`; never "you will" or "you have".
+  - Say "carrier" for one copy of a recessive variant and never call a carrier "affected".
+  - Every ClinVar or PharmCAT statement ends in "confirm with a clinical test"; the report never names a diagnosis as a fact.
+  - Protective and benign results are labelled as such so they are not counted as risk.

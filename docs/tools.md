@@ -12,7 +12,9 @@
 | rCRS (NC_012920.1) | mitochondrial reference | NCBI |
 
 Evaluated and not used (yet): PLINK 2 (nothing an array file needs that is not already here), ADMIXTURE (needs a multi-GB reference panel),
-pgsc_calc polygenic scores (arrays need imputation first), SNPedia (non-commercial license, no bulk use).
+pgsc_calc polygenic scores (arrays need imputation first; planned, see roadmap item 5 in referrals-and-roadmap.md), SNPedia (non-commercial license, no bulk use).
+
+Licenses and credits for everything above: [NOTICE.md](../NOTICE.md).
 
 ## Related tools
 

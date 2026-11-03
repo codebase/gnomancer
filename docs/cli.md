@@ -4,7 +4,8 @@ On the very first run, `gnomancer FILE` downloads the open-source tools and refe
 
 ```
 gnomancer FILE [--out DIR] [--markers TSV] [--no-y] [--no-yleaf] [--no-mt] [--no-clinvar] [--no-pharmcat] [--ancestry]
-          [--summary summary.md] [--ai]
+          [--summary summary.md] [--ai] [--no-setup]
+gnomancer --version
 ```
 
 **Plain-language summary.** The report opens with an automatic "at a glance" block built from the results. For a narrative on

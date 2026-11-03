@@ -19,16 +19,23 @@ OUT = ROOT / "site" / "haplogroups"
 INV = "https://discord.gg/aGjqzqErQH"
 CODE = re.compile(r"^[A-Z][0-9a-z']*$")
 
+
+def blurb(text: str, n: int) -> str:
+    """First n characters of text, cut at a word boundary, with an ellipsis only when something was cut."""
+    if len(text) <= n:
+        return text
+    return text[:n].rsplit(" ", 1)[0].rstrip(",;:") + "…"
+
 CSS = open(ROOT / "site" / "install" / "index.html").read().split("<style>")[1].split("</style>")[0]
 HEAD = ('<header><div class="wrap"><a class="brand" href="/"><img src="/assets/mark-64.png" alt="" width="30" height="30">gnomancer</a>'
         '<button id="menu" class="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button><nav id="nav"><a href="/haplogroups/">Haplogroups</a><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a>'
         f'<a href="{INV}">Community</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header>')
-JS = "<script>(function(){var h=document.querySelector('header'),b=document.getElementById('menu');if(b){b.onclick=function(){var o=h.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');};}})();</script>"
+JS = "<script>(function(){var h=document.querySelector('header'),b=document.getElementById('menu');if(!b)return;function set(o){h.classList.toggle('open',o);b.setAttribute('aria-expanded',o?'true':'false');}b.onclick=function(){set(!h.classList.contains('open'));};document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});document.addEventListener('click',function(e){if(h.classList.contains('open')&&!h.contains(e.target))set(false);});})();</script>"
 FOOT = (f'<footer><div class="wrap">gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · '
         f'<a href="{INV}">Discord</a> · no cookies, no analytics, no uploads.</div></footer>')
 EXTRA_CSS = (".crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14px;color:var(--ink-2);margin:0 0 18px}"
              ".crumbs a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;color:var(--ink-2)}"
-             ".crumbs a:hover{text-decoration:none;border-color:var(--accent)}.crumbs .here{border-color:var(--accent);color:var(--accent-ink);font-weight:600}"
+             ".crumbs a:hover{text-decoration:none;border-color:var(--accent)}.crumbs .here{border-color:var(--accent);color:var(--accent-2);font-weight:600}"
              ".grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}"
              ".tile h3{margin:0 0 4px;font-size:16px}.tile p{margin:0;color:var(--ink-2);font-size:14px}.tile a{color:inherit}.tile a:hover{text-decoration:none}"
              ".kicker{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:48px 0 0}"
@@ -70,21 +77,21 @@ def page(g, all_groups):
     title = g["name"] if g["name"].lower().startswith("haplogroup") else f"Haplogroup {g['name']}"
     crumbs = "".join(f'<a href="/haplogroups/{"y" if h["type"]=="Y" else "mt"}/{slug(h["name"])}/">{e(h["name"].replace("Haplogroup ", ""))}</a><span>›</span>' for h in anc)
     crumbs += f'<span class="here crumbs-here"><a class="here" href="{url}">{e(g["name"].replace("Haplogroup ", ""))}</a></span>'
-    desc = g["text"][:155].rsplit(" ", 1)[0] + ("…" if len(g["text"]) > 155 else "")
+    desc = blurb(g["text"], 155)
     refs = " · ".join(f'<a href="{u}">{e(n)}</a>' for n, u in REFS[g["type"]])
     kids_html = ("<h2>Branches</h2><div class='grid'>" + "".join(
-        f'<div class="tile"><h3><a href="/haplogroups/{"y" if h["type"]=="Y" else "mt"}/{slug(h["name"])}/">{e(h["name"])}</a></h3><p>{e(h["text"][:140].rsplit(" ",1)[0])}…</p></div>' for h in kids) + "</div>") if kids else ""
+        f'<div class="tile"><h3><a href="/haplogroups/{"y" if h["type"]=="Y" else "mt"}/{slug(h["name"])}/">{e(h["name"])}</a></h3><p>{e(blurb(h["text"], 140))}</p></div>' for h in kids) + "</div>") if kids else ""
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)} · {kind.split(' (')[0]} · gnomancer</title>
 <meta name="description" content="{e(desc)}"><link rel="canonical" href="https://gnomancer.com{url}"><link rel="icon" href="/assets/mark-64.png" type="image/png">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://gnomancer.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://gnomancer.com/assets/og.jpg">
+<meta property="og:type" content="website"><meta property="og:site_name" content="gnomancer"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://gnomancer.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://gnomancer.com/assets/og.jpg">
 <style>{CSS}{EXTRA_CSS}</style></head><body>{HEAD}<main class="wrap">
 <p class="kicker" style="margin-top:44px">{e(kind)}</p>
 <h1 style="margin-top:6px">{e(title)}</h1>
 <div class="crumbs">{crumbs}</div>
 <p class="lead">{e(g["text"])}</p>
 <div class="card"><h3 style="margin-top:0">How gnomancer finds it</h3>
-<p>{"The Y haplogroup is called from the Y-chromosome sites on your chip by yhaplo (ISOGG tree) with a second opinion from Yleaf on the current YFull, FamilyTreeDNA and ISOGG trees. Arrays type a few thousand Y sites, so the call stops at roughly this depth; Y sequencing (e.g. Big Y-700) is needed for a terminal subclade." if g["type"]=="Y" else "The mitochondrial haplogroup is called by Haplogrep3 against PhyloTree 17 from the few hundred mtDNA sites on your chip, compared with the rCRS reference. Sub-branches usually need full mitochondrial sequencing."}</p>
+<p>{"The Y haplogroup is called from the Y-chromosome sites on your chip by yhaplo (ISOGG tree) with a second opinion from Yleaf on the current YFull, FamilyTreeDNA and ISOGG trees. Arrays type a few thousand Y sites, so the call stops at roughly this depth; Y sequencing (e.g. Big Y-700) is needed for a terminal subclade." if g["type"]=="Y" else "The mitochondrial haplogroup is called by Haplogrep3 against PhyloTree 17 from the few hundred to few thousand mtDNA sites on your chip, compared with the rCRS reference. Sub-branches usually need full mitochondrial sequencing."}</p>
 <p>Run it on your own raw file: <a href="/install/">install gnomancer</a> (nothing is uploaded), or ask your AI assistant with the <a href="https://github.com/codebase/gnomancer#use-it-from-your-ai-assistant">MCP server</a>.</p></div>
 {kids_html}
 <h2>Compare notes</h2>
@@ -96,7 +103,7 @@ def page(g, all_groups):
 def index(all_groups):
     def section(kind, label):
         gs = sorted([g for g in all_groups if g["type"] == kind], key=lambda g: (g["code"], g["name"]))
-        tiles = "".join(f'<div class="tile" data-k="{e(g["name"].lower())} {e(g["code"].lower())}"><h3><a href="/haplogroups/{"y" if kind=="Y" else "mt"}/{slug(g["name"])}/">{e(g["name"])}</a></h3><p>{e(g["text"][:150].rsplit(" ",1)[0])}…</p></div>' for g in gs)
+        tiles = "".join(f'<div class="tile" data-k="{e(g["name"].lower())} {e(g["code"].lower())}"><h3><a href="/haplogroups/{"y" if kind=="Y" else "mt"}/{slug(g["name"])}/">{e(g["name"])}</a></h3><p>{e(blurb(g["text"], 150))}</p></div>' for g in gs)
         return f'<p class="kicker">{label}</p><div class="grid">{tiles}</div>'
     js = ("document.getElementById('q').oninput=function(){var v=this.value.toLowerCase();document.querySelectorAll('.tile').forEach(function(t){t.style.display=(!v||t.dataset.k.indexOf(v)>-1)?'':'none'});};")
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -124,10 +131,12 @@ def main():
         (d / "index.html").write_text(page(g, groups))
         urls.append(f"https://gnomancer.com/haplogroups/{'y' if g['type']=='Y' else 'mt'}/{slug(g['name'])}/")
     # sitemap
+    import datetime as dt
+    today = dt.date.today().isoformat()
     sm = ROOT / "site" / "sitemap.xml"
     base = ["https://gnomancer.com/", "https://gnomancer.com/get-your-data/", "https://gnomancer.com/install/"]
     sm.write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-                  "".join(f"<url><loc>{u}</loc><changefreq>monthly</changefreq></url>\n" for u in base + urls) + "</urlset>\n")
+                  "".join(f"<url><loc>{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq></url>\n" for u in base + urls) + "</urlset>\n")
     print(f"wrote {len(groups)} pages + index; sitemap has {len(base)+len(urls)} urls")
 
 

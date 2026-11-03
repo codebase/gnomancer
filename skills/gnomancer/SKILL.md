@@ -23,11 +23,11 @@ Otherwise follow the steps below with the CLI.
 ## Steps
 1. **Install if missing.** `command -v gnomancer || ls ~/.gnomancer/venv/bin/gnomancer`. If absent: `pipx install gnomancer && gnomancer setup`
    (or `curl -fsSL https://gnomancer.com/install.sh | bash`; Windows needs WSL, see https://gnomancer.com/install/).
-   Prerequisites: Python 3.10+, Java 11+ (Java only for haplogroups/PharmCAT).
+   Prerequisites: Python 3.10+, Java 17+ (Java only for the mtDNA haplogroup and PharmCAT).
 2. **Find the file.** Ask for the path if not given. Zips are fine. If the user has no file yet, point them to
    https://gnomancer.com/get-your-data/ for per-vendor download steps.
 3. **Run it.** `gnomancer <file> --out <dir>` (add `--ancestry` if the user wants a population estimate; it is slow
-   the first time). Expect about a minute.
+   the first time). Expect one to three minutes (the ClinVar scan dominates).
 4. **Write the narrative.** Open `<dir>/summary-prompt.md`, follow its instructions exactly (250–400 words, second
    person, no headings, no invented facts, no rsIDs), save your text as `<dir>/summary.md`, then re-run with
    `--summary <dir>/summary.md` so it appears at the top of the report.

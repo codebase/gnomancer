@@ -150,6 +150,6 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
     L.append("- Admixture percentages at the resolution of the vendor's own report (that needs their reference panel).")
     L.append("- Anything on sites the vendor did not type; the panel marks those `not on array`. PharmCAT assumes reference at untyped positions.")
     L.append("- For a male sample, X-chromosome sites are hemizygous (one copy), so carrier/homozygous language does not apply there.")
-    L.append(f"- `share` uses the {POP_LABEL.get(pop, pop)} reference population unless `--pop` was given.")
+    L.append(f"- `share` uses the {POP_LABEL.get(pop, pop)} reference population unless `--ancestry` placed the sample in another 1000 Genomes group.")
     out.write_text("\n".join(L) + "\n")
     return out

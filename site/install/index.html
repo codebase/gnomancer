@@ -1,9 +1,9 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Install gnomancer on macOS, Linux or Windows</title>
 <meta name="description" content="Install gnomancer in a few minutes on macOS, Linux or Windows (via WSL), then run it on your raw DNA file. No account, no upload.">
-<meta property="og:image" content="https://gnomancer.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://gnomancer.com/assets/og.jpg"><link rel="canonical" href="https://gnomancer.com/install/"><link rel="icon" href="/assets/mark-64.png" type="image/png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="gnomancer"><meta property="og:title" content="Install gnomancer"><meta property="og:description" content="A few minutes in the Terminal once; after that, one line per report. No account, no upload."><meta property="og:image" content="https://gnomancer.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://gnomancer.com/assets/og.jpg"><link rel="canonical" href="https://gnomancer.com/install/"><link rel="icon" href="/assets/mark-64.png" type="image/png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <style>
-:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#86847d;--accent:#7c3aed;--accent-2:#5b21b6;--accent-soft:#efe9fd;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
+:root{color-scheme:light;--bg:#fbfbf9;--surface:#ffffff;--line:#e4e2dc;--ink:#111;--ink-2:#4f4e4a;--ink-3:#6e6c65;--accent:#7c3aed;--accent-2:#5b21b6;--accent-soft:#efe9fd;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;--r:14px}
 @media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--line:#2c2c2a;--ink:#f1f0ec;--ink-2:#c2c1b7;--ink-3:#8c8b84;--accent:#a78bfa;--accent-2:#c4b5fd;--accent-soft:#2e1a5e}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
 a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:860px;margin:0 auto;padding:0 20px}
@@ -17,27 +17,26 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:var(--r
 .note{border-left:4px solid var(--accent);background:var(--surface);border-radius:8px;padding:10px 14px;color:var(--ink-2);font-size:14.5px;margin:12px 0}
 .toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}.toc a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px;color:var(--ink-2)}.toc a:hover{text-decoration:none;border-color:var(--accent)}
 footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 48px;color:var(--ink-3);font-size:14px}
-.menu{display:none;font:inherit;font-size:22px;line-height:1;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer}@media (max-width:720px){.menu{display:inline-block}header .wrap{flex-wrap:wrap;height:auto;min-height:56px;padding-top:8px;padding-bottom:8px}nav{display:none;flex-basis:100%;flex-direction:column;gap:2px;padding:6px 0 4px;border-top:1px solid var(--line);margin-top:8px}header.open nav{display:flex}nav a{margin:0;padding:10px 4px;font-size:16px;border-bottom:1px solid var(--line)}nav a:last-child{border-bottom:0}nav a.hide{display:block}}@media (max-width:640px){h1{font-size:28px;margin-top:36px}p.lead{font-size:16.5px}pre{font-size:12.5px;padding:12px}.card{padding:16px}h2{font-size:21px}}</style></head><body><header><div class="wrap"><a class="brand" href="/"><img src="/assets/mark-64.png" alt="" width="30" height="30">gnomancer</a><button id="menu" class="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button><nav id="nav"><a href="/haplogroups/">Haplogroups</a><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="https://discord.gg/aGjqzqErQH">Community</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header><main class="wrap">
+.menu{display:none;font:inherit;font-size:22px;line-height:1;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer}@media (max-width:720px){.menu{display:inline-block}header .wrap{flex-wrap:wrap;height:auto;min-height:56px;padding-top:8px;padding-bottom:8px}nav{display:none;flex-basis:100%;flex-direction:column;gap:2px;padding:6px 0 4px;border-top:1px solid var(--line);margin-top:8px}header.open nav{display:flex}nav a{margin:0;padding:10px 4px;font-size:16px;border-bottom:1px solid var(--line)}nav a:last-child{border-bottom:0}}@media (max-width:640px){h1{font-size:28px;margin-top:36px}p.lead{font-size:16.5px}pre{font-size:12.5px;padding:12px;white-space:pre-wrap;word-break:break-all}.card{padding:16px}h2{font-size:21px}}</style></head><body><header><div class="wrap"><a class="brand" href="/"><img src="/assets/mark-64.png" alt="" width="30" height="30">gnomancer</a><button id="menu" class="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button><nav id="nav"><a href="/haplogroups/">Haplogroups</a><a href="/get-your-data/">Get your data</a><a href="/install/">Install</a><a href="https://discord.gg/aGjqzqErQH">Community</a><a href="https://github.com/codebase/gnomancer">GitHub</a></nav></div></header><main class="wrap">
 <h1>Install gnomancer</h1>
-<p class="lead">gnomancer is a command-line program today. That means a few minutes in the Terminal once, after which running it is one line. A point-and-click app is on the roadmap. Nothing here creates an account or uploads anything.</p>
+<p class="lead">gnomancer is a command-line program. That means a few minutes in the Terminal once, after which running it is one line. If you use an AI assistant such as Claude, it can do all of this for you through the MCP server. Nothing here creates an account or uploads anything.</p>
 <div class="toc"><a href="#mac">macOS</a><a href="#linux">Linux</a><a href="#windows">Windows</a><a href="#run">Run it</a><a href="#trouble">Trouble?</a></div>
 
 <h2 id="mac">macOS</h2>
 <div class="card">
 <ol>
 <li>Open <strong>Terminal</strong> (press <code>⌘ Space</code>, type Terminal, press Enter).</li>
-<li>If you have never used Homebrew, install it from <a href="https://brew.sh">brew.sh</a> (one command on that page).</li>
-<li>Install gnomancer, which brings Python and Java with it, then fetch the tools once:
-<pre><code>brew install codebase/tap/gnomancer
-gnomancer setup</code></pre>
-Prefer not to use Homebrew for gnomancer itself? <code>curl -fsSL https://gnomancer.com/install.sh | bash</code> works too, after <code>brew install python@3.12 openjdk</code>.
-This installs the <a href="https://pypi.org/project/gnomancer/">gnomancer package from PyPI</a> into a private folder (<code>~/.gnomancer</code>) and downloads the open-source tools and reference files it uses (about 250 MB, once). You can <a href="/install.sh">read the script</a> before running it. Already comfortable with Python? <code>pipx install gnomancer && gnomancer setup</code> is the same thing.</li>
-</ol></div>
+<li>Paste this one line and press Enter:
+<pre><code>curl -fsSL https://gnomancer.com/install.sh | bash</code></pre>
+It installs the <a href="https://pypi.org/project/gnomancer/">gnomancer package from PyPI</a> into a private folder (<code>~/.gnomancer</code>) and downloads the open-source tools and reference files it uses (about 250 MB, once). You can <a href="/install.sh">read the script</a> before running it. If no usable Python is found it tells you the quickest fix (install <a href="https://docs.astral.sh/uv/">uv</a> and re-run, or the <a href="https://www.python.org/downloads/">python.org</a> installer).</li>
+<li>For the mitochondrial haplogroup and PharmCAT steps, install Java 17 or newer once: <code>brew install openjdk</code> (needs <a href="https://brew.sh">Homebrew</a>). Everything else works without it.</li>
+</ol>
+<div class="note">Also available: <code>brew install codebase/tap/gnomancer</code> (brings Python and Java with it) and, if you already use Python tooling, <code>pipx install gnomancer</code>. The first run downloads the tools automatically.</div></div>
 
 <h2 id="linux">Linux</h2>
 <div class="card"><ol>
 <li>Install the prerequisites with your package manager. Debian or Ubuntu:
-<pre><code>sudo apt install python3 python3-venv default-jre</code></pre>Fedora: <code>sudo dnf install python3 java-21-openjdk</code></li>
+<pre><code>sudo apt install python3 python3-venv openjdk-17-jre</code></pre>Fedora: <code>sudo dnf install python3 java-21-openjdk</code>. Java is only needed for the mitochondrial haplogroup and PharmCAT steps.</li>
 <li>Then:
 <pre><code>curl -fsSL https://gnomancer.com/install.sh | bash</code></pre></li>
 </ol></div>
@@ -48,24 +47,24 @@ This installs the <a href="https://pypi.org/project/gnomancer/">gnomancer packag
 <ol>
 <li>Open <strong>PowerShell</strong> as administrator and run <code>wsl --install</code>. Restart when asked and set a username and password for Ubuntu when it opens.</li>
 <li>In the Ubuntu window, install the prerequisites and gnomancer:
-<pre><code>sudo apt update && sudo apt install -y python3 python3-venv default-jre
+<pre><code>sudo apt update && sudo apt install -y python3 python3-venv openjdk-17-jre
 curl -fsSL https://gnomancer.com/install.sh | bash</code></pre></li>
 <li>Your Windows files are visible inside Ubuntu under <code>/mnt/c/</code>, so a file in your Downloads folder is at <code>/mnt/c/Users/YourName/Downloads/</code>.</li>
 </ol>
-<div class="note">A native Windows installer is on the roadmap. If you are comfortable with Python on Windows already, <code>pip install gnomancer</code> then <code>gnomancer setup</code> works too; install a Java runtime for the haplogroup and PharmCAT steps.</div></div>
+<div class="note">If you are comfortable with Python on Windows already, <code>pip install gnomancer</code> works too (the first run downloads the tools); install a Java 17+ runtime for the mitochondrial haplogroup and PharmCAT steps.</div></div>
 
 <h2 id="run">Run it</h2>
 <div class="card">
 <p>First <a href="/get-your-data/">download your raw data file</a> from your testing company. Then:</p>
 <pre><code>gnomancer ~/Downloads/dna-data-2026-11-02.zip</code></pre>
-<p>It takes about a minute. The report appears in a new folder next to your file; open <code>REPORT.html</code> in any browser. Add <code>--ancestry</code> for a population estimate (slower the first time, it downloads reference models) and <code>--summary summary.md</code> to embed a narrative written by your AI assistant (the run writes a ready-made prompt for it as <code>summary-prompt.md</code>).</p>
+<p>It takes one to three minutes. The report appears in a new folder next to your file; open <code>REPORT.html</code> in any browser. Add <code>--ancestry</code> for a population estimate (slower the first time, it downloads reference models) and <code>--summary summary.md</code> to embed a narrative written by your AI assistant (the run writes a ready-made prompt for it as <code>summary-prompt.md</code>).</p>
 <p>If <code>gnomancer</code> is not found, use the full path: <code>~/.gnomancer/venv/bin/gnomancer</code>.</p></div>
 
 <h2 id="trouble">Trouble?</h2>
 <div class="card"><ul>
-<li><strong>"python3: command not found"</strong>: install Python 3.10 or newer (macOS: <code>brew install python@3.12</code>).</li>
-<li><strong>Java warnings</strong>: the mitochondrial haplogroup and PharmCAT sections need Java 11 or newer. Everything else runs without it.</li>
+<li><strong>"No working Python 3.10+ found"</strong>: install <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a> and re-run the installer (it fetches a standalone Python), or use the <a href="https://www.python.org/downloads/">python.org</a> installer.</li>
+<li><strong>Java warnings</strong>: the mitochondrial haplogroup and PharmCAT sections need Java 17 or newer. Everything else runs without it.</li>
 <li><strong>"Could not parse any SNPs"</strong>: the file is probably not a raw-data export. Check <a href="/get-your-data/">which file to download</a>; a PDF or the company's report file will not work.</li>
 <li>Anything else: ask in <a href="https://discord.gg/aGjqzqErQH">the Discord</a> (#install-help) or open an issue on <a href="https://github.com/codebase/gnomancer/issues">GitHub</a>. Include the first 20 lines of your file's header, never the genotype lines.</li>
 </ul></div>
-</main><footer><div class="wrap">gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · <a href="https://discord.gg/aGjqzqErQH">Discord</a> · no cookies, no analytics, no uploads.</div></footer><script>(function(){var h=document.querySelector('header'),b=document.getElementById('menu');if(b){b.onclick=function(){var o=h.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');};}})();</script></body></html>
+</main><footer><div class="wrap">gnomancer · MIT licensed · <a href="https://github.com/codebase/gnomancer">source</a> · <a href="https://discord.gg/aGjqzqErQH">Discord</a> · no cookies, no analytics, no uploads.</div></footer><script>(function(){var h=document.querySelector('header'),b=document.getElementById('menu');if(!b)return;function set(o){h.classList.toggle('open',o);b.setAttribute('aria-expanded',o?'true':'false');}b.onclick=function(){set(!h.classList.contains('open'));};document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});document.addEventListener('click',function(e){if(h.classList.contains('open')&&!h.contains(e.target))set(false);});})();</script></body></html>

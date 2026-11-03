@@ -408,7 +408,7 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
              '<li>Admixture percentages at the resolution of the vendor\'s own report, which uses a proprietary reference panel.</li>'
              '<li>Anything at sites the vendor did not type. PharmCAT assumes the reference allele at untyped positions, so a "complete" diplotype can still miss a rare allele.</li>'
              '<li>For a male sample, X-chromosome sites have one copy (hemizygous), so "carrier" and "homozygous" do not apply there in the usual sense.</li>'
-             f'<li>"How common" uses the {e(POP_LABEL.get(pop, pop))} reference population unless you passed --pop; a different ancestry changes those percentages, not your genotype.</li></ul></section>')
+             f'<li>"How common" uses the {e(POP_LABEL.get(pop, pop))} reference population unless --ancestry placed you in another 1000 Genomes group; a different reference changes those percentages, not your genotype.</li></ul></section>')
     H.append(f'<footer>Generated locally by gnomancer v{__version__}. No data left this computer. To share with a clinician, print this page or hand over the pharmacist card ({e(card_link) if card_link else "pgx-card.pdf"}). '
              'Documentation: https://gnomancer.com · Source: https://github.com/codebase/gnomancer</footer>')
     H.append(f"</div><script>{JS}</script></body></html>")

@@ -62,7 +62,7 @@ def _cli(args: list[str]) -> subprocess.CompletedProcess:
 @server.tool()
 def analyze(path: str, out_dir: str | None = None, ancestry: bool = False, fast: bool = False) -> dict:
     """Run gnomancer on a raw DNA file (AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA, LivingDNA, VCF; .zip OK).
-    Takes about a minute; the very first run also downloads ~250 MB of open-source tools and references (a few
+    Takes one to three minutes; the very first run also downloads ~250 MB of open-source tools and references (a few
     minutes), automatically. fast=True skips Yleaf, ClinVar and PharmCAT. Returns the output directory, report paths
     and the at-a-glance digest. The file never leaves this machine."""
     inp = Path(path).expanduser()

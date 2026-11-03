@@ -4,7 +4,7 @@ Working notes, not commitments. Last checked 2026-11-02.
 
 ## Referral / affiliate programs that fit the report
 
-The report already sends people to a next step in four places. These are the programs behind them.
+The report points people to a next step in four places (Y sequencing, confirmatory testing, a genetic counselor, Lp(a) blood test). These are the programs that could sit behind a future `/next-steps` page; none is linked today.
 
 | Report says | Vendor | Program | Terms found | Fit |
 |---|---|---|---|---|
@@ -20,7 +20,7 @@ The report already sends people to a next step in four places. These are the pro
 
 ### Rules for using any of them
 1. Genealogy upsells only next to genealogy content. Never an affiliate link beside a disease-risk row.
-2. The report links to **one page**, `gnomancer.com/next-steps`; affiliate URLs live there, not in the tool. Partners can change without a release, clicks are measurable, the open-source report stays clean.
+2. If this is ever done, the report links to **one page**, `gnomancer.com/next-steps` (not built yet); affiliate URLs live there, not in the tool. Partners can change without a release, clicks are measurable, the open-source report stays clean.
 3. Plain-words disclosure on that page. Keep the genetic-counselor option on it even though it earns nothing.
 4. Expect pocket money: at 4%, a thousand runs a month is a handful of sales. It is the only monetization that does not contradict "nothing leaves your machine".
 
@@ -34,31 +34,29 @@ The report already sends people to a next step in four places. These are the pro
 Nobody needs a GitHub account to use gnomancer: the repo is public, releases are plain downloads, and the installer is
 `curl -fsSL https://gnomancer.com/install.sh | bash`. The gaps are packaging and being found.
 
-**Packaging, in order:**
-1. `install.sh` on gnomancer.com (done) and the `/install/` page with macOS, Linux and Windows-via-WSL steps (done).
-2. **PyPI**: `pipx install gnomancer`. pyproject is ready; needs a PyPI account and a trusted-publisher GitHub Action. the maintainer creates the account.
-3. **Homebrew tap** (`brew install codebase/tap/gnomancer`): a formula that depends on python@3.12 and openjdk; solves the Java problem on macOS.
-4. **Native Windows**: PyInstaller build of the CLI plus bundled JRE, or a Tauri desktop app. The desktop app is the real answer for non-terminal users.
-5. **Claude skill / plugin** (done: `skills/gnomancer/SKILL.md`, `.claude-plugin/plugin.json`): any Claude Code or Claude Desktop user can say "analyze my DNA file" and the agent installs, runs, and summarizes. Submit to the Claude Code plugin marketplace and the Anthropic skills directory.
-6. **MCP server** (done: `gnomancer serve`, `server.json`, `docs/mcp-registry.md`). Registry publication is blocked on PyPI (step 2).
+**Packaging:**
+- ☑ `install.sh` on gnomancer.com and the `/install/` page (macOS, Linux, Windows via WSL).
+- ☑ PyPI (`pipx install gnomancer`), trusted publishing from GitHub releases.
+- ☑ Homebrew tap (`brew install codebase/tap/gnomancer`, python@3.13 + openjdk); unverifiable on macOS 26.2 until Apple's next point release, see development.md.
+- ☑ Claude skill and plugin (`skills/gnomancer/SKILL.md`, `.claude-plugin/plugin.json`).
+- ☑ MCP server on the official registry plus Glama, Smithery, mcp.so, PulseMCP (docs/mcp-registry.md).
+- ⏸ Native Windows and a desktop app: parked (see roadmap item 7).
 
 **Where people look (announce in this order):**
 - r/AncestryDNA, r/23andme, r/Genealogy, r/promethease, r/SNPedia: the "what can I do with my raw data" threads are weekly.
 - ISOGG wiki "Autosomal DNA tools" and the SNPedia "tools" page: standing lists people actually consult.
 - Genetic-genealogy blogs that review tools: DNAeXplained (Roberta Estes), The DNA Geek, Your DNA Guide, Genealogy Explained.
-- Hacker News "Show HN" and Product Hunt, once the browser or desktop version exists.
+- Hacker News "Show HN" and Product Hunt.
 - A 10-minute YouTube walkthrough: download the file, run, read the report. Search traffic for "what to do with raw DNA data" is large.
 
-**SEO pages on the site** (each is a question people type): `/get-your-data/` (done), `/install/` (done), one page per major haplogroup, "what is a raw DNA file", "is my 23andMe data safe to upload to X".
+**SEO pages on the site** (each is a question people type): `/get-your-data/` ☑, `/install/` ☑, one page per haplogroup ☑ (67 pages), "what is a raw DNA file" ☐, "is my 23andMe data safe to upload to X" ☐.
 
 ## Community
 
-- Most of the audience has no GitHub login, so GitHub Discussions / giscus is the wrong front door for them (fine for developers).
-- **Discord** is the pragmatic consumer forum: nearly everyone has an account, free, good moderation tools, channels per haplogroup. Create the server, add an invite link to the site footer.
-- A hosted **Discourse** (email sign-up, searchable by Google, threads that last) is the better long-term forum if the community grows; ~$100/month hosted, or self-host.
-- Keep GitHub Issues/Discussions for bugs and developer talk.
-- House rule to post prominently: share haplogroups, traits and questions; never paste raw files, ClinVar rows or health tables. Genetic data posted publicly is public forever.
-- A self-hosted Discourse is the step after that, only if giscus is outgrown.
+- ☑ Discord is the front door for people without a GitHub login: https://discord.gg/aGjqzqErQH (verification, rules screening, channels per topic and haplogroup). Linked from the site footer and README.
+- GitHub Issues stay for bugs and developer talk.
+- House rule, posted in the server: share haplogroups, traits and questions; never paste raw files, ClinVar rows or health tables. Genetic data posted publicly is public forever.
+- A hosted Discourse (email sign-up, Google-searchable threads) is the step after Discord if the community outgrows it; about $100/month hosted.
 
 ## Roadmap (prioritized 2026-11-02)
 
@@ -76,11 +74,11 @@ Status key: ☐ not started · ◐ in progress · ☑ done
 The assistant path (MCP server + skill) is the front door; `analyze` now auto-runs setup on first use so there is no manual step at all.
 6. ⏸ **Run in the browser** (Pyodide). Parked 2026-11-02: a web page asking for a genome contradicts the product's one promise, however it works under the hood. Revisit only as a no-file-picker demo on the synthetic sample.
 7. ⏸ **Native desktop app**. Parked 2026-11-02: needs paid signing certificates (Apple $99/yr, Windows $200+/yr) to avoid scary warnings, and the audience it serves is reached better through the MCP server and skill, which auto-install. Revisit if non-assistant users ask for it.
-8. ☑ **Homebrew tap** (`brew install codebase/tap/gnomancer`; formula in github.com/codebase/homebrew-tap, bump url/sha256 per release) (`brew install codebase/tap/gnomancer`) that pulls python and openjdk. An hour.
+8. ☑ **Homebrew tap** (`brew install codebase/tap/gnomancer`; formula in github.com/codebase/homebrew-tap, bump url/sha256 per release) that pulls python and openjdk.
 10. ☑ **Haplogroup story pages**: 67 pages under gnomancer.com/haplogroups/ generated from `haplogroup_context.tsv` by `site/build_haplogroups.py` (re-run after editing the table); report lineage cards link to them. No map yet.
 
 ### Polish and trust
-11. ☑ **Checksum verification** for downloaded tools (SECURITY.md currently admits we don't). An hour.
+11. ☑ **Checksum verification** for downloaded tools (SHA-256 pins; ClinVar against NCBI's MD5 sidecar).
 12. ☑ **Light-mode and print-to-PDF pass** on the report (checked 2026-11-02; print CSS collapses controls and expands the health sections).
 13. ☐ **Walkthrough video** for the site and YouTube. Needs the maintainer on mic, or a script.
 
