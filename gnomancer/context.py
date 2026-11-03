@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import csv
-from pathlib import Path
 
 from .paths import DATA as _DATA
 

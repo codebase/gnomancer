@@ -23,6 +23,12 @@ from .report_html import write_html
 from .paths import DATA, ancestry_python
 
 
+def _stepper():
+    """Numbered progress labels; how many steps run depends on sex and flags, so no denominator is promised."""
+    n = iter(range(1, 20))
+    return lambda: str(next(n))
+
+
 def run_ezancestry(inp: Path, loaded) -> dict | None:
     """Run ezancestry in a separate interpreter (it needs Python <=3.11) if .venv-ancestry exists, else in-process."""
     import json as _json
@@ -79,22 +85,23 @@ def main(argv=None):
     if not a.no_setup:
         from .setup_cmd import ensure_setup
         ensure_setup()
-    print(f"[1/6] loading {inp} ...", file=sys.stderr)
+    _step = _stepper()
+    print(f"[{_step()}] loading {inp} ...", file=sys.stderr)
     loaded = load(str(inp))
     df = loaded.df
     print(f"      {loaded.source}, build {loaded.build}, {loaded.count:,} SNPs, sex {loaded.sex or '?'}", file=sys.stderr)
 
-    print("[2/6] quality metrics ...", file=sys.stderr)
+    print(f"[{_step()}] quality metrics ...", file=sys.stderr)
     ct = chromosome_table(df)
     qc = summary(df, ct, loaded.sex)
     ct.to_csv(out / "chromosome-qc.tsv", sep="\t", index=False)
 
-    print("[3/6] runs of homozygosity ...", file=sys.stderr)
+    print(f"[{_step()}] runs of homozygosity ...", file=sys.stderr)
     roh = find_roh(df)
     roh.to_csv(out / "roh.tsv", sep="\t", index=False)
     roh_text = interpret(roh)
 
-    print("[4/6] marker panel ...", file=sys.stderr)
+    print(f"[{_step()}] marker panel ...", file=sys.stderr)
     markers = load_markers(Path(a.markers))
     panel = evaluate(df, markers)
     panel.to_csv(out / "marker-panel.tsv", sep="\t", index=False)
@@ -103,19 +110,19 @@ def main(argv=None):
     is_male = qc["sex_inferred"] == "Male"
     y = dict(error="skipped (sample is not male)" if not is_male else "skipped (--no-y)")
     if is_male and not a.no_y:
-        print("[5/6] Y haplogroup (yhaplo) ...", file=sys.stderr)
+        print(f"[{_step()}] Y haplogroup (yhaplo) ...", file=sys.stderr)
         y = call_y(df, out)
         if not a.no_yleaf:
             print("      second opinion on current trees (Yleaf) ...", file=sys.stderr)
             y["yleaf"] = yleaf_mod.run(df, out)
     mt = dict(error="skipped (--no-mt)")
     if not a.no_mt:
-        print("[5/6] mtDNA haplogroup (haplogrep3) ...", file=sys.stderr)
+        print(f"[{_step()}] mtDNA haplogroup (haplogrep3) ...", file=sys.stderr)
         mt = call_mt(df, out, loaded.build_original)
 
     cv = dict(available=False, hits=None, note="skipped (--no-clinvar)")
     if not a.no_clinvar:
-        print("[6/8] ClinVar scan of every typed site ...", file=sys.stderr)
+        print(f"[{_step()}] ClinVar scan of every typed site ...", file=sys.stderr)
         cv = clinvar_mod.scan(df)
         if cv["available"] and cv["hits"] is not None and not cv["hits"].empty:
             cv["hits"].to_csv(out / "clinvar-hits.tsv", sep="\t", index=False)
@@ -125,7 +132,7 @@ def main(argv=None):
     cv_text = clinvar_mod.interpret(cv) if not a.no_clinvar else cv["note"]
     pc = dict(available=False, calls=None, error="skipped (--no-pharmcat)", stats={})
     if not a.no_pharmcat:
-        print("[7/8] PharmCAT pharmacogenomics ...", file=sys.stderr)
+        print(f"[{_step()}] PharmCAT pharmacogenomics ...", file=sys.stderr)
         pc = pharmcat_mod.run(df, out)
         if pc.get("calls") is not None and not pc["calls"].empty:
             pc["calls"].to_csv(out / "pharmcat-calls.tsv", sep="\t", index=False)
@@ -133,7 +140,7 @@ def main(argv=None):
     card = pgxcard.write(out, pc, panel, loaded.source, inp.name)
     ancestry = None
     if a.ancestry:
-        print("[8/8] ancestry prediction (ezancestry) ...", file=sys.stderr)
+        print(f"[{_step()}] ancestry prediction (ezancestry) ...", file=sys.stderr)
         ancestry = run_ezancestry(inp, loaded)
 
     glance = summary_mod.at_a_glance(loaded, qc, roh, roh_text, combo, y, mt, ancestry, panel, cv, pc)

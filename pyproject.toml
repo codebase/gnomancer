@@ -11,15 +11,15 @@ license = {text = "MIT"}
 requires-python = ">=3.10"
 keywords = ["dna", "genetics", "23andme", "ancestrydna", "haplogroup", "pharmacogenomics", "clinvar", "mcp"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Topic :: Scientific/Engineering :: Bio-Informatics"]
-dependencies = ["snps>=2.9", "pandas>=2.0", "numpy>=1.24", "reportlab>=4", "lineage>=4.5"]
+dependencies = ["snps>=2.9", "pandas>=2.0", "numpy>=1.24", "reportlab>=4", "lineage>=4.5", "mcp>=2"]
 
 [project.urls]
 Homepage = "https://github.com/codebase/gnomancer"
 Issues = "https://github.com/codebase/gnomancer/issues"
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "mcp>=2"]
-mcp = ["mcp>=2"]
+dev = ["pytest>=8", "pyflakes>=3"]
+mcp = []  # kept so `gnomancer[mcp]` still installs; mcp is now a core dependency
 
 [project.scripts]
 gnomancer = "gnomancer.cli:main"

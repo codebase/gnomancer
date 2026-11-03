@@ -12,3 +12,4 @@ resources/
 pharmcat.log
 dist/
 build/
+.wrangler/

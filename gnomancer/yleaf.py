@@ -6,14 +6,12 @@ downloads the hg19 reference (~900 MB) once on first use.
 """
 from __future__ import annotations
 
-import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pandas as pd
 
-from .paths import ancestry_bin
+from .paths import ancestry_bin, local_bin
 
 TREES = ("yfull", "ftdna", "isogg")
 
@@ -22,8 +20,7 @@ def _bin() -> str | None:
     c = ancestry_bin("Yleaf")
     if c:
         return str(c)
-    local = Path(sys.executable).parent / "Yleaf"
-    return str(local) if local.exists() else shutil.which("Yleaf")
+    return local_bin("Yleaf")
 
 
 def write_plink(df: pd.DataFrame, prefix: Path, sample: str = "sample") -> int:

@@ -7,26 +7,16 @@ from partial data are provisional: PharmCAT assumes reference at untyped positio
 """
 from __future__ import annotations
 
-import os
 import subprocess
 from pathlib import Path
 
 import pandas as pd
 
-from .paths import tool
+from .paths import java_env, tool
 
 JAR = tool("pharmcat", "pharmcat.jar")
 POSITIONS = tool("pharmcat", "pharmcat_positions.vcf")
 COMP = {"A": "T", "T": "A", "C": "G", "G": "C"}
-
-
-def _java_env():
-    env = dict(os.environ)
-    for jh in ("/opt/homebrew/opt/openjdk", "/usr/local/opt/openjdk", "/usr/lib/jvm/default-java"):
-        if Path(jh, "bin", "java").exists() and "JAVA_HOME" not in env:
-            env["JAVA_HOME"] = jh
-            env["PATH"] = f"{jh}/bin:" + env.get("PATH", "")
-    return env
 
 
 def build_vcf(df: pd.DataFrame, out: Path, sample: str = "sample") -> dict:
@@ -56,7 +46,7 @@ def build_vcf(df: pd.DataFrame, out: Path, sample: str = "sample") -> dict:
             alleles = {ref, *alts}
             if not set(g) <= alleles:
                 flipped = "".join(COMP.get(c, "?") for c in g)
-                if set(flipped) <= alleles and {ref, alts[0]} not in ({"A", "T"}, {"C", "G"}):
+                if set(flipped) <= alleles and not any({ref, alt} in ({"A", "T"}, {"C", "G"}) for alt in alts):
                     g = flipped
                 else:
                     stats["mismatched"] += 1
@@ -82,7 +72,7 @@ def run(df: pd.DataFrame, outdir: Path, sample: str = "sample") -> dict:
     pdir.mkdir(parents=True, exist_ok=True)
     vcf = pdir / f"{sample}.vcf"
     res["stats"] = build_vcf(df, vcf, sample)
-    env = _java_env()
+    env = java_env()
     p = subprocess.run([f"{env.get('JAVA_HOME', '')}/bin/java" if env.get("JAVA_HOME") else "java", "-jar", str(JAR),
                         "-vcf", str(vcf), "-o", str(pdir), "-reporterJson", "-reporterCallsOnlyTsv", "-del"],
                        capture_output=True, text=True, env=env, cwd=str(pdir))

@@ -8,7 +8,6 @@ PharmCAT tables), never the raw genotype file.
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 
 import pandas as pd
@@ -93,7 +92,7 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
         who.append("Bitter taste: " + combo["TAS2R38 bitter taste (PTC/PROP)"][0] + ".")
     # Notable: homozygous risk, carriers, PGx non-normal, ClinVar high-confidence
     if not panel.empty:
-        p = panel[panel.genotype.isin(["not on array", "no call"]) == False]
+        p = panel[~panel.genotype.isin(["not on array", "no call"])]
         for _, r in p[p.category.isin(["health", "carrier"])].iterrows():
             n = str(r.effect_count).split("/")[0]
             if n == "2" and r.category == "health":
@@ -138,7 +137,8 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
             reassuring.append("Normal pharmacogenomic result for " + ", ".join(sorted(normal)) + " at the sites typed.")
     # Reassuring: negatives in carrier/health
     if not panel.empty:
-        neg = panel[(panel.category.isin(["health", "carrier"])) & (panel.effect_count.astype(str).str.startswith("0"))]
+        neg = panel[(panel.category.isin(["health", "carrier"])) & (panel.effect_count.astype(str).str.startswith("0"))
+                    & ~panel.interpretation.astype(str).str.lower().str.contains("protective")]
         if len(neg):
             reassuring.append(f"Negative at {len(neg)} checked health and carrier sites, including " + ", ".join(neg.gene.drop_duplicates().head(8)) + ".")
     reassuring.append(roh_text.split(":")[0] + "." if roh_text else "")
@@ -162,7 +162,7 @@ def build_prompt(glance: dict, combos, y, mt, ancestry, panel: pd.DataFrame, cli
         y=dict(haplogroup=y.get("haplogroup"), ycc=y.get("ycc"), yleaf=(y.get("yleaf") or {}).get("trees")),
         mt=dict(haplogroup=mt.get("haplogroup"), quality=mt.get("quality")),
         ancestry=ancestry,
-        panel=[dict(gene=r.gene, label=r.label, genotype=r.genotype, effect_count=r.effect_count, reading=r.interpretation, category=r.category)
+        panel=[dict(gene=r.gene, label=r.label, effect_count=r.effect_count, reading=r.interpretation, category=r.category)
                for _, r in panel.iterrows() if r.genotype not in ("not on array", "no call")],
         clinvar=(clinvar.get("hits").to_dict("records") if clinvar.get("hits") is not None and not clinvar["hits"].empty else []),
         pharmcat=(pharmcat.get("calls").to_dict("records") if pharmcat.get("calls") is not None and not pharmcat["calls"].empty else []),

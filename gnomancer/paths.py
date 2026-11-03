@@ -33,6 +33,37 @@ def tool(*parts: str) -> Path:
     return (HOME / "tools").joinpath(*parts)
 
 
+JAVA_HOMES = ("/opt/homebrew/opt/openjdk", "/usr/local/opt/openjdk", "/usr/lib/jvm/default-java")
+
+
+def java_bin() -> str | None:
+    """Path to a `java` executable: $JAVA_HOME, then the usual Homebrew/Debian locations, then PATH."""
+    import shutil
+    for jh in (os.environ.get("JAVA_HOME"), *JAVA_HOMES):
+        if jh and Path(jh, "bin", "java").exists():
+            return str(Path(jh, "bin", "java"))
+    return shutil.which("java")
+
+
+def java_env() -> dict:
+    """A copy of the environment with JAVA_HOME/PATH set so a subprocess finds the same `java` as java_bin()."""
+    env = dict(os.environ)
+    if "JAVA_HOME" not in env:
+        for jh in JAVA_HOMES:
+            if Path(jh, "bin", "java").exists():
+                env["JAVA_HOME"] = jh
+                env["PATH"] = f"{jh}/bin:" + env.get("PATH", "")
+                break
+    return env
+
+
+def local_bin(name: str) -> str | None:
+    """An executable installed next to the running interpreter (same venv), else on PATH."""
+    import shutil, sys
+    cand = Path(sys.executable).parent / name
+    return str(cand) if cand.exists() else shutil.which(name)
+
+
 def ancestry_python() -> Path | None:
     for c in (HOME / "venv-ancestry" / "bin" / "python", REPO / ".venv-ancestry" / "bin" / "python"):
         if c.exists():

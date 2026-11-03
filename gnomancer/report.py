@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .panel import CATEGORY_ORDER, POPS, POP_LABEL
+from .panel import CATEGORY_ORDER, POP_LABEL
 
 DISCLAIMER = (
     "Computed locally from a consumer genotyping array. The array reports a fixed list of common sites, "
@@ -43,7 +43,7 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
     for n in loaded.notes:
         L.append(f"- Note: {n}")
     L.append("\n## 2. Quality\n")
-    L.append(f"| Metric | Value |\n|---|---|")
+    L.append("| Metric | Value |\n|---|---|")
     L.append(f"| No-calls | {qc['no_call']:,} ({qc['no_call_rate']:.2%}) |")
     L.append(f"| Indel calls (I/D) | {qc['indel_calls']:,} |")
     L.append(f"| Autosomal heterozygosity | {qc['autosomal_het']:.3f} |")
@@ -89,7 +89,7 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
             L.append(f"Requested but failed: {failed[0]}")
         else:
             L.append("Not run. Add `--ancestry` for a 1000 Genomes population classification "
-                     "(needs `pip install git+https://github.com/arvkevi/ezancestry`, Python ≤3.11).")
+                     "(`gnomancer setup` installs ezancestry into a side venv when Python 3.11 is available).")
     if ancestry:
         from .summary import POP_NAMES
         pp, sp = ancestry.get("population_code"), ancestry.get("superpopulation_code")

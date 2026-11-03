@@ -49,8 +49,8 @@ def summary(df: pd.DataFrame, chr_table: pd.DataFrame, vendor_sex: str) -> dict:
     if nocall / total > 0.02:
         flags.append(f"High no-call rate ({nocall/total:.1%}); sample quality may be poor.")
     if auto_het < 0.20:
-        flags.append(f"Low autosomal heterozygosity ({auto_het:.3f}); possible inbreeding, contamination-free but "
-                     f"homozygous-rich sample, or array with many monomorphic probes.")
+        flags.append(f"Low autosomal heterozygosity ({auto_het:.3f}): parents may be related, or the array has many "
+                     f"monomorphic probes; see the runs-of-homozygosity section.")
     if auto_het > 0.40:
         flags.append(f"High autosomal heterozygosity ({auto_het:.3f}); possible sample contamination or mixture.")
     if vendor_sex and inferred not in ("unknown", "ambiguous") and vendor_sex != inferred:

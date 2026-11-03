@@ -56,10 +56,9 @@ def mendelian_errors(child: pd.DataFrame, p1: pd.DataFrame, p2: pd.DataFrame) ->
     n = int(ok.sum())
     errs = 0
     for cg, ag, bg in zip(c[ok], a[ok], b[ok]):
-        if not any(x in ag and y in bg or x in bg and y in ag for x in cg for y in cg if {x, y} == set(cg)):
-            # child alleles must be one from each parent, in either order
-            if not ((cg[0] in ag and cg[1] in bg) or (cg[1] in ag and cg[0] in bg)):
-                errs += 1
+        # child alleles must be one from each parent, in either order
+        if not ((cg[0] in ag and cg[1] in bg) or (cg[1] in ag and cg[0] in bg)):
+            errs += 1
     return errs, n
 
 
@@ -97,7 +96,10 @@ def run(argv=None) -> int:
     if len(paths) < 2:
         print("need at least two kits", file=sys.stderr)
         return 2
-    names = a.names.split(",") if a.names else [p.stem.split("_")[0].split(".")[0] for p in paths]
+    names = [n.strip() for n in a.names.split(",")] if a.names else [p.stem.split("_")[0].split(".")[0] for p in paths]
+    if len(names) != len(paths) or len(set(names)) != len(names):
+        print(f"--names must give one distinct name per kit ({len(paths)} kits, {len(names)} names)", file=sys.stderr)
+        return 2
     out = Path(a.out).expanduser() if a.out else paths[0].with_name("family_analysis")
     out.mkdir(parents=True, exist_ok=True)
 

@@ -4,21 +4,13 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pandas as pd
 
-from .paths import DATA, tool
+from .paths import DATA, java_env, local_bin, tool
 
 RCRS = DATA / "rCRS_NC_012920.1.fasta"
-
-
-def _bin(name: str) -> str | None:
-    cand = Path(sys.executable).parent / name
-    if cand.exists():
-        return str(cand)
-    return shutil.which(name)
 
 
 def call_y(df: pd.DataFrame, outdir: Path, sample: str = "sample") -> dict:
@@ -37,7 +29,7 @@ def call_y(df: pd.DataFrame, outdir: Path, sample: str = "sample") -> dict:
     if len(rows) < 100:
         res["error"] = f"only {len(rows)} usable Y SNPs; skipped"
         return res
-    exe = _bin("yhaplo")
+    exe = local_bin("yhaplo")
     if not exe:
         res["error"] = "yhaplo not installed (pip install git+https://github.com/23andMe/yhaplo)"
         return res
@@ -71,15 +63,6 @@ def _haplogrep() -> str | None:
     if cand.exists():
         return str(cand)
     return shutil.which("haplogrep3")
-
-
-def _java_env() -> dict:
-    env = dict(os.environ)
-    for jh in ("/opt/homebrew/opt/openjdk", "/usr/local/opt/openjdk", "/usr/lib/jvm/default-java"):
-        if Path(jh, "bin", "java").exists() and "JAVA_HOME" not in env:
-            env["JAVA_HOME"] = jh
-            env["PATH"] = f"{jh}/bin:" + env.get("PATH", "")
-    return env
 
 
 def call_mt(df: pd.DataFrame, outdir: Path, build_original: int, sample: str = "sample",
@@ -120,7 +103,7 @@ def call_mt(df: pd.DataFrame, outdir: Path, build_original: int, sample: str = "
         f.write(f"{sample}\t{';'.join(map(str, positions))}\t?\t" + "\t".join(diffs) + "\n")
     out = mdir / f"{sample}.haplogrep3.tsv"
     p = subprocess.run([exe, "classify", "--tree", tree, "--in", str(hsd), "--out", str(out), "--extend-report"],
-                       capture_output=True, text=True, env=_java_env(), cwd=str(Path(exe).parent))
+                       capture_output=True, text=True, env=java_env(), cwd=str(Path(exe).parent))
     if p.returncode != 0 or not out.exists():
         res["error"] = (p.stderr or p.stdout)[-800:]
         return res

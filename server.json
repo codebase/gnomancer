@@ -28,10 +28,10 @@
   ],
   "icons": [
     {
-      "src": "https://gnomancer.com/assets/logo-256.png",
+      "src": "https://gnomancer.com/assets/mark-128.png",
       "mimeType": "image/png",
       "sizes": [
-        "256x256"
+        "128x128"
       ]
     }
   ]

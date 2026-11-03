@@ -65,8 +65,6 @@ def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
                 continue
             p = line.rstrip("\n").split("\t", 8)
             chrom = p[0]
-            if chrom == "MT":
-                chrom = "MT"
             k = (chrom, int(p[1]))
             gt = key.get(k)
             if gt is None:
@@ -106,11 +104,11 @@ def scan(df: pd.DataFrame, vcf: Path = DEFAULT_VCF) -> dict:
                 flags.append("strand-ambiguous SNP (A/T or C/G): a homozygous-reference call reported on the other strand looks exactly like this")
             if af is not None and af >= 0.05:
                 flags.append(f"ALT allele is common (AF {af:.1%}): classification is likely outdated or low-penetrance")
-            if zyg != "heterozygous" and (af is None or af < 0.01):
+            if zyg == "homozygous" and (af is None or af < 0.01):
                 flags.append("homozygous for a rare allele: statistically far more likely a genotyping/strand artifact than a true homozygote")
             if "conflicting" in rev:
                 flags.append("submitters disagree on classification")
-            confidence = "low" if (ambiguous or (zyg != "heterozygous" and (af is None or af < 0.01)) or STAR.get(rev, 0) == 0) else ("medium" if (af or 0) >= 0.05 else "high")
+            confidence = "low" if (ambiguous or (zyg == "homozygous" and (af is None or af < 0.01)) or STAR.get(rev, 0) == 0) else ("medium" if (af or 0) >= 0.05 else "high")
             hits.append(dict(rsid=("rs" + info["RS"]) if info.get("RS") else p[2], chrom=chrom, pos=k[1], genotype=gt,
                              ref=ref, alt=",".join(alts), zygosity=zyg, gene=info.get("GENEINFO", "").split(":")[0],
                              significance=sig.replace("_", " "), review=rev.replace("_", " "), stars=STAR.get(rev, 0),

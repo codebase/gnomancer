@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import datetime as dt
-import json
 from html import escape as e
 from pathlib import Path
 
@@ -178,7 +177,7 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
     y_ok = bool(y.get("haplogroup")) and not y.get("error")
     mt_ok = bool(mt.get("haplogroup")) and not mt.get("error")
     H = [f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-         f'<title>gnomancer report</title><style>{CSS}</style></head><body><div class="wrap">']
+         f'<title>gnomancer report · {e(input_name or now)}</title><style>{CSS}</style></head><body><div class="wrap">']
     H.append(f'<header><div><h1><span>gnomancer</span> · raw DNA report</h1><div class="meta">{e(input_name)} · generated {now} · gnomancer v{__version__}</div></div>'
              f'<div class="toolbar"><button id="theme">Light / dark</button><button id="reveal">Reveal health sections</button><button id="print">Print / PDF</button></div></header>')
     H.append(f'<div class="disclaimer">{e(DISCLAIMER)}</div>')
@@ -192,7 +191,7 @@ def write_html(out: Path, loaded, qc: dict, ct: pd.DataFrame, roh: pd.DataFrame,
             if g.get(key):
                 H.append(f'<div class="card{" wide" if key == "next" else ""}"><h3>{title}</h3><ul>' + "".join(f"<li>{e(b)}</li>" for b in g[key]) + "</ul></div>")
         H.append("</div></section>")
-    H.append('<nav class="toc"><a href="#glance">At a glance</a><a href="#overview">Overview</a><a href="#quality">Quality</a><a href="#roh">Homozygosity</a><a href="#lineage">Lineages</a>'
+    H.append('<nav class="toc">' + ('<a href="#plain">In plain language</a>' if extra.get("narrative") else "") + '<a href="#glance">At a glance</a><a href="#overview">Overview</a><a href="#quality">Quality</a><a href="#roh">Homozygosity</a><a href="#lineage">Lineages</a>'
              '<a href="#readings">Readings</a><a href="#panel">Marker panel</a><a href="#clinvar">ClinVar</a><a href="#pharmcat">PharmCAT</a><a href="#limits">Limits</a></nav>')
     # Tiles
     vendor = e(loaded.source)

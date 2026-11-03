@@ -5,7 +5,7 @@ the protocol stream. Privacy: tools return the report's derived results and sing
 the raw genotype file. Health and carrier tables are separate tools so an assistant only fetches them when asked.
 
 Start:  gnomancer serve        (or: gnomancer-mcp)
-Claude Code:   claude mcp add gnomancer -- ~/gnomancer/.venv/bin/gnomancer serve
+Claude Code:   claude mcp add gnomancer -- gnomancer serve
 """
 from __future__ import annotations
 
@@ -16,6 +16,8 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+
+from . import __version__
 
 try:
     from mcp.server.mcpserver import MCPServer
@@ -33,7 +35,7 @@ Rules: the file never leaves the machine and you must not paste genotype rows an
 rare-site calls need clinical confirmation. Never diagnose. If the user has no file yet, read the
 gnomancer://guide/get-your-data resource."""
 
-server = MCPServer("gnomancer", version="0.5.0", instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
+server = MCPServer("gnomancer", version=__version__, instructions=INSTRUCTIONS, website_url="https://gnomancer.com")
 _state: dict = {"report_dir": os.environ.get("GNOMANCER_REPORT"), "df_cache": {}}
 
 
@@ -205,8 +207,18 @@ def set_narrative(text: str, report_dir: str | None = None) -> dict:
     args = list(s.get("args") or [])
     if not args:
         raise RuntimeError("this report predates argument recording; re-run gnomancer with --summary summary.md")
-    args = [a for a in args if a != "--summary"]
-    p = _cli(args + ["--summary", str(d / "summary.md")])
+    kept, skip = [], False
+    for a_ in args:  # drop any earlier --summary FILE and --ai so the rerun only embeds this text
+        if skip:
+            skip = False
+            continue
+        if a_ == "--summary":
+            skip = True
+            continue
+        if a_.startswith("--summary=") or a_ == "--ai":
+            continue
+        kept.append(a_)
+    p = _cli(kept + ["--summary", str(d / "summary.md")])
     if p.returncode != 0:
         raise RuntimeError("regeneration failed: " + (p.stderr or p.stdout)[-1500:])
     return dict(report_html=str(d / "REPORT.html"), embedded=True)

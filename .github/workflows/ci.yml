@@ -5,14 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.10", "3.12"]
+        python: ["3.10", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: pip install -e ".[dev,mcp]"
-      - run: pytest -q
+      - run: pip install -e ".[dev]"
+      - run: pyflakes gnomancer tests examples
+      - run: pytest -q -m "not slow"
       - name: demo report (no haplogroup tools)
         run: |
           python examples/make_demo.py /tmp/demo

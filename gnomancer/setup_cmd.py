@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import os
 import shutil
 import subprocess
 import sys
@@ -11,7 +10,7 @@ import tarfile
 import urllib.request
 from pathlib import Path
 
-from .paths import HOME
+from .paths import HOME, java_bin
 
 HAPLOGREP_VERSION = "3.3.2"
 PHARMCAT_VERSION = "3.4.0"
@@ -66,11 +65,23 @@ def _dl(url: str, dest: Path, label: str, sha256: str | None = None, md5_url: st
     print(f"  {label}: checksum ok")
 
 
-def _java_ok() -> str | None:
-    for jh in (os.environ.get("JAVA_HOME"), "/opt/homebrew/opt/openjdk", "/usr/local/opt/openjdk", "/usr/lib/jvm/default-java"):
-        if jh and Path(jh, "bin", "java").exists():
-            return str(Path(jh, "bin", "java"))
-    return shutil.which("java")
+def _have(module: str) -> bool:
+    import importlib.util
+    importlib.invalidate_caches()
+    return importlib.util.find_spec(module) is not None
+
+
+def _pip_install(spec: str) -> None:
+    """pip into the running interpreter's environment; uv-created venvs have no pip module, so fall back to uv."""
+    r = subprocess.run([sys.executable, "-m", "pip", "install", "-q", spec], capture_output=True, text=True)
+    if r.returncode == 0:
+        return
+    uv = shutil.which("uv")
+    if uv:
+        r = subprocess.run([uv, "pip", "install", "-q", "--python", sys.executable, spec], capture_output=True, text=True)
+        if r.returncode == 0:
+            return
+    print((r.stderr or r.stdout).strip()[-800:], file=sys.stderr)
 
 
 def run(argv=None) -> int:
@@ -85,11 +96,15 @@ def run(argv=None) -> int:
     print(f"gnomancer setup -> {home}")
 
     print("yhaplo (Y haplogroups)")
-    try:
-        import yhaplo  # noqa: F401
+    if _have("yhaplo"):
         print("  already installed")
-    except ImportError:
-        subprocess.run([sys.executable, "-m", "pip", "install", "-q", YHAPLO_SRC], check=False)
+    else:
+        _pip_install(YHAPLO_SRC)
+        if _have("yhaplo"):
+            print("  installed")
+        else:
+            print("  FAILED to install yhaplo; Y haplogroups will be skipped. Install it by hand with:\n"
+                  f"      {sys.executable} -m pip install {YHAPLO_SRC}", file=sys.stderr)
 
     print("Haplogrep3 (mtDNA haplogroups)")
     hg = tools / "haplogrep3"
@@ -98,7 +113,10 @@ def run(argv=None) -> int:
         _dl(f"https://github.com/genepi/haplogrep3/releases/download/v{HAPLOGREP_VERSION}/haplogrep3-{HAPLOGREP_VERSION}-linux.tar.gz", tgz, "haplogrep3")
         hg.mkdir(exist_ok=True)
         with tarfile.open(tgz) as t:
-            t.extractall(hg, filter="data")
+            if hasattr(tarfile, "data_filter"):
+                t.extractall(hg, filter="data")
+            else:  # Python < 3.10.12 / 3.11.4
+                t.extractall(hg)
         tgz.unlink()
         (hg / "haplogrep3").chmod(0o755)
     else:
@@ -112,7 +130,7 @@ def run(argv=None) -> int:
         print("ClinVar (GRCh37, ~200 MB)")
         _dl(CLINVAR_URL, tools / "clinvar" / "clinvar_GRCh37.vcf.gz", "clinvar", md5_url=CLINVAR_URL + ".md5")
 
-    java = _java_ok()
+    java = java_bin()
     print(f"Java: {java or 'NOT FOUND (Haplogrep3 and PharmCAT will be skipped; install Java 11+, e.g. brew install openjdk)'}")
 
     if not a.no_ancestry:
@@ -136,11 +154,7 @@ def tools_present() -> dict:
     from .paths import tool
     out = dict(haplogrep3=tool("haplogrep3", "haplogrep3").exists(), pharmcat=tool("pharmcat", "pharmcat.jar").exists(),
                clinvar=tool("clinvar", "clinvar_GRCh37.vcf.gz").exists())
-    try:
-        import yhaplo  # noqa: F401
-        out["yhaplo"] = True
-    except ImportError:
-        out["yhaplo"] = False
+    out["yhaplo"] = _have("yhaplo")
     return out
 
 
