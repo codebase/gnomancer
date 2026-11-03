@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 from . import __version__
-from .summary import PGX_DRUGS, tidy_pheno as _tidy_pheno, tidy_result as _tidy_result
+from .summary import PGX_DRUGS, pgx_cells
 
 FOOTER = ("Derived from a consumer genotyping array, not a clinical test. PharmCAT assumed the reference allele at positions "
           "the chip did not type, so rare alleles can be missed and every call is provisional. Confirm with a clinical "
@@ -25,8 +25,8 @@ def _rows(pc: dict, panel: pd.DataFrame) -> list[dict]:
     calls = pc.get("calls")
     if calls is not None and not calls.empty:
         for _, r in calls.iterrows():
-            pheno = _tidy_pheno(r.phenotype)
-            rows.append(dict(gene=r.gene, result=_tidy_result(r.diplotype), phenotype=pheno, drugs=PGX_DRUGS.get(r.gene, ""),
+            result, pheno = pgx_cells(r)
+            rows.append(dict(gene=r.gene, result=result, phenotype=pheno, drugs=PGX_DRUGS.get(r.gene, ""),
                              coverage="partial" if r.missing_positions else "complete"))
     have = {r["gene"] for r in rows}
     extra = {"HCP5": ("HLA-B*57:01 tag", "abacavir"), "F5": ("Factor V Leiden", PGX_DRUGS["F5"]), "F2": ("Prothrombin G20210A", PGX_DRUGS["F2"]),
@@ -49,7 +49,7 @@ def write_html(out: Path, rows: list[dict], source: str, input_name: str) -> Pat
            "td.g{font-weight:600;white-space:nowrap}td.r{font-family:ui-monospace,Menlo,monospace;font-size:10px}.cov{color:#777;font-size:9.5px}"
            ".foot{margin-top:12px;font-size:9.5px;color:#444;border-top:1px solid #bbb;padding-top:6px}@media print{.wrap{padding:0}}")
     H = [f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Pharmacogenomics card</title><style>{css}</style></head><body><div class="wrap">',
-         f'<h1>Pharmacogenomics summary</h1><p class="sub">Generated {today} by gnomancer v{__version__} from a {e(source)} raw-data file ({e(input_name)}). For a pharmacist or prescriber.</p>',
+         f'<h1>Pharmacogenomics summary</h1><p class="sub">Generated {today} by gnomancer v{__version__} from {e(source)} raw data ({e(input_name)}). For a pharmacist or prescriber.</p>',
          '<div class="id"><div>Name: <span>&nbsp;</span></div><div>Date of birth: <span>&nbsp;</span></div></div>',
          '<table><thead><tr><th>Gene</th><th>Result</th><th>Phenotype</th><th>Drugs it matters for</th></tr></thead><tbody>']
     for r in rows:
@@ -75,7 +75,7 @@ def write_pdf(out: Path, rows: list[dict], source: str, input_name: str) -> Path
     doc = SimpleDocTemplate(str(out), pagesize=A4, leftMargin=14 * mm, rightMargin=14 * mm, topMargin=14 * mm, bottomMargin=12 * mm,
                             title="Pharmacogenomics summary", author="gnomancer")
     story = [Paragraph("Pharmacogenomics summary", styles["Title"]),
-             Paragraph(f"Generated {dt.date.today().isoformat()} by gnomancer v{__version__} from a {source} raw-data file ({input_name}). For a pharmacist or prescriber.", small),
+             Paragraph(f"Generated {dt.date.today().isoformat()} by gnomancer v{__version__} from {source} raw data ({input_name}). For a pharmacist or prescriber.", small),
              Spacer(1, 4), Paragraph("Name: ____________________________&nbsp;&nbsp;&nbsp;&nbsp;Date of birth: ______________", styles["BodyText"]), Spacer(1, 8)]
     data = [["Gene", "Result", "Phenotype", "Drugs it matters for"]]
     for r in rows:

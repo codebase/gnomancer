@@ -8,6 +8,7 @@ PharmCAT tables), never the raw genotype file.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -38,7 +39,15 @@ PGX_DRUGS = {
     "IFNL3": "peginterferon alfa", "MT-RNR1": "aminoglycoside antibiotics", "HLA-B": "abacavir, carbamazepine, allopurinol",
 }
 
-NORMAL_PHENOS = {"normal metabolizer", "normal", "normal function", "normal risk", "b (reference)", ""}
+NORMAL_PHENOS = {"normal metabolizer", "normal", "normal function", "normal risk", "b (reference)"}
+UNCALLED = {"no call", ""}
+
+_ODDS = re.compile(r"~?(\d+(?:\.\d+)?)\s*x", re.I)
+
+
+def _odds(text: str) -> float:
+    m = _ODDS.search(str(text))
+    return float(m.group(1)) if m else 0.0
 
 
 def _clean_pheno(p: str) -> str:
@@ -67,6 +76,51 @@ def tidy_pheno(p: str) -> str:
     return " or ".join(out) if out else "—"
 
 
+def _site_name(r) -> str:
+    """'G6PD' + 'G6PD A- (V68M)' -> 'G6PD A- (V68M)'; 'HFE' + 'H63D' -> 'HFE H63D'."""
+    gene, label = str(r.gene), str(r.label)
+    return label if label.startswith(gene) else f"{gene} {label}"
+
+
+def pgx_class(r) -> str:
+    """One of 'normal', 'uncalled', 'odd', 'vus', 'skip' for a PharmCAT row, used by the glance."""
+    pheno = _clean_pheno(r.phenotype).lower()
+    dip = str(r.diplotype).strip().lower()
+    h1 = str(getattr(r, "h1", "") or "").lower()
+    if dip in UNCALLED:
+        return "uncalled"
+    if "non-responsive" in pheno:
+        return "skip"  # CFTR ivacaftor response: not a metabolizer result
+    if "uncertain susceptibility" in pheno:
+        return "vus"
+    if pheno in UNCALLED or pheno.startswith("variable"):
+        if "negative" in h1 or ("reference" in dip and " or " not in dip) or dip == "*1/*1":
+            return "normal"  # allele-only genes (F2, F5, VKORC1, CYP4F2) with the reference allele at the typed site
+        return "uncalled"
+    return "normal" if pheno in NORMAL_PHENOS else "odd"
+
+
+def pgx_cells(r) -> tuple[str, str]:
+    """(result, phenotype) text for one PharmCAT row, readable by a pharmacist: no raw OR-lists, no empty cells."""
+    dip = str(r.diplotype).strip()
+    pheno = tidy_pheno(r.phenotype)
+    n_alt = len(dip.split(" OR "))
+    if dip.lower() in ("no call", ""):
+        return "not determinable from this chip", "—"
+    if n_alt >= 4:
+        result = f"ambiguous on this chip ({n_alt} possible diplotypes)"
+    else:
+        result = tidy_result(dip, limit=3)
+    cls = pgx_class(r)
+    if cls == "uncalled":
+        typed = str(getattr(r, "typed", "") or "")
+        return (f"unresolved ({typed.replace('/', ' of ')} defining positions typed)" if typed else "unresolved"), "—"
+    if pheno == "—":
+        h1 = str(getattr(r, "h1", "") or "").strip()
+        pheno = h1 if h1 else ("reference at the typed positions" if cls == "normal" else "—")
+    return result, pheno
+
+
 def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.DataFrame, clinvar: dict, pharmcat: dict) -> dict:
     """Return {'who': [...], 'notable': [...], 'reassuring': [...], 'next': [...]} of short plain-language bullets."""
     who, notable, reassuring, nxt = [], [], [], []
@@ -83,7 +137,7 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
         pp = ancestry.get("population_code")
         spp = ancestry.get("superpopulation_percent")
         who.append(f"Closest 1000 Genomes group: {POP_NAMES.get(pp, pp)} ({POP_NAMES.get(sp, sp)}"
-                   + (f", {spp:.0%} of neighbours" if isinstance(spp, (int, float)) else "") + "). A classification, not an admixture breakdown.")
+                   + (f", {spp:.0%} of the nearest reference samples" if isinstance(spp, (int, float)) else "") + "). A classification, not an admixture breakdown.")
     if "ABO blood group" in combo:
         who.append(f"Blood group {combo['ABO blood group'][0].split(' (rs')[0]} (Rh not typed).")
     if "Lactase persistence" in combo:
@@ -99,14 +153,20 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
                 if "protective" in str(r.interpretation).lower():
                     reassuring.append(f"{r.gene}: {r.interpretation}.")
                 else:
-                    notable.append(f"{r.gene} {r.label}: {r.interpretation}.")
+                    notable.append(f"{_site_name(r)}: {r.interpretation}.")
             elif n == "1" and r.category == "carrier":
-                notable.append(f"{r.gene} {r.label}: carrier ({r.interpretation}).")
+                notable.append(f"{_site_name(r)}: carrier ({r.interpretation}).")
             elif n == "2" and r.category == "carrier":
-                notable.append(f"{r.gene} {r.label}: two copies ({r.interpretation}).")
+                notable.append(f"{_site_name(r)}: two copies ({r.interpretation}).")
         hets = p[(p.category == "health") & (p.effect_count.astype(str).str.startswith("1")) & ~p.interpretation.str.contains("benign", case=False)]
-        if not hets.empty:
-            notable.append("One copy of a risk allele at: " + ", ".join(f"{r.gene} ({r.label})" for _, r in hets.iterrows()) + ". Population-average territory, listed for completeness.")
+        strong, mild = [], []
+        for _, r in hets.iterrows():
+            text = str(r.interpretation)
+            (strong if ("carrier" in text.lower() or _odds(text) >= 2) else mild).append(r)
+        for r in strong:  # one copy, but a carrier state or a sizeable published odds ratio: worth its own line
+            notable.append(f"{_site_name(r)}: {r.interpretation}.")
+        if mild:
+            notable.append("One copy of a risk allele at: " + ", ".join(f"{r.gene} ({r.label})" for r in mild) + ". Population-average territory, listed for completeness.")
     if "APOE" in combo:
         v = combo["APOE"][0].split(" (")[0]
         (reassuring if v == "e3/e3" else notable).append(f"APOE {v}: {combo['APOE'][1]}.")
@@ -123,31 +183,53 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
     elif clinvar.get("available"):
         reassuring.append("No pathogenic ClinVar allele was found at any typed site.")
     calls = pharmcat.get("calls")
+    pgx_genes = set()
     if calls is not None and not calls.empty:
-        odd = [r for _, r in calls.iterrows() if _clean_pheno(r.phenotype).lower() not in NORMAL_PHENOS
-               and "reference" not in str(r.diplotype).lower() and "non-responsive" not in str(r.phenotype).lower()]
+        pgx_genes = set(calls.gene)
+        odd, normal, uncalled = [], [], []
+        for _, r in calls.iterrows():
+            cls = pgx_class(r)
+            if cls == "uncalled":
+                uncalled.append(r)  # too few defining positions on this chip to resolve the gene
+            elif cls == "normal":
+                normal.append(r.gene)
+            elif cls == "vus":
+                notable.append(f"{r.gene}: a variant of uncertain significance for malignant hyperthermia was seen (not a positive result); worth mentioning before any anaesthesia.")
+            elif cls == "odd" and r.gene == "CYP3A5" and "*3/*3" in str(r.diplotype):
+                reassuring.append("CYP3A5 *3/*3: poor metabolizer on paper, but this is the common European genotype and standard tacrolimus dosing assumes it.")
+            elif cls == "odd":
+                odd.append(r)
         for r in odd:
-            note = " (the common European genotype; standard dosing)" if r.gene == "CYP3A5" and "*3/*3" in str(r.diplotype) else ""
             n_alt = len(str(r.diplotype).split(" OR "))
             result = tidy_result(r.diplotype, limit=2) if n_alt <= 2 else "several possible diplotypes (the chip cannot separate them)"
-            notable.append(f"{r.gene} {result}: {tidy_pheno(r.phenotype)}{note}" + (f"; affects {PGX_DRUGS[r.gene]}" if r.gene in PGX_DRUGS else "") + ".")
-        odd_genes = {r.gene for r in odd}
-        normal = [r.gene for _, r in calls.iterrows() if r.gene not in odd_genes and _clean_pheno(r.phenotype).lower() in NORMAL_PHENOS]
+            notable.append(f"{r.gene} {result}: {tidy_pheno(r.phenotype)}" + (f"; affects {PGX_DRUGS[r.gene]}" if r.gene in PGX_DRUGS else "") + ".")
         if normal:
-            reassuring.append("Normal pharmacogenomic result for " + ", ".join(sorted(normal)) + " at the sites typed.")
+            reassuring.append("Normal pharmacogenomic result for " + ", ".join(sorted(normal)) + " at the sites typed"
+                              + ("; " + ", ".join(sorted(r.gene for r in uncalled)) + " could not be resolved from this chip" if uncalled else "") + ".")
+        elif uncalled:
+            notable.append("PharmCAT could not resolve " + ", ".join(sorted(r.gene for r in uncalled)) + " from the positions this chip types.")
+    if not panel.empty:  # single-site pharmacogenomic markers PharmCAT does not cover (e.g. HLA-B*57:01 tag)
+        p = panel[~panel.genotype.isin(["not on array", "no call"])]
+        for _, r in p[(p.category == "pgx") & ~p.gene.isin(pgx_genes)].iterrows():
+            text = str(r.interpretation)
+            if not str(r.effect_count).startswith("0") and re.search(r"avoid|carrier|sensitiv|poor|reduced", text, re.I):
+                notable.append(f"{_site_name(r)}: {text}.")
     # Reassuring: negatives in carrier/health
     if not panel.empty:
         neg = panel[(panel.category.isin(["health", "carrier"])) & (panel.effect_count.astype(str).str.startswith("0"))
                     & ~panel.interpretation.astype(str).str.lower().str.contains("protective")]
         if len(neg):
-            reassuring.append(f"Negative at {len(neg)} checked health and carrier sites, including " + ", ".join(neg.gene.drop_duplicates().head(8)) + ".")
-    reassuring.append(roh_text.split(":")[0] + "." if roh_text else "")
+            mentioned = {b.split(" ")[0].rstrip(":") for b in notable}  # a gene with a positive site elsewhere is not a clean negative
+            names = neg.gene[~neg.gene.isin(["APOE", "ABO", "G6PD"]) & ~neg.gene.isin(mentioned)].drop_duplicates().head(8)
+            reassuring.append(f"Negative at {len(neg)} checked health and carrier sites, including " + ", ".join(names) + ".")
+    if roh_text:
+        reassuring.append((roh_text.split(":")[0] if ":" in roh_text else roh_text).rstrip(".") + ".")
     if not qc["flags"]:
         reassuring.append("The file itself passed every quality check.")
     # Next steps
     if hits is not None and not hits.empty and (hits.confidence == "high").any():
         nxt.append("If any ClinVar carrier result matters to you (for example before having children), ask a clinician for a confirmatory test of that specific variant.")
-    nxt.append("Keep the pharmacogenomic table handy for any prescriber; a clinical PGx panel confirms it and covers the sites the chip misses.")
+    nxt.append("Keep the pharmacogenomic table handy for any prescriber (the one-page card next to this report, pgx-card.pdf, is made for that); a clinical PGx panel confirms it and covers the sites the chip misses.")
     if y.get("haplogroup") and not y.get("error"):
         nxt.append("For a deeper paternal-line result, Y sequencing (e.g. FTDNA Big Y) resolves far below what an array can.")
     return dict(who=who, notable=[n for n in notable if n], reassuring=[r for r in reassuring if r], next=nxt)
@@ -163,14 +245,29 @@ def build_prompt(glance: dict, combos, y, mt, ancestry, panel: pd.DataFrame, cli
         mt=dict(haplogroup=mt.get("haplogroup"), quality=mt.get("quality")),
         ancestry=ancestry,
         panel=[dict(gene=r.gene, label=r.label, effect_count=r.effect_count, reading=r.interpretation, category=r.category)
-               for _, r in panel.iterrows() if r.genotype not in ("not on array", "no call")],
+               for _, r in panel.iterrows() if r.genotype not in ("not on array", "no call")
+               and (r.category in ("trait", "ancestry") or not str(r.effect_count).startswith("0"))],
         clinvar=(clinvar.get("hits").to_dict("records") if clinvar.get("hits") is not None and not clinvar["hits"].empty else []),
-        pharmcat=(pharmcat.get("calls").to_dict("records") if pharmcat.get("calls") is not None and not pharmcat["calls"].empty else []),
+        pharmcat=([dict(gene=r.gene, result=tidy_result(r.diplotype, limit=2), phenotype=tidy_pheno(r.phenotype), drugs=PGX_DRUGS.get(r.gene, ""),
+                        positions_typed=r.get("typed", ""), partial=bool(r.get("missing_positions", False)))
+                   for _, r in pharmcat["calls"].iterrows()] if pharmcat.get("calls") is not None and not pharmcat["calls"].empty else []),
     )
+    have = []
+    if facts["y"]["haplogroup"]:
+        have.append("the paternal (Y) lineage")
+    if facts["mt"]["haplogroup"]:
+        have.append("the maternal (mtDNA) lineage")
+    if ancestry:
+        have.append("the population estimate")
+    scope = ("Scope: this sample is " + str(qc["sex_inferred"]).lower() + "; "
+             + ("there is no Y result because the sample is female" if qc["sex_inferred"] == "Female" else "the Y lineage was called")
+             + ". The panel lists only sites where at least one effect allele is present (plus trait and ancestry sites); "
+             "everything omitted was negative. PharmCAT results marked partial saw only some of a gene's defining positions. ")
     return (
         "You are summarizing a consumer DNA report for the person it belongs to. Write 250-400 words of plain English, "
-        "second person, warm but factual, no headings, no bullet lists, no medical advice. Cover, in this order: where the "
-        "two lineages and the population estimate point; what is genuinely notable (two-copy risk alleles, carrier states, "
+        "second person, warm but factual, no headings, no bullet lists, no medical advice. " + scope + "Cover, in this order: "
+        + ("where " + " and ".join(have) + " point; " if have else "")
+        + "what is genuinely notable (two-copy risk alleles, carrier states, "
         "non-normal drug-metabolism results, high-confidence ClinVar hits) with the odds stated the way the data states them; "
         "what is reassuring; and what, if anything, is worth a conversation with a clinician. Say explicitly that a genotyping "
         "array is probabilistic and that rare-site calls need confirmation. Do not invent facts that are not in the data. "

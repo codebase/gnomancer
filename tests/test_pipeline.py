@@ -73,6 +73,6 @@ def test_reports_render(demo_dir, tmp_path):
     y, mt = dict(error="skipped"), dict(error="skipped")
     md = write(tmp_path / "r.md", L, qc, ct, roh, interpret(roh), panel, combos(L.df), y, mt, None)
     html = write_html(tmp_path / "r.html", L, qc, ct, roh, interpret(roh), panel, combos(L.df), y, mt, None, "demo")
-    assert "## 8. Marker panel" in md.read_text()
+    assert "## Marker panel" in md.read_text()
     t = html.read_text()
     assert "<svg" in t and "Marker panel" in t and "<script" in t and "http" not in t.split("<footer>")[0].replace("https://github.com", "")

@@ -35,35 +35,36 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
         for title, key in (("Who the data says you are", "who"), ("Worth knowing", "notable"), ("Reassuring", "reassuring"), ("Sensible next steps", "next")):
             if g.get(key):
                 L.append(f"**{title}**\n" + "\n".join(f"- {b}" for b in g[key]) + "\n")
-    L.append("## 1. Input\n")
+    L.append("Sections: input · quality · homozygosity · paternal line · maternal line · ancestry · combined readings · marker panel · ClinVar · drug-gene results · limits\n")
+    L.append("## Input\n")
     L.append(f"- Vendor/format detected: **{loaded.source}**" + (f" (chip {loaded.chip} {loaded.chip_version})" if loaded.chip else ""))
     L.append(f"- Genome build: GRCh{loaded.build}" + (f" (remapped from build {loaded.build_original})" if loaded.remapped else "") +
              ("" if loaded.build_detected else " (assumed, not detected)"))
-    L.append(f"- SNPs loaded: {loaded.count:,}")
+    L.append(f"- Sites loaded: {loaded.count:,}")
     for n in loaded.notes:
         L.append(f"- Note: {n}")
-    L.append("\n## 2. Quality\n")
+    L.append("\n## Quality\n")
     L.append("| Metric | Value |\n|---|---|")
     L.append(f"| No-calls | {qc['no_call']:,} ({qc['no_call_rate']:.2%}) |")
     L.append(f"| Indel calls (I/D) | {qc['indel_calls']:,} |")
     L.append(f"| Autosomal heterozygosity | {qc['autosomal_het']:.3f} |")
     L.append(f"| X heterozygosity | {qc['x_het_rate']:.4f} |")
-    L.append(f"| Y SNPs called | {qc['y_called']:,} / {qc['y_total']:,} |")
-    L.append(f"| Sex inferred (X/Y) | {qc['sex_inferred']} (library: {qc['sex_library'] or 'n/a'}) |")
+    L.append(f"| Y sites called | {qc['y_called']:,} / {qc['y_total']:,} |")
+    L.append(f"| Genetic sex | {qc['sex_inferred']} (file header: {qc['sex_library'] or 'n/a'}) |")
     for f in qc["flags"]:
         L.append(f"\n⚠ {f}")
     L.append("\nPer-chromosome table: `chromosome-qc.tsv`.\n")
-    L.append("## 3. Runs of homozygosity\n")
+    L.append("## Runs of homozygosity\n")
     L.append(roh_text)
     if not roh.empty:
         L.append("\n" + _md_table(roh.head(15), ["chrom", "start", "end", "length_mb", "snps"]))
-    L.append("\n## 4. Paternal line (Y chromosome)\n")
+    L.append("\n## Paternal line (Y chromosome)\n")
     if y.get("haplogroup") and not y.get("error"):
-        L.append(f"**Haplogroup {y['haplogroup']}** (ISOGG long form {y['ycc']}), called by yhaplo from {y['n_y_snps']:,} Y SNPs.")
+        L.append(f"**Haplogroup {y['haplogroup']}** (ISOGG long form {y['ycc']}), called by yhaplo from {y['n_y_snps']:,} Y sites.")
         L.append(f"\nDerived-SNP path: `{y['path']}`" if y.get("path") else "")
         yl = y.get("yleaf") or {}
         if yl.get("trees"):
-            L.append("\nSecond opinion from Yleaf on current trees (" + f"{yl['n_y_snps']:,} Y SNPs):")
+            L.append("\nSecond opinion from Yleaf on current trees (" + f"{yl['n_y_snps']:,} Y sites). Each tree names branches its own way, so the labels differ even when they point at the same lineage:")
             names = dict(yfull="YFull v14", ftdna="FamilyTreeDNA", isogg="ISOGG")
             for tree, t in yl["trees"].items():
                 L.append(f"- {names.get(tree, tree)}: **{t['haplogroup']}** (defining marker {t['marker']}, {t['valid_markers']} valid markers, QC {t['qc']})")
@@ -73,7 +74,7 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
                  "Y sequencing (e.g. Big Y-700) is needed for a terminal subclade.")
     else:
         L.append(f"Not called: {y.get('error', 'unknown')}")
-    L.append("\n## 5. Maternal line (mitochondrial DNA)\n")
+    L.append("\n## Maternal line (mitochondrial DNA)\n")
     if mt.get("haplogroup") and not mt.get("error"):
         L.append(f"**Haplogroup {mt['haplogroup']}** (Haplogrep3 quality {mt['quality']:.2f}) from {mt['n_mt_snps']} typed MT positions.")
         L.append(f"\nDifferences from rCRS at typed sites: {', '.join(mt['diffs']) or 'none'}.")
@@ -82,7 +83,7 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
         L.append("\nOnly a few hundred MT sites are typed, so sub-branches usually cannot be resolved; full mtDNA sequencing would.")
     else:
         L.append(f"Not called: {mt.get('error', 'unknown')}")
-    L.append("\n## 6. Ancestry estimate (ezancestry)\n")
+    L.append("\n## Ancestry estimate (ezancestry)\n")
     if not ancestry:
         failed = [n for n in loaded.notes if n.startswith("ezancestry failed")]
         if failed:
@@ -100,16 +101,16 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
         if probs:
             L.append("- Super-population probabilities: " + ", ".join(f"{k} {v:.0%}" for k, v in sorted(probs.items(), key=lambda kv: -kv[1])))
         L.append("- Method: k-nearest-neighbours on 1000 Genomes PCA; a classifier into reference groups, not an admixture breakdown.")
-    L.append("\n## 7. Multi-SNP readings\n")
+    L.append("\n## Combined readings\n")
     for name, val, note in combos:
         L.append(f"- **{name}:** {val}" + (f" — {note}" if note else ""))
-    L.append("\n## 8. Marker panel\n")
+    L.append("\n## Marker panel\n")
     pop = extra.get("pop") or "EUR"
     L.append(f"Effect-allele counts are on the GRCh37 forward strand. `not on array` means the vendor's chip does not type that site. "
              f"`share` is the fraction of the {POP_LABEL.get(pop, pop)} 1000 Genomes reference population expected to carry the same genotype "
              f"(Hardy-Weinberg from the effect-allele frequency); the TSV has all five super-populations.\n")
     titles = dict(ancestry="Ancestry-informative markers", trait="Traits", health="Health-associated common variants",
-                  carrier="Carrier / rare pathogenic sites typed on arrays", pgx="Pharmacogenomics")
+                  carrier="Carrier / rare pathogenic sites typed on arrays", pgx="Pharmacogenomic sites (single markers)")
     for cat in CATEGORY_ORDER:
         sub = panel[panel.category == cat]
         if sub.empty:
@@ -117,34 +118,38 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
         L.append(f"\n### {titles.get(cat, cat)}\n")
         sub = sub.copy()
         col = f"gf_{pop}"
-        sub["share"] = sub[col].map(lambda v: f"{v:.0%}" if isinstance(v, float) else "") if col in sub else ""
+        sub["share"] = sub[col].map(lambda v: f"{v:.0%}" if isinstance(v, float) and v == v else "") if col in sub else ""
         L.append(_md_table(sub, ["rsid", "gene", "label", "genotype", "effect_count", "share", "interpretation"]))
     cv = extra.get("clinvar") or {}
-    L.append("\n## 9. ClinVar scan of every typed site\n")
+    L.append("\n## ClinVar scan of every typed site\n")
     L.append(extra.get("clinvar_text", "not run"))
     hits = cv.get("hits")
     if hits is not None and not hits.empty:
         L.append("\n" + _md_table(hits, ["rsid", "gene", "genotype", "zygosity", "significance", "stars", "confidence", "condition", "flags"]))
     pc = extra.get("pharmcat") or {}
-    L.append("\n## 10. PharmCAT pharmacogenomics\n")
+    L.append("\n## Drug-gene results (PharmCAT)\n")
     L.append(extra.get("pharmcat_text", "not run"))
     card = extra.get("card") or {}
     if card.get("rows"):
         L.append(f"\nOne-page card for a pharmacist: `{Path(card['pdf'] or card['html']).name}`")
     calls = pc.get("calls")
     if calls is not None and not calls.empty:
-        from .summary import PGX_DRUGS
+        from .summary import PGX_DRUGS, pgx_cells
         c = calls.copy()
-        c["phenotype"] = c.phenotype.str.strip().str.rstrip("/").str.strip().replace("", "—")
+        cells = [pgx_cells(r) for _, r in c.iterrows()]
+        c["result"] = [x[0] for x in cells]
+        c["phenotype"] = [x[1] for x in cells]
         c["drugs"] = c.gene.map(PGX_DRUGS).fillna("")
         c["coverage"] = c.missing_positions.map({True: "partial", False: "complete"})
-        L.append("\n" + _md_table(c, ["gene", "diplotype", "phenotype", "drugs", "typed", "coverage"]))
+        L.append("\n" + _md_table(c, ["gene", "result", "phenotype", "drugs", "typed", "coverage"]))
         L.append("\nRYR1/CACNA1S 'Uncertain Susceptibility' means a variant of uncertain significance for malignant hyperthermia was seen, not a positive result. "
                  "The CFTR row describes ivacaftor response, not cystic fibrosis status.")
-    L.append("\n## 11. What this file cannot tell you\n")
+    L.append("\n## What this file cannot tell you\n")
     L.append("- Rare pathogenic variants (the chip targets common variation; BRCA, CFTR, etc. are covered at a handful of sites only).")
     L.append("- Copy-number genes such as CYP2D6, or HLA types beyond tag SNPs.")
     L.append("- Admixture percentages at the resolution of the vendor's own report (that needs their reference panel).")
-    L.append("- Anything on sites the vendor did not type; the panel marks those `not on array`.")
+    L.append("- Anything on sites the vendor did not type; the panel marks those `not on array`. PharmCAT assumes reference at untyped positions.")
+    L.append("- For a male sample, X-chromosome sites are hemizygous (one copy), so carrier/homozygous language does not apply there.")
+    L.append(f"- `share` uses the {POP_LABEL.get(pop, pop)} reference population unless `--pop` was given.")
     out.write_text("\n".join(L) + "\n")
     return out
