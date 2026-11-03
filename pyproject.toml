@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gnomancer"
-version = "0.5.0"
+version = "0.5.1"
 description = "Local, private deep dive into a consumer raw DNA file (AncestryDNA, 23andMe, MyHeritage, FTDNA, LivingDNA, VCF): QC, haplogroups, traits, pharmacogenomics, one HTML report."
 readme = "README.md"
 license = {text = "MIT"}
