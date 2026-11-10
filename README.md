@@ -43,10 +43,26 @@ Open `AncestryDNA_analysis/REPORT.html`. No Python? `curl -fsSL https://gnomance
 gnomancer is also an MCP server. Connect it and ask "what does my report say about caffeine?"
 
 ```bash
-claude mcp add gnomancer -- uvx gnomancer serve          # Claude Code; Claude Desktop/Cursor: command "uvx", args ["gnomancer","serve"]
+claude mcp add gnomancer -- uvx gnomancer serve          # Claude Code
 ```
 
-Only derived results reach the assistant, never the raw file, and the health tables are separate tools fetched only on request. The repo also works as a Claude plugin (`skills/gnomancer/SKILL.md`).
+Any MCP client works the same way: the command is `uvx` with arguments `gnomancer serve`. For Claude Desktop, Cursor and LM Studio (for a local model), add it to the client's `mcpServers` JSON:
+
+```json
+{"mcpServers": {"gnomancer": {"command": "uvx", "args": ["gnomancer", "serve"]}}}
+```
+
+For Codex, add it to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.gnomancer]
+command = "uvx"
+args = ["gnomancer", "serve"]
+```
+
+Tested with Claude Code and with a generic MCP client; reports from other clients are welcome.
+
+The assistant never gets the raw file. It gets the report's results, and can look up the genotype at a single site when a question needs it; the health tables are separate tools fetched only on request. The repo also works as a Claude plugin (`skills/gnomancer/SKILL.md`).
 
 ## Privacy
 

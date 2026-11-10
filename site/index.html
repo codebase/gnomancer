@@ -53,7 +53,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
 <main class="wrap">
 <section class="hero">
   <h1>Your DNA, decoded on your own machine.</h1>
-  <p class="lead">gnomancer turns the raw file you already downloaded from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA into one readable report: lineages, traits, carrier status, drug metabolism, and a plain-language summary. Open source. Runs locally. Nothing is uploaded.</p>
+  <p class="lead">gnomancer turns the raw file you already downloaded from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA into one readable report: lineages, traits, carrier status, drug metabolism, and a plain-language summary. Read it yourself, or connect Claude, Codex or a local model and ask questions about it. Open source. Runs locally.</p>
   <div class="cta"><a class="btn primary" href="/install/">Install in 5 minutes</a><a class="btn" href="/demo/">Explore a synthetic demo</a><a class="btn" href="/get-your-data/">How to get your raw data</a><a class="btn" href="https://github.com/codebase/gnomancer">Source on GitHub</a></div>
 <pre><span class="c"># macOS / Linux (Windows via WSL): one line to install, one to run</span>
 <span class="p">$</span> curl -fsSL https://gnomancer.com/install.sh | bash      <span class="c"># or: pipx install gnomancer && gnomancer setup</span>
@@ -71,7 +71,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
     <div class="card"><h3>Health and carrier sites</h3><p>APOE, Factor V Leiden, hemochromatosis, celiac HLA tags, macular degeneration, type 2 diabetes and the rare pathogenic sites that happen to be on consumer chips. Collapsed by default, for people who would rather not look.</p></div>
     <div class="card"><h3>ClinVar scan</h3><p>Every typed site checked against ClinVar. Each hit is scored for plausibility, because arrays are unreliable at rare sites and a homozygous rare "pathogenic" call is usually an artifact.</p></div>
     <div class="card"><h3>Pharmacogenomics</h3><p>PharmCAT star-allele diplotypes and CPIC phenotypes for the CPIC genes your chip covers (typically 15 to 20), with the drugs each one matters for and an honest per-gene coverage figure.</p></div>
-    <div class="card"><h3>Plain language, and your own AI</h3><p>An automatic at-a-glance digest, plus a narrative written by whichever AI assistant you already use. gnomancer is an MCP server too: connect it to Claude Desktop, Claude Code or Cursor and just ask "what does my report say about caffeine?" The raw file stays on your machine; the results the assistant reads go to its provider, so use a local model if that matters to you.</p></div>
+    <div class="card"><h3>Plain language, and your own AI</h3><p>An automatic at-a-glance digest, plus a narrative written by whichever AI assistant you already use. gnomancer is an MCP server too: connect it to Claude, Codex, Cursor or a local model in LM Studio and just ask "what does my report say about caffeine?" The raw file stays on your machine; the results the assistant reads go to its provider, so use a local model if that matters to you.</p></div>
   </div>
 </section>
 
