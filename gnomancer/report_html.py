@@ -9,7 +9,7 @@ import pandas as pd
 
 from . import __version__
 from .context import lookup, page_url
-from .panel import CATEGORY_ORDER, POPS, POP_LABEL
+from .panel import CATEGORY_ORDER, POPS, POP_LABEL, fmt_share
 from .report import DISCLAIMER
 
 CAT_TITLES = dict(ancestry="Ancestry-informative markers", trait="Traits",
@@ -206,8 +206,8 @@ def _share_cell(r, pop: str) -> str:
     v = r.get(f"gf_{pop}")
     if not isinstance(v, float) or v != v:  # missing or NaN: no reference frequency for this site
         return '<td class="num" title="no reference frequency for this site"><span class="caption">—</span></td>'
-    parts = [f"{POP_LABEL[p]}: {r.get(f'gf_{p}'):.0%}" for p in POPS if isinstance(r.get(f"gf_{p}"), float) and r.get(f"gf_{p}") == r.get(f"gf_{p}")]
-    return f'<td class="num" title="{e("; ".join(parts))}">{v:.0%}</td>'
+    parts = [f"{POP_LABEL[p]}: {fmt_share(r.get(f'gf_{p}'))}" for p in POPS if isinstance(r.get(f"gf_{p}"), float) and r.get(f"gf_{p}") == r.get(f"gf_{p}")]
+    return f'<td class="num" title="{e("; ".join(parts))}">{e(fmt_share(v))}</td>'
 
 
 def _panel_table(sub: pd.DataFrame, pop: str = "EUR") -> str:

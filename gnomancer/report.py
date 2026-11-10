@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .panel import CATEGORY_ORDER, POP_LABEL
+from .panel import CATEGORY_ORDER, POP_LABEL, fmt_share
 
 DISCLAIMER = (
     "Computed locally from a consumer genotyping array. The array reports a fixed list of common sites, "
@@ -118,7 +118,7 @@ def write(out: Path, loaded, qc: dict, chr_table: pd.DataFrame, roh: pd.DataFram
         L.append(f"\n### {titles.get(cat, cat)}\n")
         sub = sub.copy()
         col = f"gf_{pop}"
-        sub["share"] = sub[col].map(lambda v: f"{v:.0%}" if isinstance(v, float) and v == v else "") if col in sub else ""
+        sub["share"] = sub[col].map(lambda v: fmt_share(v) if isinstance(v, float) and v == v else "") if col in sub else ""
         L.append(_md_table(sub, ["rsid", "gene", "label", "genotype", "effect_count", "share", "interpretation"]))
     cv = extra.get("clinvar") or {}
     L.append("\n## ClinVar scan of every typed site\n")

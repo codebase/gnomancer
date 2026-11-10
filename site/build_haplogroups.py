@@ -134,7 +134,8 @@ def main():
     import datetime as dt
     today = dt.date.today().isoformat()
     sm = ROOT / "site" / "sitemap.xml"
-    base = ["https://gnomancer.com/", "https://gnomancer.com/get-your-data/", "https://gnomancer.com/install/"]
+    base = ["https://gnomancer.com/", "https://gnomancer.com/get-your-data/",
+            "https://gnomancer.com/install/", "https://gnomancer.com/demo/"]
     sm.write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
                   "".join(f"<url><loc>{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq></url>\n" for u in base + urls) + "</urlset>\n")
     print(f"wrote {len(groups)} pages + index; sitemap has {len(base)+len(urls)} urls")

@@ -55,9 +55,15 @@ def _clean_pheno(p: str) -> str:
     return p
 
 
+def _two_copies(alt: str) -> str:
+    """'rs2231142 variant (T)/rs2231142 variant (T)' -> 'rs2231142 variant (T), two copies'. Star alleles are left alone."""
+    a, sep, b = alt.partition("/")
+    return f"{a}, two copies" if sep and a == b and " " in a else alt
+
+
 def tidy_result(d: str, limit: int = 3) -> str:
     """'*1/*5 OR *1/*15 OR *1/*40 OR ...' -> first few alternatives plus a count."""
-    alts = [a.strip() for a in str(d).split(" OR ")]
+    alts = [_two_copies(a.strip()) for a in str(d).split(" OR ")]
     if len(alts) <= limit:
         return " or ".join(alts)
     return " or ".join(alts[:limit]) + f" (+{len(alts) - limit} more possible)"

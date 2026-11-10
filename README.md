@@ -2,6 +2,7 @@
 
 <p align="center">
 <a href="https://gnomancer.com">gnomancer.com</a> ·
+<a href="https://gnomancer.com/demo/">synthetic demo</a> ·
 <a href="https://gnomancer.com/get-your-data/">get your raw data</a> ·
 <a href="https://gnomancer.com/install/">install</a> ·
 <a href="https://pypi.org/project/gnomancer/">PyPI</a> ·
@@ -49,7 +50,7 @@ Only derived results reach the assistant, never the raw file, and the health tab
 
 ## Privacy
 
-Your genotype file never leaves your machine. The only network traffic is the one-time download of public tools and references. The optional `--ai` flag sends the structured results (not the file) to the Anthropic API to write the narrative, and only when you ask.
+Your genotype file never leaves your machine. The only network traffic is the one-time download of public tools and references. The optional `--ai` flag sends the structured results (not the file) to the Anthropic API to write the narrative, and only when you ask. If you connect an AI assistant through the MCP server, it sees what it asks for: the report's results, and the genotype at any single site it looks up. With a cloud assistant those go to its provider; with a local model they stay on your machine.
 
 ## Not medical advice
 

@@ -19,6 +19,16 @@ COMP = {"A": "T", "T": "A", "C": "G", "G": "C", "I": "I", "D": "D"}
 CATEGORY_ORDER = ["ancestry", "trait", "health", "carrier", "pgx"]
 POPS = ("AFR", "AMR", "EAS", "EUR", "SAS")
 POP_LABEL = dict(AFR="African", AMR="Admixed American", EAS="East Asian", EUR="European", SAS="South Asian")
+
+
+def fmt_share(v: float) -> str:
+    """Genotype share as a whole percent, without rounding a rare genotype to '0%' or a near-universal one to '100%'.
+    The share is only shown for a genotype the user carries, so zero in the reference panel still reads as '<1%'."""
+    if v < 0.005:
+        return "<1%"
+    if 0.995 <= v < 1:
+        return ">99%"
+    return f"{v:.0%}"
 FREQ_FILE = Path(__file__).resolve().parent / "data" / "marker_frequencies.tsv"
 
 

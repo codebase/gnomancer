@@ -1,0 +1,26 @@
+{
+  "synthetic": true,
+  "generator": "examples/make_demo.py",
+  "seed": 7,
+  "sample_sha256": "743d2e167be97f9fd7e67d1cc04627b9f09728af6ef662d258b51007f3926ec5",
+  "site_count": 20342,
+  "skipped": [
+    "Y haplogroup",
+    "mtDNA haplogroup",
+    "ClinVar",
+    "PharmCAT"
+  ],
+  "command": "gnomancer demo_AncestryDNA.txt --out demo_report --no-y --no-mt --no-clinvar --no-pharmcat",
+  "lookup": {
+    "rsid": "rs762551",
+    "gene": "CYP1A2",
+    "label": "Caffeine metabolism *1F",
+    "category": "trait",
+    "genotype": "CA",
+    "effect": "C",
+    "effect_count": "1/2",
+    "interpretation": "intermediate",
+    "note": ""
+  },
+  "model_conversation": "None; the walkthrough shows an illustrative question and actual tool output."
+}

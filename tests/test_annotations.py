@@ -109,6 +109,8 @@ def test_pgx_card_tidies_alternatives():
     from gnomancer.summary import tidy_result as _tidy_result, tidy_pheno as _tidy_pheno
     assert _tidy_result("*1/*5 OR *1/*15 OR *1/*40 OR *1/*45 OR *5/*45") == "*1/*5 or *1/*15 or *1/*40 (+2 more possible)"
     assert _tidy_result("*1/*1") == "*1/*1"
+    assert _tidy_result("rs2231142 variant (T)/rs2231142 variant (T)") == "rs2231142 variant (T), two copies"
+    assert _tidy_result("Reference/Reference") == "Reference/Reference"
     assert _tidy_pheno("Decreased Function / Decreased Function / Poor Function / Poor Function") == "Decreased Function or Poor Function"
     assert _tidy_pheno("Normal Metabolizer /") == "Normal Metabolizer" and _tidy_pheno("") == "—"
     assert _tidy_pheno("Indeterminate / Poor Metabolizer / Poor Metabolizer") == "Poor Metabolizer"
@@ -134,3 +136,9 @@ def test_auto_setup_only_when_nothing_present(monkeypatch):
     assert setup_cmd.ensure_setup(quiet=True) is True and calls == [["--no-ancestry"]]
     monkeypatch.setattr(setup_cmd, "tools_present", lambda: dict(haplogrep3=True, pharmcat=False, clinvar=False, yhaplo=False))
     assert setup_cmd.ensure_setup(quiet=True) is False and len(calls) == 1
+
+
+def test_share_never_rounds_to_zero_or_all():
+    from gnomancer.panel import fmt_share
+    assert fmt_share(0.0004) == "<1%" and fmt_share(0.998) == ">99%"
+    assert fmt_share(0.0) == "<1%" and fmt_share(1.0) == "100%" and fmt_share(0.314) == "31%"

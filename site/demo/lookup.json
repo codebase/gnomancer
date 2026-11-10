@@ -1,0 +1,11 @@
+{
+  "rsid": "rs762551",
+  "gene": "CYP1A2",
+  "label": "Caffeine metabolism *1F",
+  "category": "trait",
+  "genotype": "CA",
+  "effect": "C",
+  "effect_count": "1/2",
+  "interpretation": "intermediate",
+  "note": ""
+}

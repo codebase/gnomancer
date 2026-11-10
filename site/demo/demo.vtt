@@ -1,0 +1,17 @@
+WEBVTT
+
+00:00.000 --> 00:07.000
+Run gnomancer locally on a synthetic AncestryDNA sample.
+This lightweight run loads 20,342 artificial sites.
+
+00:07.000 --> 00:14.000
+Explore the actual generated report.
+No personal DNA data was used.
+
+00:14.000 --> 00:21.000
+The synthetic sample has CA at CYP1A2 rs762551.
+The marker panel labels this intermediate caffeine metabolism.
+
+00:21.000 --> 00:28.000
+Connect your assistant using MCP and ask about the report.
+Cloud models receive the derived results they read.

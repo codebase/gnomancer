@@ -14,6 +14,25 @@ git-ignored; never commit them.
 `site/` is the landing page at https://gnomancer.com, served as a Cloudflare Worker with static assets (`wrangler.toml`).
 Deploy with `npx wrangler deploy` (Node 22+, `wrangler login` once). It is static: no cookies, no analytics.
 
+### Public synthetic demo
+
+`site/demo/` is the walkthrough at https://gnomancer.com/demo/. It contains only the synthetic
+sample from `examples/make_demo.py`, a generated report, a real MCP `lookup` result, and a captioned
+28-second walkthrough video. No personal DNA file is used. The lightweight run deliberately skips
+haplogroup callers, ClinVar, and PharmCAT; the artificial sample positions cannot validate those tools.
+
+To rebuild the sample/report assets from the repository root:
+
+```bash
+.venv/bin/python examples/make_demo.py /tmp/gnomancer-synthetic-input
+.venv/bin/gnomancer /tmp/gnomancer-synthetic-input/demo_AncestryDNA.txt --out /tmp/gnomancer-synthetic-report --no-y --no-mt --no-clinvar --no-pharmcat
+.venv/bin/python examples/prepare_launch_demo.py /tmp/gnomancer-synthetic-report /tmp/gnomancer-synthetic-input
+```
+
+The packaging helper verifies the synthetic header and writes `provenance.json`. Never substitute
+a real export. The walkthrough's example agent question is illustrative; its displayed tool output
+comes from the actual synthetic report, without a simulated model conversation.
+
 ## Haplogroup pages
 
 `site/haplogroups/` is generated: edit `gnomancer/data/haplogroup_context.tsv`, run `.venv/bin/python site/build_haplogroups.py`, then deploy. The script also rewrites `site/sitemap.xml`.

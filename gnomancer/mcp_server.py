@@ -31,7 +31,8 @@ INSTRUCTIONS = """gnomancer analyzes a consumer raw DNA file locally and writes 
    so it appears at the top of the user's report.
 4. Answer questions with summary(), section(name), lookup(rsid). Fetch clinvar_findings() / pharmacogenomics() only
    when the user asks about health or medications; the report collapses those on purpose.
-Rules: the file never leaves the machine and you must not paste genotype rows anywhere. An array is probabilistic;
+Rules: the raw file stays on the machine, but whatever these tools return is sent to your model provider, so fetch only
+what the user's question needs and do not paste genotype rows anywhere. An array is probabilistic;
 rare-site calls need clinical confirmation. Never diagnose. If the user has no file yet, read the
 gnomancer://guide/get-your-data resource."""
 
@@ -64,7 +65,7 @@ def analyze(path: str, out_dir: str | None = None, ancestry: bool = False, fast:
     """Run gnomancer on a raw DNA file (AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA, LivingDNA, VCF; .zip OK).
     Takes one to three minutes; the very first run also downloads ~250 MB of open-source tools and references (a few
     minutes), automatically. fast=True skips Yleaf, ClinVar and PharmCAT. Returns the output directory, report paths
-    and the at-a-glance digest. The file never leaves this machine."""
+    and the at-a-glance digest. gnomancer uploads nothing; the returned results go to your model provider like any tool output."""
     inp = Path(path).expanduser()
     if not inp.exists():
         raise ValueError(f"file not found: {inp}")
