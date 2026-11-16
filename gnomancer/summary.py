@@ -163,7 +163,8 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
             elif n == "1" and r.category == "carrier":
                 notable.append(f"{_site_name(r)}: carrier ({r.interpretation}).")
             elif n == "2" and r.category == "carrier":
-                notable.append(f"{_site_name(r)}: two copies ({r.interpretation}).")
+                text = str(r.interpretation)
+                notable.append(f"{_site_name(r)}: {text}." if text.startswith("two copies") else f"{_site_name(r)}: two copies ({text}).")
         hets = p[(p.category == "health") & (p.effect_count.astype(str).str.startswith("1")) & ~p.interpretation.str.contains("benign", case=False)]
         strong, mild = [], []
         for _, r in hets.iterrows():

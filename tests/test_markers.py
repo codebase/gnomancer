@@ -36,3 +36,30 @@ def test_frequencies_table_and_genotype_frequency():
     df = pd.DataFrame({"chrom": ["15"], "pos": [1], "genotype": ["AA"]}, index=["rs1426654"])
     out = evaluate(df, [m for m in load_markers(ROOT / "gnomancer" / "data" / "markers.tsv") if m["rsid"] == "rs1426654"])
     assert out.iloc[0]["gf_EUR"] > 0.99 and out.iloc[0]["gf_AFR"] < 0.01
+
+
+def test_brca1_founder_indels_use_the_right_site_and_allele():
+    """rs80357906 is 5382insC (pathogenic allele = insertion); 185delAG is rs80357914, which 23andMe lists as rs386833395
+    (pathogenic allele = deletion). The usual 23andMe genotypes, DD and II, must read as negative."""
+    from gnomancer.panel import evaluate
+    import pandas as pd
+    markers = [m for m in load_markers(ROOT / "gnomancer" / "data" / "markers.tsv") if m["gene"] == "BRCA1"]
+    by_label = {m["label"].split(" ")[0]: m for m in markers}
+    assert by_label["5382insC"]["rsid"] == "rs80357906" and by_label["5382insC"]["effect"] == "I"
+    assert by_label["185delAG"]["rsid"] == "rs80357914" and by_label["185delAG"]["effect"] == "D"
+
+    def run(ins, dele, del_id="rs386833395"):
+        df = pd.DataFrame({"chrom": ["17", "17"], "pos": [41209079, 41276044], "genotype": [ins, dele]}, index=["rs80357906", del_id])
+        out = evaluate(df, markers).set_index("label")
+        return out.loc["5382insC (Ashkenazi founder)"], out.loc["185delAG (Ashkenazi founder)"]
+
+    ins, dele = run("DD", "II")
+    assert ins.effect_count == "0/2" and dele.effect_count == "0/2"
+    assert ins.interpretation == dele.interpretation == "negative at this site"
+    assert dele.rsid == "rs386833395"  # reported under the ID the file uses
+    for het in ("DI", "ID"):
+        ins, dele = run(het, het, del_id="rs80357914")
+        assert ins.effect_count == dele.effect_count == "1/2" and "confirm clinically" in ins.interpretation
+    ins, dele = run("II", "DD")
+    assert ins.effect_count == dele.effect_count == "2/2" and "artifact" in ins.interpretation and "artifact" in dele.interpretation
+

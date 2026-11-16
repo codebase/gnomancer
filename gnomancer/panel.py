@@ -75,8 +75,11 @@ def evaluate(df: pd.DataFrame, markers: list[dict], frequencies: dict | None = N
     frequencies = load_frequencies() if frequencies is None else frequencies
     out = []
     for m in markers:
-        row = _lookup(df, m["rsid"])
-        rec = dict(rsid=m["rsid"], category=m["category"], gene=m["gene"], label=m["label"],
+        # A vendor may list the site under an older or merged rsID; report it under the ID the file uses.
+        ids = [m["rsid"]] + [a.strip() for a in (m.get("aliases") or "").split(",") if a.strip()]
+        found = next((i for i in ids if _lookup(df, i) is not None), m["rsid"])
+        row = _lookup(df, found)
+        rec = dict(rsid=found, category=m["category"], gene=m["gene"], label=m["label"],
                    ref=m["ref"], effect=m["effect"], chrom="", pos="", genotype="", effect_count="",
                    interpretation="", note=m.get("note", ""), **{f"gf_{p}": None for p in POPS})
         if row is None:

@@ -1,7 +1,9 @@
 # Curated marker panel. Alleles are on the GRCh37 forward strand (what all major vendors report).
 # category: ancestry | trait | health | carrier | pgx.  effect = the allele being counted.
 # interp0/1/2 = text for 0/1/2 copies of the effect allele (optional).
-rsid	category	gene	label	ref	effect	interp0	interp1	interp2	note
+# aliases = other rsIDs vendors use for the same site (comma-separated, optional). For indels, I/D follow the vendor
+# convention: I = the longer allele, D = the shorter one, so the effect allele is I for an insertion and D for a deletion.
+rsid	category	gene	label	ref	effect	interp0	interp1	interp2	note	aliases
 rs1426654	ancestry	SLC24A5	Skin pigmentation A111T	G	A	ancestral allele on both copies (typical of Sub-Saharan African and East Asian ancestry)	one light-skin allele	light-skin allele on both copies (near-fixed in Europe, West and South Asia)	
 rs16891982	ancestry	SLC45A2	Skin/hair pigmentation L374F	C	G	ancestral on both copies	one European light-pigmentation allele	European light-pigmentation allele on both copies	
 rs3827760	ancestry	EDAR	V370A hair thickness / shovel incisors	A	G	ancestral; no East Asian/Native American hair-thickness allele	one copy of the East Asian/Native American allele	homozygous for the East Asian/Native American allele	
@@ -77,8 +79,9 @@ rs2802292	health	FOXO3	Longevity-associated	T	G	no longevity allele	one copy	two
 rs1800629	health	TNF	-308 promoter	G	A	no variant allele	one variant allele	two variant alleles	weak-effect marker
 rs113993960	carrier	CFTR	deltaF508 cystic fibrosis	I	D	negative	CF carrier (most common CF allele)	affected	arrays type 1-3 CFTR sites of 2000+
 rs333	carrier	CCR5	delta32	I	D	negative	one delta32 copy	homozygous: resistant to R5-tropic HIV-1	
-rs80357906	carrier	BRCA1	185delAG (Ashkenazi founder)	I	D	negative at this site	pathogenic variant present: confirm clinically	homozygous	
-rs80359550	carrier	BRCA2	6174delT (Ashkenazi founder)	I	D	negative at this site	pathogenic variant present: confirm clinically	homozygous	
+rs80357914	carrier	BRCA1	185delAG (Ashkenazi founder)	I	D	negative at this site	pathogenic variant present: confirm clinically	two copies reported: almost certainly a chip artifact (this is not seen in healthy adults); confirm clinically	c.68_69delAG; the pathogenic allele is the deletion	rs386833395
+rs80357906	carrier	BRCA1	5382insC (Ashkenazi founder)	D	I	negative at this site	pathogenic variant present: confirm clinically	two copies reported: almost certainly a chip artifact (this is not seen in healthy adults); confirm clinically	c.5266dupC; the pathogenic allele is the insertion	
+rs80359550	carrier	BRCA2	6174delT (Ashkenazi founder)	I	D	negative at this site	pathogenic variant present: confirm clinically	two copies reported: almost certainly a chip artifact (this is not seen in healthy adults); confirm clinically	
 rs11571833	carrier	BRCA2	K3326X	A	T	negative	modest cancer risk increase (not a classic BRCA2 pathogenic allele)	homozygous	
 rs334	carrier	HBB	Sickle cell HbS	T	A	negative	sickle cell trait	sickle cell disease	
 rs33930165	carrier	HBB	HbC	C	T	negative	HbC trait	HbC disease	
