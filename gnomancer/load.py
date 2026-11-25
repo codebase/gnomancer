@@ -62,8 +62,15 @@ def load(path: str, target_build: int = TARGET_BUILD) -> Loaded:
         notes.append("Build was not detected from the file and was assumed; verify with the vendor.")
     df = s.snps.copy()
     df["chrom"] = df["chrom"].astype(str)
+    # Naming the chip needs a reference file that snps downloads from a third-party server on first use. The name is
+    # only a label in the report, so a failed download must not stop the analysis.
+    try:
+        chip, chip_version = s.chip or "", s.chip_version or ""
+    except Exception:  # noqa: BLE001
+        chip = chip_version = ""
+        notes.append("The chip model could not be identified (its reference file could not be downloaded); nothing else is affected.")
     return Loaded(
         df=df, source=s.source or "unknown", build=s.build, build_detected=s.build_detected,
-        build_original=original_build, remapped=remapped, chip=s.chip or "", chip_version=s.chip_version or "",
+        build_original=original_build, remapped=remapped, chip=chip, chip_version=chip_version,
         sex=s.determine_sex() or "", count=int(s.count), notes=notes,
     )

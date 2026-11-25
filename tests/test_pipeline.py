@@ -87,3 +87,14 @@ def test_versions_agree():
     sj = json.loads((root / "server.json").read_text())
     assert sj["version"] == __version__ and sj["packages"][0]["version"] == __version__
     assert json.loads((root / ".claude-plugin" / "plugin.json").read_text())["version"] == __version__
+
+
+def test_a_failed_chip_lookup_does_not_stop_the_analysis(demo_dir, monkeypatch):
+    """snps fetches a chip-cluster file from an outside server to name the chip; when that server refuses, load() carries on."""
+    from snps import SNPs
+
+    def refuse(self):
+        raise FileNotFoundError("HTTP Error 403: Forbidden")
+    monkeypatch.setattr(SNPs, "chip", property(refuse))
+    loaded = load(str(demo_dir / "demo_AncestryDNA.txt"))
+    assert loaded.chip == "" and loaded.count > 0 and any("chip model" in n for n in loaded.notes)
