@@ -1,0 +1,88 @@
+# ACMG Secondary Findings list v3.3 (Genetics in Medicine 2025;27:101454): 84 genes in which a pathogenic or
+# likely pathogenic variant is considered medically actionable. inheritance: AD dominant, AR recessive, XL X-linked.
+# For AR genes one variant is a carrier state; the condition needs a variant on both copies.
+gene	area	condition	inheritance	note
+APC	cancer	Familial adenomatous polyposis	AD	
+RET	cancer	Multiple endocrine neoplasia type 2; familial medullary thyroid cancer	AD	
+BRCA1	cancer	Hereditary breast and ovarian cancer	AD	
+BRCA2	cancer	Hereditary breast and ovarian cancer	AD	
+PALB2	cancer	Hereditary breast cancer	AD	
+SDHD	cancer	Hereditary paraganglioma-pheochromocytoma syndrome	AD	
+SDHAF2	cancer	Hereditary paraganglioma-pheochromocytoma syndrome	AD	
+SDHC	cancer	Hereditary paraganglioma-pheochromocytoma syndrome	AD	
+SDHB	cancer	Hereditary paraganglioma-pheochromocytoma syndrome	AD	
+MAX	cancer	Hereditary paraganglioma-pheochromocytoma syndrome	AD	
+TMEM127	cancer	Hereditary paraganglioma-pheochromocytoma syndrome	AD	
+BMPR1A	cancer	Juvenile polyposis syndrome	AD	
+SMAD4	cancer	Juvenile polyposis syndrome; hereditary hemorrhagic telangiectasia	AD	
+TP53	cancer	Li-Fraumeni syndrome	AD	
+MLH1	cancer	Lynch syndrome	AD	
+MSH2	cancer	Lynch syndrome	AD	
+MSH6	cancer	Lynch syndrome	AD	
+PMS2	cancer	Lynch syndrome	AD	A near-identical pseudogene (PMS2CL) makes short-read calls in the last exons unreliable
+MEN1	cancer	Multiple endocrine neoplasia type 1	AD	
+MUTYH	cancer	MUTYH-associated polyposis	AR	
+NF2	cancer	NF2-related schwannomatosis	AD	
+STK11	cancer	Peutz-Jeghers syndrome	AD	
+PTEN	cancer	PTEN hamartoma tumor syndrome	AD	
+RB1	cancer	Retinoblastoma	AD	
+TSC1	cancer	Tuberous sclerosis complex	AD	
+TSC2	cancer	Tuberous sclerosis complex	AD	
+VHL	cancer	Von Hippel-Lindau syndrome	AD	
+WT1	cancer	WT1-related Wilms tumor	AD	
+FBN1	heart	Marfan syndrome	AD	
+TGFBR1	heart	Loeys-Dietz syndrome	AD	
+TGFBR2	heart	Loeys-Dietz syndrome	AD	
+SMAD3	heart	Loeys-Dietz syndrome	AD	
+ACTA2	heart	Familial thoracic aortic aneurysm and dissection	AD	
+MYH11	heart	Familial thoracic aortic aneurysm and dissection	AD	
+PKP2	heart	Arrhythmogenic right ventricular cardiomyopathy	AD	
+DSP	heart	Arrhythmogenic right ventricular cardiomyopathy	AD	
+DSC2	heart	Arrhythmogenic right ventricular cardiomyopathy	AD	
+TMEM43	heart	Arrhythmogenic right ventricular cardiomyopathy	AD	
+DSG2	heart	Arrhythmogenic right ventricular cardiomyopathy	AD	
+RYR2	heart	Catecholaminergic polymorphic ventricular tachycardia	AD	
+CASQ2	heart	Catecholaminergic polymorphic ventricular tachycardia	AR	
+TRDN	heart	Catecholaminergic polymorphic ventricular tachycardia; long QT syndrome	AR	
+TNNT2	heart	Dilated or hypertrophic cardiomyopathy	AD	
+LMNA	heart	Dilated cardiomyopathy	AD	
+FLNC	heart	Dilated cardiomyopathy	AD	
+TTN	heart	Dilated cardiomyopathy	AD	Only truncating variants count
+BAG3	heart	Dilated cardiomyopathy	AD	
+DES	heart	Dilated cardiomyopathy	AD	
+RBM20	heart	Dilated cardiomyopathy	AD	
+TNNC1	heart	Dilated cardiomyopathy	AD	
+PLN	heart	Dilated or arrhythmogenic cardiomyopathy	AD	
+COL3A1	heart	Vascular Ehlers-Danlos syndrome	AD	
+LDLR	heart	Familial hypercholesterolemia	AD	
+APOB	heart	Familial hypercholesterolemia	AD	
+PCSK9	heart	Familial hypercholesterolemia	AD	
+MYH7	heart	Hypertrophic or dilated cardiomyopathy	AD	
+MYBPC3	heart	Hypertrophic cardiomyopathy	AD	
+TNNI3	heart	Hypertrophic cardiomyopathy	AD	
+TPM1	heart	Hypertrophic cardiomyopathy	AD	
+MYL3	heart	Hypertrophic cardiomyopathy	AD	
+ACTC1	heart	Hypertrophic cardiomyopathy	AD	
+PRKAG2	heart	Hypertrophic cardiomyopathy	AD	
+MYL2	heart	Hypertrophic cardiomyopathy	AD	
+KCNQ1	heart	Long QT syndrome type 1	AD	
+KCNH2	heart	Long QT syndrome type 2	AD	
+SCN5A	heart	Long QT syndrome type 3; Brugada syndrome; dilated cardiomyopathy	AD	
+CALM1	heart	Long QT syndrome	AD	
+CALM2	heart	Long QT syndrome	AD	
+CALM3	heart	Long QT syndrome	AD	
+BTD	metabolism	Biotinidase deficiency	AR	
+CYP27A1	metabolism	Cerebrotendinous xanthomatosis	AR	
+GLA	metabolism	Fabry disease	XL	
+OTC	metabolism	Ornithine transcarbamylase deficiency	XL	
+GAA	metabolism	Pompe disease	AR	
+ABCD1	metabolism	X-linked adrenoleukodystrophy	XL	
+HFE	other	Hereditary hemochromatosis	AR	Only two copies of p.Cys282Tyr count
+ACVRL1	other	Hereditary hemorrhagic telangiectasia	AD	
+ENG	other	Hereditary hemorrhagic telangiectasia	AD	
+RYR1	other	Malignant hyperthermia susceptibility	AD	
+CACNA1S	other	Malignant hyperthermia susceptibility	AD	
+HNF1A	other	Maturity-onset diabetes of the young	AD	
+RPE65	other	RPE65-related retinopathy	AR	
+ATP7B	other	Wilson disease	AR	
+TTR	other	Hereditary transthyretin amyloidosis	AD	

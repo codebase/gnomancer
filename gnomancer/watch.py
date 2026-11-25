@@ -15,7 +15,7 @@ from pathlib import Path
 
 from . import clinvar as cv
 from .load import load
-from .setup_cmd import CLINVAR_URL, _dl
+from .setup_cmd import CLINVAR_URL, CLINVAR_URLS, _dl
 
 PATH = ("Pathogenic", "Likely_pathogenic")
 
@@ -33,9 +33,9 @@ def write_snapshot(report_dir: Path, res: dict, input_path: str) -> None:
                    vcf=res.get("vcf"), carried=res.get("carried") or {}), open(snapshot_path(report_dir), "w"))
 
 
-def remote_last_modified() -> str | None:
+def remote_last_modified(url: str = CLINVAR_URL) -> str | None:
     try:
-        req = urllib.request.Request(CLINVAR_URL, method="HEAD")
+        req = urllib.request.Request(url, method="HEAD")
         with urllib.request.urlopen(req, timeout=30) as r:  # noqa: S310
             return r.headers.get("Last-Modified")
     except Exception:  # noqa: BLE001
@@ -61,7 +61,7 @@ def diff(old: dict, new: dict) -> dict:
     return out
 
 
-def render(d: dict, old_release, new_release) -> str:
+def render(d: dict, old_release, new_release, seq: bool = False) -> str:
     L = [f"# ClinVar watch\n\nPrevious release: {old_release or 'unknown'} → current: {new_release or 'unknown'}\n"]
     if not (d["new_pathogenic"] or d["no_longer_pathogenic"] or d["review_changed"]):
         L.append("No change in pathogenic or likely-pathogenic classification at any site you carry.")
@@ -70,7 +70,8 @@ def render(d: dict, old_release, new_release) -> str:
     if d["new_pathogenic"]:
         L.append("\n## Newly pathogenic / likely pathogenic at a site you carry\n")
         L += [row(x, f"; was {x['previous'].replace('_', ' ')}" if x["previous"] else "; new ClinVar record") for x in d["new_pathogenic"]]
-        L.append("\nArray calls at rare sites are often wrong; treat each as 'confirm clinically', not as a diagnosis.")
+        L.append("\nA reclassification is a prompt to confirm with a clinical test, not a diagnosis." if seq else
+                 "\nArray calls at rare sites are often wrong; treat each as 'confirm clinically', not as a diagnosis.")
     if d["no_longer_pathogenic"]:
         L.append("\n## Downgraded (no longer pathogenic / likely pathogenic)\n")
         L += [row(x, f"; was {x['previous'].replace('_', ' ')}") for x in d["no_longer_pathogenic"]]
@@ -98,28 +99,35 @@ def run(argv=None) -> int:
         print(f"raw file not found at {inp}; cannot rescan", file=sys.stderr)
         return 2
     snap = json.loads(snapshot_path(rd).read_text()) if snapshot_path(rd).exists() else None
-    vcf = cv.DEFAULT_VCF
+    seq = s.get("kind") in ("wgs", "partial")
+    build = int(s.get("build") or 37) if seq else 37
+    vcf = cv.vcf_for(build) if seq else cv.DEFAULT_VCF
+    url = CLINVAR_URLS[build]
     if not a.no_download:
-        lm = remote_last_modified()
+        lm = remote_last_modified(url)
         local = dt.datetime.fromtimestamp(vcf.stat().st_mtime, dt.timezone.utc) if vcf.exists() else None
         remote = dt.datetime.strptime(lm, "%a, %d %b %Y %H:%M:%S %Z").replace(tzinfo=dt.timezone.utc) if lm else None
         if remote and (local is None or remote > local):
             print(f"new ClinVar release ({lm}); downloading ...", file=sys.stderr)
             if vcf.exists():
                 vcf.unlink()
-            _dl(CLINVAR_URL, vcf, "clinvar", md5_url=CLINVAR_URL + ".md5")
+            _dl(url, vcf, "clinvar", md5_url=url + ".md5")
         elif snap and not a.force:
             print(f"ClinVar unchanged since {snap.get('taken')} (release {snap.get('release')}); nothing to do. Use --force to rescan anyway.")
             return 0
     print("rescanning ...", file=sys.stderr)
-    df = load(inp).df
-    res = cv.scan(df, vcf)
+    if seq:
+        from . import seq as seq_mod
+        from .seqvcf import sniff
+        res = cv.scan_seq(seq_mod.load_seq(inp, sniff(inp), build=build, use_pharmcat=False, quiet=True).seq, vcf)
+    else:
+        res = cv.scan(load(inp).df, vcf)
     if snap is None:
         write_snapshot(rd, res, inp)
         print(f"Baseline snapshot written ({len(res['carried']):,} ClinVar-classified alleles carried, release {res.get('release')}). Run again after the next ClinVar release to see changes.")
         return 0
     d = diff(snap["carried"], res["carried"])
-    text = render(d, snap.get("release"), res.get("release"))
+    text = render(d, snap.get("release"), res.get("release"), seq)
     (rd / "clinvar-watch.md").write_text(text)
     write_snapshot(rd, res, inp)
     print(text)

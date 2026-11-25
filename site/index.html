@@ -53,7 +53,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
 <main class="wrap">
 <section class="hero">
   <h1>Your DNA, decoded on your own machine.</h1>
-  <p class="lead">gnomancer turns the raw file you already downloaded from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA into one readable report: lineages, traits, carrier status, drug metabolism, and a plain-language summary. Read it yourself, or connect Claude, Codex or a local model and ask questions about it. Open source. Runs locally.</p>
+  <p class="lead">gnomancer turns the raw file you already downloaded from AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA, or a whole-genome VCF, into one readable report: lineages, traits, carrier status, drug metabolism, and a plain-language summary. Read it yourself, or connect Claude, Codex or a local model and ask questions about it. Open source. Runs locally.</p>
   <div class="cta"><a class="btn primary" href="/install/">Install in 5 minutes</a><a class="btn" href="/demo/">Explore a synthetic demo</a><a class="btn" href="/get-your-data/">How to get your raw data</a><a class="btn" href="https://github.com/codebase/gnomancer">Source on GitHub</a></div>
 <pre><span class="c"># macOS / Linux (Windows via WSL): one line to install, one to run</span>
 <span class="p">$</span> curl -fsSL https://gnomancer.com/install.sh | bash      <span class="c"># or: pipx install gnomancer && gnomancer setup</span>
@@ -71,6 +71,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
     <div class="card"><h3>Health and carrier sites</h3><p>APOE, Factor V Leiden, hemochromatosis, celiac HLA tags, macular degeneration, type 2 diabetes and the rare pathogenic sites that happen to be on consumer chips. Collapsed by default, for people who would rather not look.</p></div>
     <div class="card"><h3>ClinVar scan</h3><p>Every typed site checked against ClinVar. Each hit is scored for plausibility, because arrays are unreliable at rare sites and a homozygous rare "pathogenic" call is usually an artifact.</p></div>
     <div class="card"><h3>Pharmacogenomics</h3><p>PharmCAT star-allele diplotypes and CPIC phenotypes for the CPIC genes your chip covers (typically 15 to 20), with the drugs each one matters for and an honest per-gene coverage figure.</p></div>
+    <div class="card"><h3>Whole genomes</h3><p>A sequencing VCF is read natively: every variant, insertions and deletions included, with the 84 medically actionable genes set apart. Add the BAM for repeat expansions, CYP2D6, HLA types and SMN1 copy number. A 35x genome with every step takes about five minutes. <a href="https://github.com/codebase/gnomancer/blob/main/docs/whole-genome.md">How it works</a>.</p></div>
     <div class="card"><h3>Plain language, and your own AI</h3><p>An automatic at-a-glance digest, plus a narrative written by whichever AI assistant you already use. gnomancer is an MCP server too: connect it to Claude, Codex, Cursor or a local model in LM Studio and just ask "what does my report say about caffeine?" The raw file stays on your machine; the results the assistant reads go to its provider, so use a local model if that matters to you.</p></div>
   </div>
 </section>
@@ -83,7 +84,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
     <div class="card"><span class="n">2</span><h3>Run one command</h3><p>The <a href="/install/">installer</a> sets up the open-source tools and public reference files once. Then <code>gnomancer yourfile.zip</code> does everything else in about a minute.</p></div>
     <div class="card"><span class="n">3</span><h3>Read the report</h3><p>Open <code>REPORT.html</code>. Light and dark, printable, searchable, with the technical detail one scroll below the summary.</p></div>
   </div>
-  <p class="sub" style="margin-top:26px">Reads <span class="pill">AncestryDNA</span><span class="pill">23andMe</span><span class="pill">MyHeritage</span><span class="pill">FamilyTreeDNA</span><span class="pill">LivingDNA</span><span class="pill">Genes for Good</span><span class="pill">tellmeGen</span><span class="pill">VCF</span> and remaps older builds to GRCh37.</p>
+  <p class="sub" style="margin-top:26px">Reads <span class="pill">AncestryDNA</span><span class="pill">23andMe</span><span class="pill">MyHeritage</span><span class="pill">FamilyTreeDNA</span><span class="pill">LivingDNA</span><span class="pill">Genes for Good</span><span class="pill">tellmeGen</span><span class="pill">VCF</span><span class="pill">whole-genome VCF / gVCF</span><span class="pill">BAM / CRAM</span>. Array files on older builds are remapped to GRCh37; genomes are read on their own build.</p>
 </section>
 
 <section id="privacy">
@@ -112,12 +113,16 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-3);f
       <tr><td>ClinVar</td><td>clinically classified variants</td><td><a href="https://www.ncbi.nlm.nih.gov/clinvar/">NCBI</a></td></tr>
       <tr><td>PharmCAT</td><td>CPIC / PharmGKB star-allele calling</td><td><a href="https://github.com/PharmGKB/PharmCAT">PharmGKB/PharmCAT</a></td></tr>
       <tr><td>ezancestry</td><td>1000 Genomes population estimate</td><td><a href="https://github.com/arvkevi/ezancestry">arvkevi/ezancestry</a></td></tr>
+      <tr><td>ExpansionHunter + stranger</td><td>repeat expansions (whole genomes)</td><td><a href="https://github.com/Illumina/ExpansionHunter">Illumina/ExpansionHunter</a></td></tr>
+      <tr><td>PyPGx</td><td>CYP2D6 from read depth (whole genomes)</td><td><a href="https://github.com/sbslee/pypgx">sbslee/pypgx</a></td></tr>
+      <tr><td>T1K</td><td>HLA typing (whole genomes)</td><td><a href="https://github.com/mourisl/T1K">mourisl/T1K</a></td></tr>
+      <tr><td>SMNCopyNumberCaller</td><td>SMN1 and SMN2 copy number (whole genomes)</td><td><a href="https://github.com/Illumina/SMNCopyNumberCaller">Illumina/SMNCopyNumberCaller</a></td></tr>
     </tbody>
   </table></div>
 </section>
 
 <section id="limits">
-  <div class="disclaimer"><strong>Not medical advice.</strong> A genotyping array reads a fixed set of common sites, about 0.02% of the genome. It cannot see rare variants, copy-number genes or full HLA types, and its calls at rare sites are wrong often enough that a published check found 40% of them did not confirm (Tandy-Connor et al., <em>Genetics in Medicine</em> 2018). gnomancer tells you what the chip says and how much to trust it. Anything that matters deserves a clinical-grade test and a conversation with a clinician or genetic counselor.</div>
+  <div class="disclaimer"><strong>Not medical advice.</strong> A genotyping array reads a fixed set of common sites, about 0.02% of the genome. It cannot see rare variants, copy-number genes or full HLA types, and its calls at rare sites are wrong often enough that a published check found 40% of them did not confirm (Tandy-Connor et al., <em>Genetics in Medicine</em> 2018). A consumer whole genome reads far more, and more reliably, but it is still research-grade data and not a clinical test. gnomancer tells you what the file says and how much to trust it. Anything that matters deserves a clinical-grade test and a conversation with a clinician or genetic counselor.</div>
 </section>
 </main>
 

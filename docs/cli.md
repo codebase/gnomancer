@@ -6,6 +6,11 @@ On the very first run, `gnomancer FILE` downloads the open-source tools and refe
 gnomancer FILE [--out DIR] [--markers TSV] [--no-y] [--no-yleaf] [--no-mt] [--no-clinvar] [--no-pharmcat] [--ancestry]
           [--summary summary.md] [--ai] [--no-setup]
 gnomancer --version
+
+# sequencing VCF or gVCF (detected automatically); see whole-genome.md
+gnomancer GENOME.vcf.gz [--sv SV.vcf.gz] [--cnv CNV.vcf.gz] [--bam READS.bam|.cram] [--callers repeats,cyp2d6,hla,smn|none]
+          [--build 37|38] [--no-ancestry] [--no-pgs]
+gnomancer setup --wgs [--no-reference]
 ```
 
 **Plain-language summary.** The report opens with an automatic "at a glance" block built from the results. For a narrative on

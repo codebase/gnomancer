@@ -15,6 +15,7 @@ from .paths import HOME, java_bin
 HAPLOGREP_VERSION = "3.3.2"
 PHARMCAT_VERSION = "3.4.0"
 CLINVAR_URL = "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz"
+CLINVAR_URLS = {37: CLINVAR_URL, 38: "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz"}
 YHAPLO_SRC = "git+https://github.com/23andMe/yhaplo"
 EZANCESTRY_SRC = "git+https://github.com/arvkevi/ezancestry"
 YLEAF_SRC = "git+https://github.com/genid/Yleaf"
@@ -89,6 +90,10 @@ def run(argv=None) -> int:
     ap.add_argument("--home", default=str(HOME), help="where to put them (default: $GNOMANCER_HOME or ~/.gnomancer)")
     ap.add_argument("--no-clinvar", action="store_true", help="skip the ~200 MB ClinVar download")
     ap.add_argument("--no-ancestry", action="store_true", help="skip the optional Python 3.11 venv for ezancestry and Yleaf")
+    ap.add_argument("--wgs", action="store_true", help="also set up whole-genome analysis: ClinVar on GRCh38, the GRCh38 reference genome, and isolated conda "
+                    "environments for samtools/bcftools and the read-level callers (PyPGx, ExpansionHunter, T1K, SMNCopyNumberCaller). "
+                    "About 2.5 GB to download and 6 GB on disk; nothing is installed system-wide")
+    ap.add_argument("--no-reference", action="store_true", help="with --wgs: skip the reference genome download")
     a = ap.parse_args(argv)
     home = Path(a.home).expanduser()
     tools = home / "tools"
@@ -130,6 +135,9 @@ def run(argv=None) -> int:
         print("ClinVar (GRCh37, ~200 MB)")
         _dl(CLINVAR_URL, tools / "clinvar" / "clinvar_GRCh37.vcf.gz", "clinvar", md5_url=CLINVAR_URL + ".md5")
 
+    if a.wgs:
+        setup_wgs(reference=not a.no_reference)
+
     java = java_bin()
     print(f"Java: {java or 'NOT FOUND (Haplogrep3 and PharmCAT will be skipped; install Java 11+, e.g. brew install openjdk)'}")
 
@@ -147,6 +155,44 @@ def run(argv=None) -> int:
             print("  skipped: python3.11 not on PATH (brew install python@3.11 to enable)")
     print("done. Run:  gnomancer /path/to/raw-file.zip")
     return 0
+
+
+def ensure_clinvar(build: int, quiet: bool = False) -> bool:
+    """Fetch the ClinVar VCF for a build if it is missing (a sequencing VCF is scanned on its own build)."""
+    dest = HOME / "tools" / "clinvar" / f"clinvar_GRCh{build}.vcf.gz"
+    from .paths import tool
+    if tool("clinvar", dest.name).exists():
+        return False
+    if not quiet:
+        print(f"ClinVar for GRCh{build} (~200 MB, once) ...", file=sys.stderr)
+    _dl(CLINVAR_URLS[build], dest, f"clinvar GRCh{build}", md5_url=CLINVAR_URLS[build] + ".md5")
+    return True
+
+
+def setup_wgs(reference: bool = True) -> None:
+    """Everything a whole-genome analysis adds: ClinVar on GRCh38, the read-level tools, the reference genome."""
+    from . import wgstools
+    print("Whole-genome support")
+    ensure_clinvar(38, quiet=True)
+    print(f"  tool environment -> {wgstools.ENV}")
+    try:
+        wgstools.install(tuple(wgstools.GROUPS))
+    except Exception as e:  # noqa: BLE001
+        print(f"  could not build the tool environment: {e}", file=sys.stderr)
+    if reference:
+        try:
+            wgstools.fetch_reference(38)
+            print("  reference GRCh38: ready")
+        except Exception as e:  # noqa: BLE001
+            print(f"  reference GRCh38: FAILED ({e})", file=sys.stderr)
+    for label, fn in (("PyPGx data bundle", wgstools.fetch_pypgx_bundle), ("HLA index", wgstools.build_t1k_index)):
+        try:
+            fn()
+            print(f"  {label}: ready")
+        except Exception as e:  # noqa: BLE001
+            print(f"  {label}: not set up ({e}); the matching analysis will be skipped", file=sys.stderr)
+    st = wgstools.status()
+    print("  tools: " + ", ".join(f"{k} {'ok' if v else 'MISSING'}" for k, v in st["tools"].items()))
 
 
 def tools_present() -> dict:

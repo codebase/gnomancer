@@ -15,7 +15,7 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7c3aed" alt="MIT"></a>
 </p>
 
-Take the raw file you already downloaded from **AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA** (or a VCF) and turn it into one readable report. Everything runs on your computer. Nothing is uploaded.
+Take the raw file you already downloaded from **AncestryDNA, 23andMe, MyHeritage, FamilyTreeDNA or LivingDNA**, or a **whole-genome VCF**, and turn it into one readable report. Everything runs on your computer. Nothing is uploaded.
 
 ## Quick start
 
@@ -37,6 +37,21 @@ Open `AncestryDNA_analysis/REPORT.html`. No Python? `curl -fsSL https://gnomance
 - **Family mode.** `gnomancer family dad.zip mom.zip me.zip` shows shared DNA and the likely relationship for each pair, which lines you share, and which parent each of your alleles came from.
 - **Stays current.** `gnomancer watch` re-checks ClinVar each month and tells you only what was reclassified at sites you carry.
 - **Honest limits.** Every section says what the chip can and cannot tell you.
+
+## Whole genomes
+
+A sequencing VCF (or gVCF) is read natively: every variant, insertions and deletions included, each call gated on its read evidence.
+
+```bash
+gnomancer genome.vcf.gz                                               # about a minute
+gnomancer genome.vcf.gz --sv sv.vcf.gz --cnv cnv.vcf.gz --bam genome.bam   # after `gnomancer setup --wgs`
+```
+
+- **From the VCF:** a ClinVar scan of all four to five million variants with the 84 ACMG actionable genes set apart, PharmCAT on every defining position, the mtDNA haplogroup from the full mitochondrial sequence, the Y haplogroup, and polygenic scores placed against 1000 Genomes.
+- **From the vendor's SV and CNV files:** deletions and duplications checked against the genes where copy number matters.
+- **From the BAM or CRAM:** repeat expansions (ExpansionHunter), CYP2D6 with deletions and duplications (PyPGx), HLA types (T1K), SMN1 copy number, low-level mitochondrial heteroplasmy, and a check in the reads of every position the VCF is silent about.
+
+Details, timings and limits: [docs/whole-genome.md](docs/whole-genome.md).
 
 ## Use it from your AI assistant
 
@@ -70,11 +85,11 @@ Your genotype file never leaves your machine. The only network traffic is the on
 
 ## Not medical advice
 
-A genotyping array reads about 0.02% of the genome at pre-chosen sites, and its calls at rare sites are wrong often enough that a clinical lab found [40% did not confirm](https://doi.org/10.1038/gim.2018.38). gnomancer tells you what the chip says and how far to trust it. Confirm anything that matters with a clinical-grade test and a clinician or genetic counselor.
+A genotyping array reads about 0.02% of the genome at pre-chosen sites, and its calls at rare sites are wrong often enough that a clinical lab found [40% did not confirm](https://doi.org/10.1038/gim.2018.38). A consumer whole genome reads far more and far more reliably, but it is still research-grade data, not a clinical test. gnomancer tells you what the file says and how far to trust it. Confirm anything that matters with a clinical-grade test and a clinician or genetic counselor.
 
 ## More
 
-[Discord community](https://discord.gg/aGjqzqErQH) · [CLI options](docs/cli.md) · [vendors and quirks](docs/vendors.md) · [the marker panel](docs/marker-panel.md) · [tools under the hood](docs/tools.md) · [development](docs/development.md) · [MCP registry](docs/mcp-registry.md) · [contributing](CONTRIBUTING.md)
+[Discord community](https://discord.gg/aGjqzqErQH) · [CLI options](docs/cli.md) · [whole genomes](docs/whole-genome.md) · [vendors and quirks](docs/vendors.md) · [the marker panel](docs/marker-panel.md) · [tools under the hood](docs/tools.md) · [development](docs/development.md) · [MCP registry](docs/mcp-registry.md) · [contributing](CONTRIBUTING.md)
 
 MIT licensed. The tools it downloads keep their own licenses; see [NOTICE.md](NOTICE.md) for credits.
 

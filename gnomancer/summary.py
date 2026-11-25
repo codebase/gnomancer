@@ -88,6 +88,17 @@ def _site_name(r) -> str:
     return label if label.startswith(gene) else f"{gene} {label}"
 
 
+# Genes PharmCAT reports by allele only, with no phenotype word: what carrying the variant allele means.
+ALLELE_ONLY = {
+    "VKORC1": "warfarin-sensitive allele: lower dose needed (more so with two copies)",
+    "CYP4F2": "variant allele: slightly higher warfarin dose needed",
+    "IFNL3": "variant allele: weaker response to interferon-based hepatitis C treatment",
+    "F5": "factor V Leiden present: higher clotting risk, relevant to estrogen-containing drugs",
+    "F2": "prothrombin G20210A present: higher clotting risk, relevant to estrogen-containing drugs",
+    "ABCG2": "reduced-function allele: higher rosuvastatin and allopurinol exposure",
+}
+
+
 def pgx_class(r) -> str:
     """One of 'normal', 'uncalled', 'odd', 'vus', 'skip' for a PharmCAT row, used by the glance."""
     pheno = _clean_pheno(r.phenotype).lower()
@@ -102,6 +113,8 @@ def pgx_class(r) -> str:
     if pheno in UNCALLED or pheno.startswith("variable"):
         if "negative" in h1 or ("reference" in dip and " or " not in dip) or dip == "*1/*1":
             return "normal"  # allele-only genes (F2, F5, VKORC1, CYP4F2) with the reference allele at the typed site
+        if "variant" in dip and " or " not in dip:
+            return "odd"     # allele-only gene carrying the variant allele: a result, though PharmCAT attaches no phenotype word
         return "uncalled"
     return "normal" if pheno in NORMAL_PHENOS else "odd"
 
@@ -111,20 +124,73 @@ def pgx_cells(r) -> tuple[str, str]:
     dip = str(r.diplotype).strip()
     pheno = tidy_pheno(r.phenotype)
     n_alt = len(dip.split(" OR "))
+    src = "file" if bool(getattr(r, "seq", False)) else "chip"
     if dip.lower() in ("no call", ""):
-        return "not determinable from this chip", "—"
+        return f"not determinable from this {src}", "—"
     if n_alt >= 4:
-        result = f"ambiguous on this chip ({n_alt} possible diplotypes)"
+        result = f"ambiguous on this {src} ({n_alt} possible diplotypes)"
     else:
         result = tidy_result(dip, limit=3)
     cls = pgx_class(r)
     if cls == "uncalled":
         typed = str(getattr(r, "typed", "") or "")
-        return (f"unresolved ({typed.replace('/', ' of ')} defining positions typed)" if typed else "unresolved"), "—"
+        return (f"unresolved ({typed.replace('/', ' of ')} defining positions {'read' if src == 'file' else 'typed'})" if typed else "unresolved"), "—"
     if pheno == "—":
         h1 = str(getattr(r, "h1", "") or "").strip()
-        pheno = h1 if h1 else ("reference at the typed positions" if cls == "normal" else "—")
+        pheno = h1 if h1 else ("reference at the typed positions" if cls == "normal" else ALLELE_ONLY.get(str(r.gene), "—") if cls == "odd" else "—")
     return result, pheno
+
+
+def _seq_clinvar_bullets(hits: pd.DataFrame, notable: list, reassuring: list) -> None:
+    """ClinVar bullets for sequencing data. A whole genome turns up a few real pathogenic variants in anyone, nearly
+    all of them single copies of recessive alleles, so they are grouped by what they mean and not listed one by one:
+    findings in the ACMG actionable genes, anything on both copies, then carrier-type single copies as one line."""
+    from .clinvar import seq_groups
+    g = {k: df for k, _, _, df in seq_groups(hits)}
+
+    def cond(r):
+        if isinstance(r.get("acmg_condition"), str) and r.get("acmg_condition"):
+            return r["acmg_condition"]
+        conds = [c.strip() for c in str(r.condition).split(";") if c.strip()]
+        return conds[0] if conds else "condition not named"
+
+    def pair(r):                      # 'on opposite copies (phased): both copies of the gene are affected'
+        return str(r["flags"]).split(f"variants in {r.gene}, ", 1)[-1].split(";")[0]
+
+    def multi(df):
+        return df["flags"].astype(str).str.contains("pathogenic variants in")
+
+    act = g.get("actionable")
+    if act is not None:
+        carrier = act.role.astype(str).str.contains("carrier")
+        for _, r in act[~carrier].iterrows():
+            notable.append(f"ClinVar, actionable gene: {r.gene} {r.genotype}, {r.zygosity} ({cond(r)}). {str(r.role).split(': ')[-1].capitalize()}. Confirm with a clinical test.")
+        for _, r in act[carrier & multi(act)].drop_duplicates("gene").iterrows():
+            notable.append(f"ClinVar, actionable gene: two pathogenic {r.gene} variants ({cond(r)}), {pair(r)}. Confirm with a clinical test.")
+        singles = list(act[carrier & ~multi(act)].gene.drop_duplicates())
+    else:
+        singles = []
+    for _, r in (g["mito_low"].iterrows() if "mito_low" in g else ()):
+        # Mitochondrial disease needs a high share of mutant copies; a few percent is common and often technical.
+        notable.append(f"ClinVar: {r.gene} {r.genotype} in about {float(r.allele_share):.0%} of mitochondrial reads ({cond(r)}). Mitochondrial variants generally cause disease only at "
+                       "high shares, well over half; a share this low is common, can be a sequencing artifact, and is worth raising only alongside matching symptoms.")
+    for _, r in (g["both"].iterrows() if "both" in g else ()):
+        tail = ("Carried by part of your mitochondria; the share differs between tissues, so blood or saliva may not reflect muscle or nerve"
+                if "heteroplasmic" in str(r.zygosity) else "Both copies (or the only copy) carry it")
+        notable.append(f"ClinVar: {r.gene} {r.genotype}, {r.zygosity} ({cond(r)}). {tail}; confirm with a clinical test.")
+    if "single" in g:
+        s_ = g["single"]
+        for _, r in s_[multi(s_)].drop_duplicates("gene").iterrows():
+            notable.append(f"ClinVar: two pathogenic {r.gene} variants ({cond(r)}), {pair(r)}.")
+        singles += list(s_[~multi(s_)].gene.drop_duplicates())
+    if singles:
+        notable.append(f"ClinVar: one copy of a pathogenic variant in {len(singles)} gene{'s' if len(singles) != 1 else ''}: " + ", ".join(singles[:12])
+                       + (f" and {len(singles) - 12} more" if len(singles) > 12 else "")
+                       + ". For recessive conditions that is a carrier state and does not cause disease; the table says which condition each relates to.")
+    if "risk" in g:
+        notable.append(f"ClinVar: {len(g['risk'])} common or low-penetrance allele(s) ({', '.join(g['risk'].gene.drop_duplicates().head(8))}): they shift odds and do not predict disease on their own.")
+    if "aside" in g:
+        reassuring.append(f"{len(g['aside'])} other ClinVar 'pathogenic' match(es) were set aside: a weak call or an unreviewed classification.")
 
 
 def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.DataFrame, clinvar: dict, pharmcat: dict) -> dict:
@@ -177,8 +243,13 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
     if "APOE" in combo:
         v = combo["APOE"][0].split(" (")[0]
         (reassuring if v == "e3/e3" else notable).append(f"APOE {v}: {combo['APOE'][1]}.")
+    seq = getattr(loaded, "kind", "array") != "array"
     hits = clinvar.get("hits")
-    if hits is not None and not hits.empty:
+    if seq and hits is not None and not hits.empty:
+        _seq_clinvar_bullets(hits, notable, reassuring)
+    elif seq and clinvar.get("available"):
+        reassuring.append("No variant in the file is classified pathogenic or likely pathogenic in ClinVar.")
+    elif hits is not None and not hits.empty:
         hi = hits[hits.confidence == "high"]
         lo = len(hits) - len(hi)
         for _, r in hi.iterrows():
@@ -208,13 +279,13 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
                 odd.append(r)
         for r in odd:
             n_alt = len(str(r.diplotype).split(" OR "))
-            result = tidy_result(r.diplotype, limit=2) if n_alt <= 2 else "several possible diplotypes (the chip cannot separate them)"
-            notable.append(f"{r.gene} {result}: {tidy_pheno(r.phenotype)}" + (f"; affects {PGX_DRUGS[r.gene]}" if r.gene in PGX_DRUGS else "") + ".")
+            result = tidy_result(r.diplotype, limit=2) if n_alt <= 2 else f"several possible diplotypes (the {'data' if seq else 'chip'} cannot separate them)"
+            notable.append(f"{r.gene} {result}: {pgx_cells(r)[1]}" + (f"; affects {PGX_DRUGS[r.gene]}" if r.gene in PGX_DRUGS else "") + ".")
         if normal:
-            reassuring.append("Normal pharmacogenomic result for " + ", ".join(sorted(normal)) + " at the sites typed"
-                              + ("; " + ", ".join(sorted(r.gene for r in uncalled)) + " could not be resolved from this chip" if uncalled else "") + ".")
+            reassuring.append("Normal pharmacogenomic result for " + ", ".join(sorted(normal)) + ("" if seq else " at the sites typed")
+                              + ("; " + ", ".join(sorted(r.gene for r in uncalled)) + f" could not be resolved from this {'file' if seq else 'chip'}" if uncalled else "") + ".")
         elif uncalled:
-            notable.append("PharmCAT could not resolve " + ", ".join(sorted(r.gene for r in uncalled)) + " from the positions this chip types.")
+            notable.append("PharmCAT could not resolve " + ", ".join(sorted(r.gene for r in uncalled)) + (" from this file." if seq else " from the positions this chip types."))
     if not panel.empty:  # single-site pharmacogenomic markers PharmCAT does not cover (e.g. HLA-B*57:01 tag)
         p = panel[~panel.genotype.isin(["not on array", "no call"])]
         for _, r in p[(p.category == "pgx") & ~p.gene.isin(pgx_genes)].iterrows():
@@ -236,8 +307,16 @@ def at_a_glance(loaded, qc, roh, roh_text, combos, y, mt, ancestry, panel: pd.Da
     # Next steps
     if hits is not None and not hits.empty and (hits.confidence == "high").any():
         nxt.append("If any ClinVar carrier result matters to you (for example before having children), ask a clinician for a confirmatory test of that specific variant.")
-    nxt.append("Keep the pharmacogenomic table handy for any prescriber (the one-page card next to this report, pgx-card.pdf, is made for that); a clinical PGx panel confirms it and covers the sites the chip misses.")
-    if y.get("haplogroup") and not y.get("error"):
+    if seq:
+        if hits is not None and not hits.empty and ((hits.confidence != "low") & hits.acmg & ~hits.role.astype(str).str.contains("carrier")).any():
+            nxt.insert(0, "A finding in a medically actionable gene is worth taking to a clinician or genetic counselor now: ask for a clinical-grade test of that variant, which is quick and often covered when there is a research result to confirm.")
+        nxt.append("Keep the pharmacogenomic table handy for any prescriber (the one-page card next to this report, pgx-card.pdf, is made for that)."
+                   + ("" if qc.get("reads") else " CYP2D6 and HLA types need the BAM or CRAM file, not the VCF."))
+        if qc.get("reads"):
+            nxt.append("The read-level results (repeats, CYP2D6, HLA, SMN1) come from research tools on short reads; each section names the clinical test that confirms it.")
+    else:
+        nxt.append("Keep the pharmacogenomic table handy for any prescriber (the one-page card next to this report, pgx-card.pdf, is made for that); a clinical PGx panel confirms it and covers the sites the chip misses.")
+    if y.get("haplogroup") and not y.get("error") and not seq:
         nxt.append("For a deeper paternal-line result, Y sequencing (e.g. FTDNA Big Y) resolves far below what an array can.")
     return dict(who=who, notable=[n for n in notable if n], reassuring=[r for r in reassuring if r], next=nxt)
 

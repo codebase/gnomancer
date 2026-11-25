@@ -66,3 +66,71 @@ def run(df: pd.DataFrame, outdir: Path, sample: str = "sample") -> dict:
         return res
     res["trees"] = parse_combined(comb)
     return res
+
+
+def run_seq(d, outdir: Path, whole_genome: bool = True, sample: str = "sample") -> dict:
+    """Y haplogroup from a sequencing VCF, with Yleaf's VCF mode on current trees.
+
+    A VCF lists only the positions where this Y differs from the reference Y, and many tree markers are positions
+    where the reference itself carries the derived allele. Yleaf handles that by reading the reference base at
+    every marker the VCF does not list (right for a whole genome, where absence means 'read and matched'); for
+    partial data that inference is switched off and only the listed positions are used.
+
+    Needs bcftools (from `gnomancer setup --wgs`) and the reference genome for the file's build.
+    """
+    import gzip
+    from . import wgstools
+    res = dict(haplogroup=None, ycc="", n_y_snps=0, path=None, tool="Yleaf", error=None, yleaf=dict(trees={}, n_y_snps=0), basis="")
+    exe = _bin()
+    if not exe:
+        res["error"] = "Yleaf not installed (`gnomancer setup` installs it when python3.11 exists)"
+        return res
+    if not wgstools.have("bcftools"):
+        res["error"] = "the Y call from sequencing data needs bcftools; run `gnomancer setup --wgs`"
+        return res
+    calls = sorted((c for k, cs in d.calls.items() if (k >> 28) == 23 for c in cs
+                    if c.ok and len(c.ref) == 1 and len(c.alt) == 1 and c.copies == c.ploidy), key=lambda c: c.pos)
+    res["n_y_snps"] = res["yleaf"]["n_y_snps"] = len(calls)
+    if len(calls) < 20:
+        res["error"] = f"only {len(calls)} usable Y variants in the file"
+        return res
+    ydir = (outdir / "yleaf").resolve()
+    ydir.mkdir(parents=True, exist_ok=True)
+    plain = ydir / f"{sample}.chrY.vcf"
+    with open(plain, "w") as f:
+        f.write("##fileformat=VCFv4.2\n##contig=<ID=chrY>\n##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n")
+        f.write(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{sample}\n")
+        for c in calls:
+            f.write(f"chrY\t{c.pos}\t.\t{c.ref}\t{c.alt}\t.\tPASS\t.\tGT\t1\n")
+    vcf = ydir / f"{sample}.chrY.vcf.gz"
+    bgzip = wgstools.tool_bin("bgzip")
+    if bgzip:
+        subprocess.run([bgzip, "-f", str(plain)], check=True)
+    else:
+        with open(plain, "rb") as src, gzip.open(vcf, "wb") as dst:
+            dst.write(src.read())
+        plain.unlink()
+    rg = "hg38" if d.build == 38 else "hg19"
+    cmd = [exe, "-vcf", str(vcf), "-rg", rg, "-o", str(ydir / "out"), "-tree", *TREES, "--no-update-check", "-force"]
+    ref = wgstools.reference(d.build)
+    if ref:
+        cmd += ["--ref-fasta", str(ref)]
+    if not whole_genome:
+        cmd.append("--no-ref-inference")
+    p = subprocess.run(cmd, capture_output=True, text=True, cwd=str(ydir), env=wgstools.env())
+    comb = next(iter(sorted((ydir / "out").rglob("hg_prediction_combined.hg"))), None) if (ydir / "out").exists() else None
+    if comb is None:
+        res["error"] = (p.stderr or p.stdout)[-800:] or "Yleaf produced no prediction"
+        return res
+    trees = parse_combined(comb)
+    res["yleaf"]["trees"] = trees
+    best = next((trees[t] for t in ("yfull", "ftdna", "isogg") if trees.get(t, {}).get("haplogroup") not in (None, "", "NA")), None)
+    if not best:
+        res["error"] = "Yleaf could not place the sample on any tree"
+        return res
+    res["haplogroup"] = best["haplogroup"].split("*")[0] or best["haplogroup"]
+    res["ycc"] = f"via {best['marker']}" if best.get("marker") else ""
+    res["basis"] = (f"Yleaf, from {len(calls):,} Y variants in the VCF" +
+                    ("; marker positions the VCF does not list were read from the reference, the standard treatment of a whole genome. "
+                     "Running Yleaf on the BAM or CRAM reads every marker directly." if whole_genome else "; only positions listed in the file were used."))
+    return res

@@ -88,6 +88,8 @@ def evaluate(df: pd.DataFrame, markers: list[dict], frequencies: dict | None = N
             continue
         rec["chrom"], rec["pos"] = row.chrom, int(row.pos)
         g = row.genotype
+        if "basis" in row.index:        # sequencing input: how the genotype was arrived at
+            rec["basis"] = row.basis
         if not isinstance(g, str) or g == "":
             rec["genotype"] = "no call"
             out.append(rec)
@@ -108,6 +110,17 @@ def evaluate(df: pd.DataFrame, markers: list[dict], frequencies: dict | None = N
                 continue
         n = g.count(m["effect"])
         ploidy = len(g)
+        # Sequencing input, no variant recorded, and the reference genome itself carries the effect allele (GRCh37
+        # has factor V Leiden, for one). Absence then implies a positive finding on no evidence at all, and a
+        # coverage gap looks the same. For a rare allele that is far likelier a gap, so it is not reported.
+        inferred = n > 0 and str(rec.get("basis", "")).startswith("not in the VCF")
+        if inferred:
+            freqs = frequencies.get(m["rsid"]) or {}
+            if m["category"] == "carrier" or (freqs and max(freqs.values()) < 0.05):
+                rec["genotype"] = "no call"
+                rec["basis"] = "no variant recorded, but the reference genome carries this rare allele here; a gap cannot be told from a match, so not reported"
+                out.append(rec)
+                continue
         rec["effect_count"] = f"{n}/{ploidy}"
         for pop, af in (frequencies.get(m["rsid"]) or {}).items():
             rec[f"gf_{pop}"] = round(genotype_frequency(n, ploidy, af), 4)
@@ -117,6 +130,8 @@ def evaluate(df: pd.DataFrame, markers: list[dict], frequencies: dict | None = N
             text += " (hemizygous)"
         if flipped:
             text += " [alleles were strand-flipped relative to the table; genotype shown as reported]"
+        if inferred:
+            text += " [inferred: no variant is recorded here and the reference genome carries this allele]"
         rec["interpretation"] = text
         out.append(rec)
     return pd.DataFrame(out)

@@ -36,6 +36,19 @@ Otherwise follow the steps below with the CLI.
 6. **Answer questions** from `summary.json` (machine-readable: qc, y, mt, combos, clinvar, pharmcat) and `REPORT.md`.
    For "what does site rsXXXX say", grep `marker-panel.tsv`. If a site is not on the chip, say so; do not guess.
 
+## Whole genomes
+A sequencing VCF or gVCF (whole genome or exome) is detected automatically and read natively: `gnomancer genome.vcf.gz`.
+- Ask whether the user also has the vendor's structural-variant and copy-number VCFs and the aligned reads, and add them:
+  `--sv sv.vcf.gz --cnv cnv.vcf.gz --bam genome.bam` (MCP: the `sv`, `cnv` and `bam` arguments of `analyze`). The BAM or CRAM
+  adds repeat expansions, CYP2D6, HLA types, SMN1 copy number and mitochondrial heteroplasmy, and needs
+  `gnomancer setup --wgs` once (about 2.5 GB). Sequencing.com provides the BAM only on request; tell the user to ask for it.
+- If they only have FASTQ, say that gnomancer does not align or call variants.
+- A whole genome is far more complete than an array but is still research-grade. A finding in an actionable gene, a
+  repeat expansion, a structural variant or a CYP2D6/HLA/SMN1 result is a reason to get the clinical test the report
+  names. A polygenic percentile is a position in a distribution, not a probability. A healthy person normally has one
+  to three ClinVar findings, nearly all carrier states: say so before listing them.
+- Never upload or paste the VCF, BAM or CRAM anywhere. Full details: `docs/whole-genome.md`.
+
 ## Interpreting
 - Y and mtDNA haplogroups: use the population context already in the report; do not over-claim ethnicity from one lineage.
 - "effect_count 2/2" on a health row means two copies of the effect allele; the row's reading gives the odds as published.

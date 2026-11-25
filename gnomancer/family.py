@@ -104,6 +104,11 @@ def run(argv=None) -> int:
     out.mkdir(parents=True, exist_ok=True)
 
     print(f"[1/4] loading {len(paths)} kits ...", file=sys.stderr)
+    from .seq import detect
+    seq_files = [p.name for p in paths if detect(str(p))]
+    if seq_files:
+        raise SystemExit("Family mode compares array files site by site and does not read sequencing VCFs yet (" + ", ".join(seq_files) + "). "
+                         "Run each genome on its own; a vendor's array-style export of the same person works here.")
     loaded = {n: load(str(p)) for n, p in zip(names, paths)}
     dfs = {n: L.df for n, L in loaded.items()}
     sexes = {n: summary(dfs[n], chromosome_table(dfs[n]), loaded[n].sex)["sex_inferred"] for n in names}

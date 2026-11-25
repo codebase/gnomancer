@@ -111,3 +111,59 @@ def call_mt(df: pd.DataFrame, outdir: Path, build_original: int, sample: str = "
     res["haplogroup"] = str(t.iloc[0]["Haplogroup"])
     res["quality"] = float(t.iloc[0]["Quality"])
     return res
+
+
+HOMOPLASMIC = 0.90      # share of reads above which a mitochondrial variant is treated as fixed
+HETEROPLASMY_FLOOR = 0.03
+
+
+def call_mt_seq(d, outdir: Path, sample: str = "sample", tree: str = "phylotree-rcrs@17.3") -> dict:
+    """mtDNA haplogroup from a sequencing VCF: every difference from rCRS is known, indels included.
+
+    Haplogrep3 reads a VCF directly and takes unlisted positions as reference, which is what a sequenced
+    mitochondrion means. Variants carried by only part of the reads (heteroplasmy) are reported separately and
+    left out of the haplogroup call."""
+    res = dict(n_mt_snps=0, haplogroup=None, quality=None, diffs=[], indels=[], heteroplasmies=[], tool="haplogrep3", error=None,
+               sequenced=True)
+    if d.sniff.mt_length and d.sniff.mt_length != 16569:
+        res["error"] = f"the mitochondrial contig is {d.sniff.mt_length} bases, not rCRS (16,569); positions are not comparable"
+        return res
+    calls = sorted((c for k, cs in d.calls.items() if (k >> 28) == 24 for c in cs if c.ok), key=lambda c: c.pos)
+    fixed = []
+    for c in calls:
+        share = c.ab if c.ab is not None else (1.0 if c.copies == c.ploidy else 0.5)
+        if share >= HOMOPLASMIC:
+            fixed.append(c)
+        elif share >= HETEROPLASMY_FLOOR:
+            res["heteroplasmies"].append(dict(pos=c.pos, ref=c.ref, alt=c.alt, share=round(share, 3), depth=c.dp))
+    res["n_mt_snps"] = len(fixed)
+    res["diffs"] = [f"{c.pos}{c.alt}" for c in fixed if len(c.ref) == 1 and len(c.alt) == 1]
+    res["indels"] = [f"{c.pos}{c.ref}>{c.alt}" for c in fixed if len(c.ref) != len(c.alt)]
+    if not calls:
+        res["error"] = "no mitochondrial variants in the file (chrM may have been left out of the VCF)"
+        return res
+    exe = _haplogrep()
+    if not exe:
+        res["error"] = "haplogrep3 not found; run `gnomancer setup` or set HAPLOGREP3"
+        return res
+    mdir = (outdir / "haplogrep3").resolve()
+    mdir.mkdir(parents=True, exist_ok=True)
+    vcf = mdir / f"{sample}.chrM.vcf"
+    with open(vcf, "w") as f:
+        f.write("##fileformat=VCFv4.2\n##contig=<ID=chrM,length=16569>\n##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n")
+        f.write(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{sample}\n")
+        for c in fixed:
+            f.write(f"chrM\t{c.pos}\t.\t{c.ref}\t{c.alt}\t.\tPASS\t.\tGT\t1\n")
+    out = mdir / f"{sample}.haplogrep3.tsv"
+    p = subprocess.run([exe, "classify", "--tree", tree, "--in", str(vcf), "--out", str(out), "--extend-report"],
+                       capture_output=True, text=True, env=java_env(), cwd=str(Path(exe).parent))
+    if p.returncode != 0 or not out.exists():
+        res["error"] = (p.stderr or p.stdout)[-800:]
+        return res
+    t = pd.read_csv(out, sep="\t")
+    if t.empty:
+        res["error"] = "haplogrep3 returned no classification"
+        return res
+    res["haplogroup"] = str(t.iloc[0]["Haplogroup"])
+    res["quality"] = float(t.iloc[0]["Quality"])
+    return res

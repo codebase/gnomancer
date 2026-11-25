@@ -10,9 +10,16 @@
 | ezancestry | 1000 Genomes population classification | github.com/arvkevi/ezancestry |
 | Yleaf | second-opinion Y haplogroup on current YFull / FTDNA / ISOGG trees | github.com/genid/Yleaf |
 | rCRS (NC_012920.1) | mitochondrial reference | NCBI |
+| samtools, bcftools | reads, pileups, indexing (whole-genome mode) | htslib.org |
+| ExpansionHunter + stranger | repeat expansions against published ranges | github.com/Illumina/ExpansionHunter, github.com/Clinical-Genomics/stranger |
+| PyPGx | CYP2D6 with deletions, duplications and hybrids | github.com/sbslee/pypgx |
+| T1K | HLA typing against IPD-IMGT/HLA | github.com/mourisl/T1K |
+| SMNCopyNumberCaller | SMN1 and SMN2 copy number | github.com/Illumina/SMNCopyNumberCaller |
+| ClinGen dosage sensitivity | which genes matter for copy-number variants | dosage.clinicalgenome.org |
+| PGS Catalog + 1000 Genomes 30x | small polygenic scores and their reference distribution | pgscatalog.org |
 
 Evaluated and not used (yet): PLINK 2 (nothing an array file needs that is not already here), ADMIXTURE (needs a multi-GB reference panel),
-pgsc_calc polygenic scores (arrays need imputation first; planned, see roadmap item 5 in referrals-and-roadmap.md), SNPedia (non-commercial license, no bulk use).
+pgsc_calc genome-wide polygenic scores (need a 7-15 GB reference panel; whole-genome mode ships small scores with a precomputed reference instead), SNPedia (non-commercial license, no bulk use).
 
 Licenses and credits for everything above: [NOTICE.md](../NOTICE.md).
 

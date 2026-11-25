@@ -36,6 +36,8 @@ class Loaded:
     sex: str                    # 'Male', 'Female', or ''
     count: int
     notes: list[str] = field(default_factory=list)
+    kind: str = "array"         # 'array', or 'wgs' / 'partial' for a sequencing VCF
+    seq: object = None          # seqvcf.SeqData for sequencing input
 
 
 def load(path: str, target_build: int = TARGET_BUILD) -> Loaded:
